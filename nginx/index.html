@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Nginx | Study Note</title>
+    <meta name="description" content="学无止境">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.98004fe1.css" as="style"><link rel="preload" href="/assets/js/app.00ae2204.js" as="script"><link rel="preload" href="/assets/js/2.343b2016.js" as="script"><link rel="preload" href="/assets/js/12.5d7568bb.js" as="script"><link rel="prefetch" href="/assets/js/10.060bb3fe.js"><link rel="prefetch" href="/assets/js/11.c0fc6e88.js"><link rel="prefetch" href="/assets/js/13.22907b8a.js"><link rel="prefetch" href="/assets/js/14.862128ec.js"><link rel="prefetch" href="/assets/js/15.62764d48.js"><link rel="prefetch" href="/assets/js/16.9fc7c8b6.js"><link rel="prefetch" href="/assets/js/17.a4b04ed7.js"><link rel="prefetch" href="/assets/js/18.f20fc2c9.js"><link rel="prefetch" href="/assets/js/3.d8d3aec5.js"><link rel="prefetch" href="/assets/js/4.4639bd86.js"><link rel="prefetch" href="/assets/js/5.9cdf863d.js"><link rel="prefetch" href="/assets/js/6.a3faba00.js"><link rel="prefetch" href="/assets/js/7.f5b06270.js"><link rel="prefetch" href="/assets/js/8.d0664a5d.js"><link rel="prefetch" href="/assets/js/9.3394d243.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.98004fe1.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Study Note</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">首页</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">首页</a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/js/" class="sidebar-link">js 基础</a></li><li><a href="/css/" class="sidebar-link">CSS 基础</a></li><li><a href="/css-practice/" class="sidebar-link">CSS 应用</a></li><li><a href="/dac/" class="sidebar-link">数据结构与算法</a></li><li><a href="/web/" class="sidebar-link">Web 与网络</a></li><li><a href="/git/" class="sidebar-link">git</a></li><li><a href="/linux/" class="sidebar-link">Linux</a></li><li><a href="/nginx/" class="active sidebar-link">Nginx</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/nginx/#nginx" class="sidebar-link">Nginx</a></li><li class="sidebar-sub-header"><a href="/nginx/#配置-api" class="sidebar-link">配置 api</a></li><li class="sidebar-sub-header"><a href="/nginx/#centos-6-9-安装" class="sidebar-link">centos 6.9 安装</a></li></ul></li><li><a href="/node/" class="sidebar-link">node</a></li><li><a href="/react/" class="sidebar-link">React</a></li><li><a href="/vue/" class="sidebar-link">Vue</a></li><li><a href="/write/" class="sidebar-link">js 手写系列</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="nginx"><a href="#nginx" class="header-anchor">#</a> Nginx</h2> <h3 id="常用配置"><a href="#常用配置" class="header-anchor">#</a> 常用配置</h3> <ul><li>配置文件： /etc/nginx/nginx.conf 副配置 /etc/nginx/conf.d/*.conf</li> <li>开启 $ systemctl start nginx</li> <li>重启 $ nginx -s reload</li> <li>关闭 $ nginx -s stop</li> <li>查看日志文件 $ tail -f /usr/local/nginx/logs/access.log</li> <li>简单配置</li></ul> <div class="language- extra-class"><pre class="language-text"><code>server {
+  server_name 118.24.23.200;
+  root /data/test-nginx;
+  index index.html;
+  location / {
+  # 这里不配置root就返回默认的
+  }
+  # 设置静态图片
+  location ^~ /static/ {
+    root /data/test-nginx
+  }
+  # 设置上传图片地址转发
+  location ^~ .*\.(gif|jpg|jpeg|png)$ {
+    proxy_pass 转发的地址
+  }
+}
+</code></pre></div><ul><li>crm 配置示例
+<blockquote><p>nginx 要使用下划线获取信息需要在 http 或者 server 中开启，即设置：</p></blockquote></li></ul> <div class="language- extra-class"><pre class="language-text"><code>underscores_in_headers on;
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code>server {
+  listen       5858;
+  client_max_body_size 10M
+  root /www/kyhs-crm;
+  location ~ .*\.(gif|jpg|jpeg|png|mp4|avi|mkv|wmv|flv|3gp|pdf|doc|docx)$ {
+    proxy_pass http://192.168.3.25:8088;
+  }
+
+  location ^~ /static/ {
+    root /www/kyhs-crm;
+  }
+
+  location /api {
+    proxy_pass http://192.168.3.25:9004;
+    proxy_set_header K_Security_Token $http_K_Security_Token;
+ }
+</code></pre></div><ul><li>配置 ssl</li></ul> <div class="language- extra-class"><pre class="language-text"><code>server {
+    listen 80;
+    # 启用ssl模块
+    listen 443 ssl;
+    server_name www.cloudwutong.com;
+    root /www/home;
+    # 设置证书和密钥
+    ssl_certificate /usr/local/www.cloudwutong.com/Nginx/1_www.cloudwutong.com_bundle.crt;
+    ssl_certificate_key /usr/local/www.cloudwutong.com/Nginx/2_www.cloudwutong.com.key;
+    location /findAllActivityInfo  {
+            proxy_pass http://118.24.13.46:7001;
+    }
+    location /findActivityInfo  {
+            proxy_pass http://118.24.13.46:7001;
+    }
+    location ~ .*\.(git|jpg|jpeg|png)$ {
+            root /usr/local/photos;
+    }
+}
+</code></pre></div><ul><li>多个机器提供服务</li></ul> <div class="language- extra-class"><pre class="language-text"><code>## 下面放在http的括号内，作为第一层
+upstream test.online {
+    server 120.11.11.11:8080 weight=1;
+    server 120.11.11.12:8080 weight=1;
+}
+
+location ^~ /webs {
+      proxy_pass http://test.online;
+      proxy_redirect default;
+}
+</code></pre></div><h2 id="配置-api"><a href="#配置-api" class="header-anchor">#</a> 配置 api</h2> <h3 id="目录转发"><a href="#目录转发" class="header-anchor">#</a> 目录转发</h3> <ul><li>root 直接导向目录带上 uri</li> <li>alias 用于重写</li></ul> <div class="language- extra-class"><pre class="language-text"><code># 同时请求list.html
+
+# 导向 /www/web1/a/list.html
+location /a {
+    root /www/web1;
+}
+# 导向 /www/web2/list.html
+location /a {
+    alias /www/web2:
+}
+</code></pre></div><h3 id="架构简介"><a href="#架构简介" class="header-anchor">#</a> 架构简介</h3> <p>主线程 master（管理 worker 进程，接收外界信号）
+workder 进程（实际执行的进程）</p> <h3 id="设置跨域"><a href="#设置跨域" class="header-anchor">#</a> 设置跨域</h3> <div class="language- extra-class"><pre class="language-text"><code>add_header Access-Control-Allow-Origin *;
+add_header Access-Control-Allow-Headers X-Requested-With;
+add_header Access-Control-Allow-Methods GET,POST,OPTIONS;
+</code></pre></div><h3 id="路由规则"><a href="#路由规则" class="header-anchor">#</a> 路由规则</h3> <ul><li><code>=</code> 精确匹配</li> <li><code>^~</code> 匹配字符串路径开头（非 RegExp)</li> <li><code>~</code>、<code>!~</code>、<code>~*</code> 正则表达式匹配</li> <li><code>/</code> 通用匹配</li></ul> <blockquote><p>设置代理时，是否添加<code>/</code>决定是否带上匹配路径。</p></blockquote> <h2 id="centos-6-9-安装"><a href="#centos-6-9-安装" class="header-anchor">#</a> centos 6.9 安装</h2> <h3 id="依赖"><a href="#依赖" class="header-anchor">#</a> 依赖</h3> <div class="language- extra-class"><pre class="language-text"><code>yum -y install gcc
+yum -y install pcre-devel
+yum -y install zlib zlib-devel
+yum -y install openssl openssl-devel
+</code></pre></div><h3 id="下载包，解压"><a href="#下载包，解压" class="header-anchor">#</a> 下载包，解压</h3> <div class="language- extra-class"><pre class="language-text"><code>wget http://nginx.org/download/nginx-1.12.2.tar.gz
+tar -xzvf nginx-1.12.2
+mv nginx-1.12.2 /usr/local/dev/
+</code></pre></div><h3 id="安装"><a href="#安装" class="header-anchor">#</a> 安装</h3> <div class="language- extra-class"><pre class="language-text"><code>cd /usr/local/dev/nginx-1.12.2
+
+./configure --with-http_ssl_module
+(建议安装ssl模块用于https)
+# 编译 并 安装
+make
+make install
+
+# 查看nginx安装到哪里
+whereis nginx
+
+# 默认安装到这里
+/usr/local/nginx/sbin/nginx
+</code></pre></div><h3 id="开机自启"><a href="#开机自启" class="header-anchor">#</a> 开机自启</h3> <div class="language- extra-class"><pre class="language-text"><code>vim /etc/rc.d/rc.local
+
+# nginx 启动
+/usr/local/nginx/sbin/nginx
+
+# 赋予执行权限
+chmod 755 /etc/rc.d/rc.local
+</code></pre></div><h3 id="快速启动脚本"><a href="#快速启动脚本" class="header-anchor">#</a> 快速启动脚本</h3> <div class="language- extra-class"><pre class="language-text"><code>#!/bin/sh
+#
+# nginx - this script starts and stops the nginx daemon
+#
+# chkconfig: - 85 15
+# description: Nginx is an HTTP(S) server, HTTP(S) reverse \
+#   proxy and IMAP/POP3 proxy server
+# processname: nginx
+# config: /etc/nginx/nginx.conf
+# config: /etc/sysconfig/nginx
+# pidfile: /var/run/nginx.pid
+# Source function library.
+. /etc/rc.d/init.d/functions
+# Source networking configuration.
+. /etc/sysconfig/network
+# Check that networking is up.
+[ &quot;$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0
+    nginx=&quot;/usr/local/nginx/sbin/nginx&quot;
+    prog=$(basename $nginx)
+    NGINX_CONF_FILE=&quot;/usr/local/nginx/conf/nginx.conf&quot;
+[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
+    lockfile=/var/lock/subsys/nginx
+
+start() {
+    [ -x $nginx ] || exit 5
+    [ -f $NGINX_CONF_FILE ] || exit 6
+    echo -n $&quot;Starting $prog: &quot;
+    daemon $nginx -c $NGINX_CONF_FILE
+    retval=$?
+    echo
+[ $retval -eq 0 ] &amp;&amp; touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $&quot;Stopping $prog: &quot;
+    killproc $prog -QUIT
+    retval=$?
+    echo
+[ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
+    return $retval
+    killall -9 nginx
+}
+
+restart() {
+    configtest || return $?
+    stop
+    sleep 1
+    start
+}
+
+reload() {
+    configtest || return $?
+    echo -n $&quot;Reloading $prog: &quot;
+    killproc $nginx -HUP
+    RETVAL=$?
+    echo
+}
+
+force_reload() {
+    restart
+}
+
+configtest() {
+    $nginx -t -c $NGINX_CONF_FILE
+}
+
+rh_status() {
+    status $prog
+}
+
+rh_status_q() {
+    rh_status &gt;/dev/null 2&gt;&amp;1
+}
+
+case &quot;$1&quot; in
+    start)
+        rh_status_q &amp;&amp; exit 0
+        $1
+    ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+    ;;
+    restart|configtest)
+        $1
+    ;;
+    reload)
+        rh_status_q || exit 7
+        $1
+    ;;
+    force-reload)
+        force_reload
+    ;;
+    status)
+        rh_status
+    ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+    ;;
+    *)
+        echo $&quot;Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}&quot;
+        exit 2
+esac
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code># 1、将上面代码写到 nginx 文件中
+vim /usr/bin/nginx
+
+# 2、添加执行权限
+chmod 755 nginx
+
+# 3、可以在任意目录下使用 nginx start|stop|status|restart|…
+nginx start
+nginx stop
+nginx status
+nginx restart
+…
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/linux/" class="prev">Linux</a></span> <span class="next"><a href="/node/">node</a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.00ae2204.js" defer></script><script src="/assets/js/2.343b2016.js" defer></script><script src="/assets/js/12.5d7568bb.js" defer></script>
+  </body>
+</html>
