@@ -1,0 +1,16 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "my daily study note",
+  "main": "index.js",
+  "author": "penzai",
+  "license": "MIT",
+  "dependencies": {
+    "vuepress": "^1.2.0"
+  },
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs",
+    "docs:build": "vuepress build docs"
+  }
+}
