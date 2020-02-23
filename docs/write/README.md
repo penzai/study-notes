@@ -286,29 +286,58 @@ MyPromise.deferred = function() {
 
 ### debounce
 
-限制时间内只允许发生一次事件，例子：搜索框输入后自动请求
+限制时间内只允许发生一次事件，例子：搜索框输入后自动请求。
+
+> leading 为 true 时，如果在间隔时间内未发生第二次操作，则不会执行 trailing edge of the timeout 的事件。
 
 ```javascript
-function debounce(fn, delay, immediate) {
+const debounce = (fn, wait, options) => {
   let timer;
+  let leading = false; // timeout设定前是否执行
+  let trailing = true; // timeout延时后是否执行
+  let maxing = false;
+  let time;
+  if (Object.prototype.toString.apply(options) === "[object Object]") {
+    leading = "leading" in options ? !!options.leading : leading;
+    trailing = "trailing" in options ? !!options.trailing : trailing;
+    maxing = "maxWait" in options; // 间隔是否有最大值限制
+    maxWait = maxing ? Math.max(+options.maxWait || 0, wait) : maxWait;
+  }
+
   return function(...args) {
-    if (immediate) {
-      fn.apply(this, args);
-    }
+    const context = this;
+    const isFirst = !timer; // 是否第一次调用函数
+    const now = Date.now();
     if (timer) clearTimeout(timer);
+    if (isFirst) time = now;
+
+    const isImmediateContext = isFirst && leading; // 是否是立即执行环境
+    if (isImmediateContext) fn.apply(context, args);
+
+    const isMustContext = maxing && now - time > maxWait; // 是否是最大值必须执行环境
+    if (isMustContext) {
+      fn.apply(context, args);
+      time = now; // 执行第一进入的动作，设置初始时间
+    }
+
     timer = setTimeout(() => {
-      fn.apply(this, args);
-    }, delay);
+      timer = null;
+      // 不是立即执行环境和最大值必须执行环境的“timeout延时后”则执行fn
+      if (!isImmediateContext && !isMustContext && trailing)
+        fn.apply(context, args);
+    }, wait);
   };
-}
+};
 ```
 
 ### throttle
 
-让事件限制在一定频率范围内。例子： 鼠标移动时触发事件
+让事件限制在一定频率范围内。例子： 鼠标移动时触发事件。
+
+简单版：
 
 ```javascript
-function throttle(fn, delay, immediate) {
+function throttle1(fn, delay, immediate) {
   let lastTime = new Date();
   return function(...args) {
     if (immediate) {
@@ -320,6 +349,39 @@ function throttle(fn, delay, immediate) {
     }
   };
 }
+
+function throttle2(func, wait) {
+  var timer;
+  return function(...args) {
+    if (!timer) {
+      timer = setTimeout(function() {
+        timer = null;
+        func.apply(this, args);
+      }, wait);
+    }
+  };
+}
+```
+
+标准版：
+
+```javascript
+const throttle = (fn, wait, options) => {
+  let
+    leading = true,
+    trailing = true;
+
+  if (Object.prototype.toString.apply(options) === '[object Object]' {
+    leading = "leading" in options ? !!options.leading : leading;
+    trailing = "trailing" in options ? !!options.trailing : trailing;
+  }
+  return debounce(func, wait, {
+    leading: leading,
+    maxWait: wait,
+    trailing: trailing
+  });
+}
+
 ```
 
 ## 深拷贝
