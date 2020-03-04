@@ -11,7 +11,8 @@
 ## position
 公共特点：
 1. top属性有效的定位情况，默认值均为auto（即定位在原文档流原来的位置）。
-2. 脱离文档流后（其实就是☞absolute/fixed），同时设置top/bottom且高度为auto，该元素会拉伸垂直空间。left/right同理。（因此得出一种对已知宽高元素的水平垂直居中方法，top/left/bottom/right设为0，margin设为auto）
+2. 脱离文档流后（其实就是☞absolute/fixed），同时设置top/bottom且高度为auto，该元素会拉伸垂直空间。left/right同理。（因此得出一种对已知宽高元素的水平垂直居中方法，top/left/bottom/right设为0，margin设为auto）。
+3. 参照的边界从 border 结束开始（不包括 border 本身）。
 
 可设为如下值：
 - static，默认，按照文档流排列，top等属性无效
@@ -290,12 +291,6 @@ float、clear、vertical-align 不能影响 item
   }
   ```
 
-## position
-
-- 只设置 absolute 值时，默认位置在原来正常文档流的位置。
-- 没有祖先为 relative 元素时，会参照浏览器首屏区域。
-- 参照的边界从 border 结束开始（不包括 border 本身）。
-
 ## 响应式设计
 
 - fluid grids
@@ -327,3 +322,22 @@ float、clear、vertical-align 不能影响 item
 - keep-all，都不断行（标点符号处，依然会进行断行）
 
 > 细想上面的属性，其实处理都不太好，假如我们只想让比宽度还宽的那个单词换行，我们可以使用 break-word 属性，但是兼容性不太好。不过可以通过设置`word-wrap: break-word;`来实现，css3 里提议为 overflow-wrap 名称。
+
+## 动画
+### js动画
+利用api的animate方法或者设置样式开关。
+
+使用`requestAnimationFrame`方法使动画在重绘之前执行动画，使其更流畅。回调函数执行次数通常是每秒60次（与屏幕刷新率匹配）。
+
+特点：
+- 可能被其它线程干扰，造成帧丢失
+- 控制能力很强，开始、暂停、回放、终止、取消都是可以做到的
+- 动画效果比css更丰富，可设置复杂的动画 
+### css动画
+利用transition/animation
+
+特点：
+- 浏览器自动优化
+- 使用硬件加速
+
+

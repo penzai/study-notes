@@ -195,7 +195,7 @@ pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control�
 
 ### 4. 渲染
 
-浏览器内核，一个 tab 页，代表一个进程，它又拥有多个线程
+浏览器内核，一个 tab 页，代表一个进程，它又拥有多个线程。
 
 - GUI 渲染线程
 - js 引擎线程
@@ -205,11 +205,14 @@ pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control�
 
 渲染过程：
 
-- DOM 树
-- CSS 规则树
-- 合并生成 render 树，此树跟 DOM 树并不是一一对应，比如 head 节点和 display:none 的节点
-- 布局（Layout/reflow）
-- 绘制（paint）
+- HTML -> DOM
+- CSS -> CSSOM
+- DOM + CSSOM -> Render Tree
+> Render Tree 跟 DOM Tree 并不是一一对应，比如 head 节点和 display:none 的节点
+- 重排/回流（reflow），计算节点的几何信息（位置、大小）
+- 重绘（repaint），转化为屏幕的实际像素
+
+重排代价太多，所以浏览器使用队列栈来减少消耗。因此获取几何信息时，会强制清空栈而触发重排操作。
 
 ### 5. TCP 断开
 
