@@ -615,23 +615,27 @@ match、exec、test 方法
 - `js`通过事件循环（`event loop`）机制来定期访问异步任务队列
 - `macroTasks`的任务，一次循环只处理一次（比如嵌套`setTimeout`)，而`microtask`队列能处理多次（比如`Promise`的`then`回调）
 
-**macro-task**
+**宏任务macro-task**
 
-- 整体代码
 - `setTimeout`
 - `setInterval`
-- `setImmediate` (存在于`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
-- `requestAnamationFrame`
 - `I/O`
-- `UI渲染`
+- `setImmediate` (`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
+- `requestAnamationFrame`（浏览器）
 
 **microtask**
 
-- `Promise`
-- `process.nextTick`
-- `Object.observe`
-- `MutationObserver`
+- `Promise`的`then`、`catch`、`finally`
+- `process.nextTick`（`node`）
+- `MutationObserver`（浏览器）
 
+### `process.nextTick`
+应用例子：用于事件监听，防止触发一个操作时，事件还没绑定。
+``` javascript
+const server = net.createServer(() => {}).listen(8080);
+
+server.on('listening', () => {});
+```
 ## `ajax`
 
 #### 原生写法
