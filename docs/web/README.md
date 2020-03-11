@@ -254,3 +254,7 @@ pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control�
 - 图片使用.webp 格式，为了兼容不使用的环境，使用 picture 标签来设定一层层的兼容
 - 减少 DOM 操作。避免获取视图信息（getBoundingClientRect,clientWidth,offsetWidth）,因为它会立即更新浏览器重排/重绘维护的队列。高频事件防抖节流。
 - 打包优化，使用 DllPlugin 分离第三方类库，使用 add-asset-html-webpack-plugin 来注入到 index.html 中
+
+## HTTP状态码
+- 301，永久重定向。浏览器会更新缓存，下次直接到新的页面；SEO会转移相应旧站的流量排名到新站，但是内容一定要高度一致，不然视为黑帽SEO。
+- 302，临时重定向
