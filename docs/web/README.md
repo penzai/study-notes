@@ -1,6 +1,6 @@
 # Web 与网络
-
-## 术语缩写
+## 小知识
+### 术语缩写
 
 - `WWW` (Word Wide Web) 万维网
 - `AJAX` (Asynchronous JavaScript and XML) 异步 JavaScript 与 XML 技术
@@ -22,13 +22,26 @@
 - `SSO` (Single Sign On) 单点登录
 - `CAS` (Central Authentication Service) 中央认证服务
 
-## 容量
+### 容量
 
 1 字节（Byte）= 8 比特（bit)
 
 1KB = 1000Byte
 
 1KiB = 1024Byte
+
+### 编码与解码
+
+`encodeURI`、`decodeURI`、`encodeURIComponent`、`decodeURIComponent`
+
+```javascript
+encodeURI("http://www.baidu.com/My First");
+encodeURIComponent("http://www.baidu.com/My First");
+// http://www.baidu.com/My%20First
+// http%3A%2F%2Fwww.baidu.com%2FMy%20First
+decodeURI("http://www.baidu.com/My%20First");
+decodeURIComponent("http%3A%2F%2Fwww.baidu.com%2FMy%20First");
+```
 
 ## 渲染
 
@@ -49,17 +62,7 @@ xxx.onclick，发生在冒泡阶段
 - e.currentTarget 指向注册事件的监 DOM 对象，e.target 指向事件发生的 DOM 对象
 - this 指向指向注册事件的监听 DOM 对象
 
-## 尺寸
-
-- `clientWidth/clientHeight`：`padding` + `content`
-- `clientTop/clientLeft`：`border`
-- `offsetWidth/offsetHeight`：`padding` + `content` + `border`
-- `offsetTop/offsetLeft`: 元素左上角距离最近定位元素的距离
-- `scrollWidth/scrollHeight`: `client`系列 + 溢出尺寸
-- `scrollLeft/scrollTop`: 元素滚动条位置，**可写**(即调整滚动条位置，整个网页的滚动条位置用`window.scrollTo(x, y)`)
-  > `getBoundingClientRect`获取元素位置宽高
-
-## ajax
+## AJAX
 
 ### get 与 post
 
@@ -95,36 +98,6 @@ function getH(el) {
   return h;
 }
 ```
-
-## 编码与解码
-
-`encodeURI`、`decodeURI`、`encodeURIComponent`、`decodeURIComponent`
-
-```javascript
-encodeURI("http://www.baidu.com/My First");
-encodeURIComponent("http://www.baidu.com/My First");
-// http://www.baidu.com/My%20First
-// http%3A%2F%2Fwww.baidu.com%2FMy%20First
-decodeURI("http://www.baidu.com/My%20First");
-decodeURIComponent("http%3A%2F%2Fwww.baidu.com%2FMy%20First");
-```
-
-## 跨域
-
-三同条件：
-
-1. 协议相同
-2. 域名相同
-   > 完整域名，例如 www.baidu.com 与 baidu.com 不同！！！
-3. 端口相同
-
-### 解决办法
-
-- JSONP
-- CORS
-- document.domain，父子 iframe 同时设置此属性，a.bbb.com 与 a2.bbb.com 即可通信
-- window.postMessage，监听 message 事件收取信息
-- nginx 反向代理
 
 ## 从 URL 输入开始
 
@@ -223,19 +196,49 @@ pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control�
 - C <--(FIN)-- S
 - C --(ACK)--> S
 
-## 疑问
+## WEB安全
+### 同源策略
+浏览器拥有严格的同源策略（协议、域名、端口必须全部相同），不同源的交互就会受到限制。
 
-- PUT DELETE 方法为什么不常用，不带验证机制什么意思？
-- CDN 具体是怎么应用的
+#### 解决办法
+一般的交互，我们分为dom获取、cookie获取以及事件。
 
-## 攻击
+- dom获取：设置document.domain
+> domain的值只能设置为当前域或父域,且不能设置协议与端口，且是交互的双方同时设置。
+- cookie获取：设置cookie的domain属性
+> cookie的sameSite属性分为三个值：
+> - `Strict` 非同源不发送cookie。
+> - `Lax` get请求发送，post不发送，img与script标签不发送。
+> - `None` 都发送
+- 事件：使用window.postMessage
 
-- XSS，动态解析 html（从服务端数据或者从 url 上）造成加载其它不可控的脚本。
-- SQL 注入攻击，动态拼接 SQL 造成调用攻击者设置好的 SQL。
-- OS，例如发邮件调用系统级的 shell 时。
-- HTTP 首部注入，例如利用 location 字段进行注入攻击。
-- CSRF，跨站点请求伪造。
-- DDoS，拒绝服务攻击。
+如果是要获取数据，可以使用：
+1. JSONP
+2. CORS
+3. nginx 反向代理
+
+TODO: 待实践验证
+
+### 常见
+### XSS跨站脚本（Cross Site Scripting）
+分为以下几类：
+- 存储型：input区域输入恶意代码进入数据库，下次用户打开加载脚本。
+- 反射型：给个链接诱骗点击，加载恶意服务器的恶意代码
+- 基于DOM型：运行时才能发现，通过更改dom来加载恶意代码
+
+预防：
+- 设置cookie为httponly
+- 过滤输入输出
+- 设置CSP
+### CSRF跨站请求伪造（Cross site request forgery）
+预防：
+- 设置cookie的sameSite属性
+- 接口验证来源
+### SQL注入
+### 点击劫持
+预防：
+- 设置X-Frame-Options，方式第三方加载iframe嵌套
+### DDoS，拒绝服务攻击。
 
 ## 常见项目优化
 

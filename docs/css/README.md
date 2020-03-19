@@ -31,6 +31,17 @@
 ## 盒模型
 盒子是css渲染布局的对象和基本单位，一个页面就是由若干个Box组成。
 
+### 尺寸获取
+
+- `clientWidth/clientHeight`：`padding` + `content`
+- `clientTop/clientLeft`：`border`
+- `offsetWidth/offsetHeight`：`padding` + `content` + `border`
+- `offsetTop/offsetLeft`: 元素左上角距离最近定位元素的距离
+- `scrollWidth/scrollHeight`: `client`系列 + 溢出尺寸
+- `scrollLeft/scrollTop`: 元素滚动条位置，**可写**(即调整滚动条位置，整个网页的滚动条位置用`window.scrollTo(x, y)`)
+> `getBoundingClientRect`获取元素位置宽高
+
+
 ## text-align 和 vertical-align
 
 ### text-align

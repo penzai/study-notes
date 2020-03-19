@@ -131,9 +131,17 @@ add_header Access-Control-Allow-Methods GET,POST,OPTIONS;
 - `=` 精确匹配
 - `^~` 匹配字符串路径开头（非 RegExp)
 - `~`、`!~`、`~*` 正则表达式匹配
-- `/` 通用匹配
+- `/` 通用匹配(非 RegExp)
 
 > 设置代理时，是否添加`/`决定是否带上匹配路径。
+
+### rewrite
+语法`rewrite regex replacement [flag]`
+flag参数如下：
+- last 继续向下匹配
+- break 本条匹配完成即终止
+- redirect 302临时重定向
+- permanent 301永久重定向
 
 ## centos 6.9 安装
 
