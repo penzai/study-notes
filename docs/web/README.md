@@ -24,7 +24,7 @@
 
 ### 容量
 
-1 字节（Byte）= 8 比特（bit)
+1 字节（Byte）= 8 比特（bit)（也就是位）
 
 1KB = 1000Byte
 
@@ -42,6 +42,12 @@ encodeURIComponent("http://www.baidu.com/My First");
 decodeURI("http://www.baidu.com/My%20First");
 decodeURIComponent("http%3A%2F%2Fwww.baidu.com%2FMy%20First");
 ```
+
+## HTPP2
+- 二进制传输
+- 多路复用，
+- header压缩，双方还会cache一份header数据
+- 服务端推送
 
 ## 渲染
 

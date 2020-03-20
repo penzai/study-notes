@@ -239,4 +239,4 @@ modules: {
 ## 踩坑
 
 - props 传递的数据，如果不是在原对象上面修改，那么直接紧接着使用`this.$refs.xxx.xxx()`方法里面访问到的还是旧值。需要使用`this.$nextTick()`;
-- props 传递为 null 时不会触发 default 操作
+- props 传递为 null 时既不会触发 default 操作，也不会触发validator操作,同理在函数默认赋值时`function(a = 1){}`，传null也不会触发。
