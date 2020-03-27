@@ -68,6 +68,26 @@ xxx.onclick，发生在冒泡阶段
 - e.currentTarget 指向注册事件的监 DOM 对象，e.target 指向事件发生的 DOM 对象
 - this 指向指向注册事件的监听 DOM 对象
 
+事件委托：
+``` javascript
+const delegate = (delegateEl, type, wannaBindElSelectorString, fn) => {
+  delegateEl.addEventListener(type, e => {
+    let el = e.target
+    while(!el.matches(wannaBindElSelectorString)) {
+      if(el === delegateEl) {
+        el = null
+        break
+      }
+      el = el.parentNode
+    }
+
+    el && fn.call(delegateEl, e)
+  })
+
+  return delegateEl
+}
+```
+
 ## AJAX
 
 ### get 与 post

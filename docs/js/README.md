@@ -1062,15 +1062,6 @@ setInterval(replaceThing, 1000);
 每一行前面加相应的字符。
 
 ## 模块化
-
-### CommonJS
-
-node 实践者，同步加载（因为在服务器本地），输出值的一份拷贝
-
-### ES Module
-
-编译时即确定引用关系，输出值的一份引用
-
 ### AMD（require.js）
 
 依赖提前下载，然后乱序执行，等待所有模块执行完毕，执行回调函数，输出值的一份引用
@@ -1078,3 +1069,30 @@ node 实践者，同步加载（因为在服务器本地），输出值的一份
 ### CMD (Common Module Definition)（sea.js）
 
 依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
+
+### commonjs
+一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到module中的exports对象里
+
+node中的模块缓存对象：
+``` javascript
+{
+  '模块的绝对路径': Module {
+    id: '.',
+    path: '',
+    exports: {},
+    parent: null,
+    filename: '',
+    loaded: false,
+    children: [ [Module], [Module] ],
+    paths: '查找搜索路径'
+  },
+  }
+}
+```
+
+
+### esModule
+使用`export default 值`或者`export 定义式`导出，后者使用定义式是因为打包工具需要把变量命挂在到module.exports的getter上（这样能获取到实时的值），而把前者放到module.exports.default里。
+
+### 区别
+commonjs是运行时再加载，而esModule在初期就已经分析出依赖关系，预留好了要export的对象的内存，在具体执行时再进行填值。但是打包工具是把esModule打包成commonjs的模块。

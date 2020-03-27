@@ -131,6 +131,11 @@ const MyCurry = (fn, arr = []) => (...args) =>
 ```
 
 ## promise
+注意一下几点：
+
+- 链式调用（返回promise，并且一个then的微任务要执行完毕，才可以执行下一个then的回调）。
+- 每一次回调检测状态(状态发生变更，要立即执行对应的操作)
+- 处理同步情况（必须让resolve发生在then之后）。
 
 ```javascript
 function MyPromise(fn) {

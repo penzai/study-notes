@@ -261,19 +261,19 @@ background: url(图片地址) position属性/size属性 重复属性;
 ### container
 
 - `flex-flow`
-  - `flex-direction`（默认 row）
-  - `flex-wrap` (默认 nowrap)
-- `justify-content`（默认 flex-start）
-- `align-content`（默认 stretch，高度尽可能撑大，当容器只有一行时，无效 ）
-- `align-items`（默认 stretch，高度尽可能撑大 ）
+  - `flex-direction`（默认 row。）
+  - `flex-wrap` (默认 nowrap。)
+- `justify-content`（默认 flex-start。主轴上的对齐方式。）
+- `align-content`（默认 stretch。多条主轴的对齐方式（发生wrap的时候）。高度尽可能撑大，当容器只有一行时，无效。 ）
+- `align-items`（默认 stretch。交叉轴上的堆砌方式。高度尽可能撑大。 ）
 
 ### item
 
 float、clear、vertical-align 不能影响 item
 
 - `order`（默认 0）
-- `flex` [flex-grow, flex-shrink, flex-basis]（默认 `0 1 auto`, 缺省值分别是 1，1，0%）
-  > 注意`1 1 auto`与`1 1 0%`的区别，前者是分发的是额外空间，后者分发的是整个空间。
+- `flex` [flex-grow, flex-shrink, flex-basis]（默认 `0 1 auto`, 缺省值分别是 **1，1，0%**）。flex常用值有`none`(0 0 auto)，auto（1 1 auto），1（1 1 0%，最常用，也就是缺省值）
+> 为什么用`flex：1`，而不是`flex-grow:1`,因为flex-basis默认值auto，所以你想平均分配空间（而不是剩余空间）的时候必须把其置为0，也就是`flex：1`的完整设置项。
 - `align-self` (单独的 align-items 设置)
 
 ## float
