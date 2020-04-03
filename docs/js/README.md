@@ -9,6 +9,9 @@
 
 任何变量未赋值之前都是 Undefined 类型，且值为 undefined。而我们常用 undefined 这个全局变量来表示它，或者用 void 运算来产生一个undefined**值**。
 
+> void是一个运算符，对给定的表达式求值，然后返回undefined(这里指的是值，而不是那个叫做undefined的全局变量)。
+
+
 ### Null
 表示这个变量未指向任何堆对象，常用于主动GC回收。
 ### Boolean
@@ -154,8 +157,72 @@ console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 > 当变量为装箱类型时，需要再加上typeof判断是否是基本类型。
 - obj.hasOwnProperty(key) 判断 obj 实例有没有 key 属性
 
+## 执行上下文
+执行上下文在 ES3 中，包含三个部分。
+- scope：作用域，也常常被叫做作用域链。
+- variable object：变量对象，用于存储变量的对象。
+- this value：this 值。
 
-## 变量对象
+在 ES5 中，我们改进了命名方式，把执行上下文最初的三个部分改为下面这个样子。
+- lexical environment：词法环境，当获取变量时使用。
+- variable environment：变量环境，当声明变量时使用。
+- this value：this 值。
+
+在 ES2018 中，执行上下文又变成了这个样子，this 值被归入 lexical environment，但是增加了不少内容。
+- lexical environment：词法环境，当获取变量或者 this 值时使用。
+- variable environment：变量环境，当声明变量时使用。
+- code evaluation state：用于恢复代码执行位置。
+- Function：执行的任务是函数时使用，表示正在被执行的函数。
+- ScriptOrModule：执行的任务是脚本或者模块时使用，表示正在被执行的代码。
+- Realm：使用的基础库和内置对象实例。
+- Generator：仅生成器上下文有这个属性，表示当前生成器。
+
+> Realm即领域，国度的意思。例如两个不同iframe属于不同的realm，此时一些对象并不是共用的。
+```javascaript
+var iframe = document.createElement('iframe')
+document.documentElement.appendChild(iframe)
+iframe.src="javascript:var b = {};"
+var b1 = iframe.contentWindow.b;
+var b2 = {};
+console.log(typeof b1, typeof b2); //undefined object
+console.log(b1 instanceof Object, b2 instanceof Object); //false true
+```
+### 作用域
+es6中，很多块中都会使let和const变量产生作用域。
+
+var声明的作用域是最近的函数体，所以会产生变量穿透，甚至产生变量声明的和赋值的不是同一个变量的奇怪现象，例如：
+``` javascript
+var b;
+void function(){ 
+  var env = {b:1}; 
+  b = 2; 
+  console.log("In function b:", b); // 2
+  with(env) { 
+    var b = 3; 
+    console.log("In with b:", b); // 3
+  }
+}();
+console.log("Global b:", b); // undefined
+```
+
+"具有名称的函数表达式"会在外层词法环境和它自己执行产生的词法环境之间产生一个词法环境，再把自己的名称和值当作变量塞进去。
+``` javascript
+var b = 10;
+(function b(){
+b = 20;
+console.log(b); // [Function: b]
+})();
+```
+所以这里的b = 20 并没有改变外面的b，而是试图改变一个只读的变量b。
+
+### 闭包
+闭包是一个绑定了执行环境的函数  
+
+### this
+获取函数的表达式，它实际上返回的并非函数本身，而是一个Reference类型，它由一个对象和一个属性值构成。
+
+
+### 变量对象
 
 跟执行上下文相关的一个隐式对象。包含：
 
@@ -163,7 +230,7 @@ console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 - 函数声明（FunctionDeclaration）
 - 形参
 
-### 全局对象
+#### 全局对象
 
 VO === this === global
 
@@ -181,7 +248,7 @@ global = {
 
 > 在全局上，变量声明与未声明的区别在于，声明的变量不能被 delete 删除（eval 中定义的可以删除），而因为未声明被挂载到 global 的变量可以删除。
 
-### 函数上下文中的变量对象
+#### 函数上下文中的变量对象
 
 VO === AO
 
@@ -197,7 +264,7 @@ AO = {
 
 arguments 对象的 properties-indexes 的值与当前（实际传递的）形参是共享的，修改一个，另一个跟着变，但是未传入的参数不共享。例如函数形参 3 个，实参 2 个，那么 arguments[2]与 z 各是个的值，而 arguments[0]与 x 则共享。
 
-### 处理上下文代码的 2 个阶段
+#### 处理上下文代码的 2 个阶段
 
 1. 进入执行上下文。依代码顺序在变量对象上填充属性，对于函数声明，直接增加 key 赋值 value，并且重名替换。对于形参与变量声明，增加 key 赋值 undefined，但是重名忽略。
 2. 执行代码
@@ -669,7 +736,7 @@ match、exec、test 方法
 - `js`通过事件循环（`event loop`）机制来定期访问异步任务队列
 - `macroTasks`的任务，一次循环只处理一次（比如嵌套`setTimeout`)，而`microtask`队列能处理多次（比如`Promise`的`then`回调）
 
-**宏任务 macro-task**
+**宏任务 macro-task**（由宿主发起）
 
 - `setTimeout`
 - `setInterval`
@@ -677,7 +744,7 @@ match、exec、test 方法
 - `setImmediate` (`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
 - `requestAnamationFrame`（浏览器）
 
-**microtask**
+**microtask**（由javascript引擎发起）
 
 - `Promise`的`then`、`catch`、`finally`
 - `process.nextTick`（`node`）
