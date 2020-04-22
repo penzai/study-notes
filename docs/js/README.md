@@ -269,6 +269,35 @@ arguments 对象的 properties-indexes 的值与当前（实际传递的）形�
 1. 进入执行上下文。依代码顺序在变量对象上填充属性，对于函数声明，直接增加 key 赋值 value，并且重名替换。对于形参与变量声明，增加 key 赋值 undefined，但是重名忽略。
 2. 执行代码
 
+## 语句
+### 普通语句
+- 声明类语句（var/const/let/function/class）
+- 表达式语句
+- 空语句
+- with语句
+- debugger语句
+### 语句块
+### 控制型语句
+if/switch/for/while/continue/break/return/throw/try
+
+在各种控制语句组合中，有如下情况：
+- 产生“消费的”：
+  - switch + break
+  - for/while + break
+  - for/while + continue
+  - function + return
+  - try + throw
+- 产生报错的
+  - function + break
+  - function + continue
+- 特殊处理的，try/catch/finally + break/continue/return
+> 这里的特殊处理指的是，try/catch的非normal型完成记录并不会立即返回，而是还要加上finally的完成记录一起判断。
+- 其余均穿透
+### 带标签的语句
+形如`hello: var a = 3`，冒号前面的字符串用于设定“完成记录类型Completion Record”的[[target]]字段，主要用于以指定方式跳出多重循环。
+
+例如`break hello`会产生带有[[target]]为hello的完成记录，那么只有带有hello的标签才能“消费”它。
+
 ## switch
 
 - 用全等比对 switch 传入的表达式值与 case 后面的表达式值，true 就执行 case 下面的代码，false 则找寻 default 代码。
