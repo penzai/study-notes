@@ -21,6 +21,7 @@
 - `CDN` (Content Delivery Network) 内容分发网络
 - `SSO` (Single Sign On) 单点登录
 - `CAS` (Central Authentication Service) 中央认证服务
+- `CORS` (cross-origin resource-sharing) 跨域资源共享标准
 
 ### 容量
 
@@ -287,3 +288,33 @@ TODO: 待实践验证
 ## HTTP状态码
 - 301，永久重定向。浏览器会更新缓存，下次直接到新的页面；SEO会转移相应旧站的流量排名到新站，但是内容一定要高度一致，不然视为黑帽SEO。
 - 302，临时重定向
+
+## CORS（跨域资源共享）
+
+根据method与request header决定是simple request还是not-so-simple request。
+
+### simple request
+
+- method: PUT、GET、POSAT
+- header: 基本字段，注意content-type只允许application/x-www-form-urlencoded、multipart/form-data、text/plain，**也就是json参数是算not-so-simple request**。
+
+处理方法为浏览器自动带上origin字段，服务器进行逻辑判断，给出response。
+
+如果允许，服务器在response header中设置`Access-Control-Allow-Origin: *`，或者为origin的值。
+
+如果不允许，正常返回信息与头，浏览器判断没有相应的头，自动识别请求失败。
+
+如果还需要发送Cookie，需要双方操作，浏览器需要在ajax中设置`withCredential = true`，服务器在response header中设置，`Access-Control-Allow-Credentials: true`。**另外`Access-Control-Allow-Origin`这时就不能返回*了，必须为明确的地址。**
+
+### not-so-simple request
+会在请求之前发送一次method为`OPTIONS`的“预检”请求。判断逻辑同simple request。
+
+但是request header会有两个特殊字段：
+- `Access-Control-Request-Method`，包含cors会用到的方法。
+- `Access-Control-Request-Headers`，一个以逗号分隔的字符串，包含cors会额外发送的头信息字段，**如果浏览器发送了这个字段，那么服务器也必须按返回相应的`Access-Control-Allow-Headers`字段，否则预检失败。**
+
+预检请求只发一次，后面的not-so-simple request当做simple request请求处理，因为服务器可以在第一次预检请求的response header中设置`Access-Control-Max-Age`。
+
+
+
+
