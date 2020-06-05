@@ -41,6 +41,9 @@ Number.MIN_SAFE_INTEGER = -(2**53 - 1)
 Number.MAX_SAFE_INTEGER = 2**53 - 1
 ```
 
+#### window.isNaN与Number.isNaN
+Number是新来的，判断更贴合字面意思，就是判断此值是不是NaN。而window.isNaN在判断前会进行数字转换一次，看此值到底能不能当成数字使用。
+
 
 ### Symbol
 表示一个独一无二的值，直接使用不带new的构造函数生成。

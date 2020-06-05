@@ -59,6 +59,8 @@ git reset hash值
   > 新分支上传到远程，直接`git push origin 新的本地分支名字`
 - `git branch -D 本地分支名字` 删除本地分支
 - `git push orgin :远程分支名字` 删除远端分支
+- `git push origin 本地分支:远程分支` 推送本地分支到远程分支
+- `git branch --set-upstream-to 远程分支` 连接分支到远程分支
 
 ### pull
 
