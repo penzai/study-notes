@@ -1,5 +1,7 @@
 # Web 与网络
+
 ## 小知识
+
 ### 术语缩写
 
 - `WWW` (Word Wide Web) 万维网
@@ -11,6 +13,8 @@
 - `FTP` (File Transfer Protocol) 文件传输协议
 - `DNS` (Domain Name System) 域名系统
 - `TCP` (Transmission Control Protocol) 传输控制协议
+- `SYN` (Synchronize Sequence Numbers) 同步序列编号
+- `ACK` (Acknowledgement) 确认字符
 - `UDP` (User Data Protocol) 用户数据报协议
 - `MAC` (Media Access Control Address) 网卡固定地址
 - `ARP` (Address Resolution Protocol) 解析地址的协议（根据通信方的 IP 地址反查出对应的 MAC 地址）
@@ -45,9 +49,10 @@ decodeURIComponent("http%3A%2F%2Fwww.baidu.com%2FMy%20First");
 ```
 
 ## HTPP2
+
 - 二进制传输
 - 多路复用，
-- header压缩，双方还会cache一份header数据
+- header 压缩，双方还会 cache 一份 header 数据
 - 服务端推送
 
 ## 渲染
@@ -70,23 +75,24 @@ xxx.onclick，发生在冒泡阶段
 - this 指向指向注册事件的监听 DOM 对象
 
 事件委托：
-``` javascript
+
+```javascript
 const delegate = (delegateEl, type, wannaBindElSelectorString, fn) => {
-  delegateEl.addEventListener(type, e => {
-    let el = e.target
-    while(!el.matches(wannaBindElSelectorString)) {
-      if(el === delegateEl) {
-        el = null
-        break
+  delegateEl.addEventListener(type, (e) => {
+    let el = e.target;
+    while (!el.matches(wannaBindElSelectorString)) {
+      if (el === delegateEl) {
+        el = null;
+        break;
       }
-      el = el.parentNode
+      el = el.parentNode;
     }
 
-    el && fn.call(delegateEl, e)
-  })
+    el && fn.call(delegateEl, e);
+  });
 
-  return delegateEl
-}
+  return delegateEl;
+};
 ```
 
 ## AJAX
@@ -180,18 +186,42 @@ pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control�
 
 ### 3. TCP 连接
 
-- 在 http/1.0 中，不支持持久连接，所有连接串行。
+- 在 http/1.0 中，官方不支持持久连接，需要双端支持并指定头`connection: Keep-Alive`。
 - 在 http/1.1 中，支持持久连接，但一个 TCP 连接一个时刻只能处理一个 http 请求，不过多个 http 请求可以复用这次连接。
 - 在 http/2.0 中，一个 TCP 就可以同时处理多个 http 请求，名为 Multiplexing。
-- 不同浏览器对 TCP 连接的数量限制不一样，chrome/6,safari/6,firefox/32。
+- 不同浏览器对 TCP 连接的数量限制不一样，chrome/6，safari/6，firefox/32。
 
 #### 建立，三次 🤝
 
-握手结束后再开始发送信息！
+TCP 是可靠连接，主要靠序号（sequence number）和确认号（acknowledgement number）来保证信息的完整、有序和无差错。
 
-- C --(SYN 数据包)--> S
-- C <--(SYN/ACK 数据包)-- S
-- C --(ACK 数据包)--> S
+TCP 首部如下：
+![](~images/web/tcp_header.jpg)
+
+握手中有两个常用的动作：
+
+- ACK=1，表示设置**标志位 ACK**为 1（注意与确认号 ack 的区别）。
+- ack=x+1，表示设置**数据域确认号**的值为 x+1。
+
+> TCP规定，SYN=1的报文段不能携带数据（指TCP数据部分），且会消耗掉一个序号（下次必须使用另外的序号了，比如x+1）。
+
+最终，建立连接的握手流程如下（x，y 为各自的初始序号）：
+
+1. C ----(SYN=1，seq=x)----> S
+2. C <----(SYN=1，ACK=1，seq=y，ack=x+1)---- S
+3. C ----(ACK=1，seq=x+1，ack=y+1)----> S
+
+#### 交流数据，两次 🤝
+
+- C ----(ACK=1，seq=x+1，ack=y+1)----> S
+- C <----(ACK=1，ack=x+2)---- S
+
+#### 断开，四次 🤝
+
+- C ----(FIN=1，seq=u)----> S
+- C <----(ACK=1，seq=v，ack=u+1)---- S
+- C <----(FIN=1，ACK=1，seq=w，ack=u+1)---- S
+- C ----(ACK=1，seq=u+1，ack=w+1)----> S
 
 ### 4. 渲染
 
@@ -208,38 +238,34 @@ pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control�
 - HTML -> DOM
 - CSS -> CSSOM
 - DOM + CSSOM -> Render Tree
-> Render Tree 跟 DOM Tree 并不是一一对应，比如 head 节点和 display:none 的节点
+  > Render Tree 跟 DOM Tree 并不是一一对应，比如 head 节点和 display:none 的节点
 - 重排/回流（reflow），计算节点的几何信息（位置、大小）
 - 重绘（repaint），转化为屏幕的实际像素
 
 重排代价太多，所以浏览器使用队列栈来减少消耗。因此获取几何信息时，会强制清空栈而触发重排操作。
 
-### 5. TCP 断开
+## WEB 安全
 
-四次 🤝
-
-- C --(FIN，ACK)--> S
-- C <--(ACK)-- S
-- C <--(FIN)-- S
-- C --(ACK)--> S
-
-## WEB安全
 ### 同源策略
+
 浏览器拥有严格的同源策略（协议、域名、端口必须全部相同），不同源的交互就会受到限制。
 
 #### 解决办法
-一般的交互，我们分为dom获取、cookie获取以及事件。
 
-- dom获取：设置document.domain
-> domain的值只能设置为当前域或父域,且不能设置协议与端口，且是交互的双方同时设置。
-- cookie获取：设置cookie的domain属性
-> cookie的sameSite属性分为三个值：
-> - `Strict` 非同源不发送cookie。
-> - `Lax` get请求发送，post不发送，img与script标签不发送。
-> - `None` 都发送
-- 事件：使用window.postMessage
+一般的交互，我们分为 dom 获取、cookie 获取以及事件。
+
+- dom 获取：设置 document.domain
+  > domain 的值只能设置为当前域或父域,且不能设置协议与端口，且是交互的双方同时设置。
+- cookie 获取：设置 cookie 的 domain 属性
+  > cookie 的 sameSite 属性分为三个值：
+  >
+  > - `Strict` 非同源不发送 cookie。
+  > - `Lax` get 请求发送，post 不发送，img 与 script 标签不发送。
+  > - `None` 都发送
+- 事件：使用 window.postMessage
 
 如果是要获取数据，可以使用：
+
 1. JSONP
 2. CORS
 3. nginx 反向代理
@@ -247,24 +273,36 @@ pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control�
 TODO: 待实践验证
 
 ### 常见
-### XSS跨站脚本（Cross Site Scripting）
+
+### XSS 跨站脚本（Cross Site Scripting）
+
 分为以下几类：
-- 存储型：input区域输入恶意代码进入数据库，下次用户打开加载脚本。
+
+- 存储型：input 区域输入恶意代码进入数据库，下次用户打开加载脚本。
 - 反射型：给个链接诱骗点击，加载恶意服务器的恶意代码
-- 基于DOM型：运行时才能发现，通过更改dom来加载恶意代码
+- 基于 DOM 型：运行时才能发现，通过更改 dom 来加载恶意代码
 
 预防：
-- 设置cookie为httponly
+
+- 设置 cookie 为 httponly
 - 过滤输入输出
-- 设置CSP
-### CSRF跨站请求伪造（Cross site request forgery）
+- 设置 CSP
+
+### CSRF 跨站请求伪造（Cross site request forgery）
+
 预防：
-- 设置cookie的sameSite属性
+
+- 设置 cookie 的 sameSite 属性
 - 接口验证来源
-### SQL注入
+
+### SQL 注入
+
 ### 点击劫持
+
 预防：
-- 设置X-Frame-Options，方式第三方加载iframe嵌套
+
+- 设置 X-Frame-Options，方式第三方加载 iframe 嵌套
+
 ### DDoS，拒绝服务攻击。
 
 ## 常见项目优化
@@ -285,36 +323,35 @@ TODO: 待实践验证
 - 减少 DOM 操作。避免获取视图信息（getBoundingClientRect,clientWidth,offsetWidth）,因为它会立即更新浏览器重排/重绘维护的队列。高频事件防抖节流。
 - 打包优化，使用 DllPlugin 分离第三方类库，使用 add-asset-html-webpack-plugin 来注入到 index.html 中
 
-## HTTP状态码
-- 301，永久重定向。浏览器会更新缓存，下次直接到新的页面；SEO会转移相应旧站的流量排名到新站，但是内容一定要高度一致，不然视为黑帽SEO。
+## HTTP 状态码
+
+- 301，永久重定向。浏览器会更新缓存，下次直接到新的页面；SEO 会转移相应旧站的流量排名到新站，但是内容一定要高度一致，不然视为黑帽 SEO。
 - 302，临时重定向
 
 ## CORS（跨域资源共享）
 
-根据method与request header决定是simple request还是not-so-simple request。
+根据 method 与 request header 决定是 simple request 还是 not-so-simple request。
 
 ### simple request
 
 - method: PUT、GET、POSAT
-- header: 基本字段，注意content-type只允许application/x-www-form-urlencoded、multipart/form-data、text/plain，**也就是json参数是算not-so-simple request**。
+- header: 基本字段，注意 content-type 只允许 application/x-www-form-urlencoded、multipart/form-data、text/plain，**也就是 json 参数是算 not-so-simple request**。
 
-处理方法为浏览器自动带上origin字段，服务器进行逻辑判断，给出response。
+处理方法为浏览器自动带上 origin 字段，服务器进行逻辑判断，给出 response。
 
-如果允许，服务器在response header中设置`Access-Control-Allow-Origin: *`，或者为origin的值。
+如果允许，服务器在 response header 中设置`Access-Control-Allow-Origin: *`，或者为 origin 的值。
 
 如果不允许，正常返回信息与头，浏览器判断没有相应的头，自动识别请求失败。
 
-如果还需要发送Cookie，需要双方操作，浏览器需要在ajax中设置`withCredential = true`，服务器在response header中设置，`Access-Control-Allow-Credentials: true`。**另外`Access-Control-Allow-Origin`这时就不能返回*了，必须为明确的地址。**
+如果还需要发送 Cookie，需要双方操作，浏览器需要在 ajax 中设置`withCredential = true`，服务器在 response header 中设置，`Access-Control-Allow-Credentials: true`。**另外`Access-Control-Allow-Origin`这时就不能返回\*了，必须为明确的地址。**
 
 ### not-so-simple request
-会在请求之前发送一次method为`OPTIONS`的“预检”请求。判断逻辑同simple request。
 
-但是request header会有两个特殊字段：
-- `Access-Control-Request-Method`，包含cors会用到的方法。
-- `Access-Control-Request-Headers`，一个以逗号分隔的字符串，包含cors会额外发送的头信息字段，**如果浏览器发送了这个字段，那么服务器也必须按返回相应的`Access-Control-Allow-Headers`字段，否则预检失败。**
+会在请求之前发送一次 method 为`OPTIONS`的“预检”请求。判断逻辑同 simple request。
 
-预检请求只发一次，后面的not-so-simple request当做simple request请求处理，因为服务器可以在第一次预检请求的response header中设置`Access-Control-Max-Age`。
+但是 request header 会有两个特殊字段：
 
+- `Access-Control-Request-Method`，包含 cors 会用到的方法。
+- `Access-Control-Request-Headers`，一个以逗号分隔的字符串，包含 cors 会额外发送的头信息字段，**如果浏览器发送了这个字段，那么服务器也必须按返回相应的`Access-Control-Allow-Headers`字段，否则预检失败。**
 
-
-
+预检请求只发一次，后面的 not-so-simple request 当做 simple request 请求处理，因为服务器可以在第一次预检请求的 response header 中设置`Access-Control-Max-Age`。
