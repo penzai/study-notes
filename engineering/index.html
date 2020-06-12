@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>自动注入样式变量、mixins | Study Note</title>
+    <meta name="description" content="学无止境">
+    <meta name="generator" content="VuePress 1.3.1">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.26cb1efd.css" as="style"><link rel="preload" href="/assets/js/app.22b878a7.js" as="script"><link rel="preload" href="/assets/js/2.ee146c9e.js" as="script"><link rel="preload" href="/assets/js/12.826a2258.js" as="script"><link rel="prefetch" href="/assets/js/10.065752a6.js"><link rel="prefetch" href="/assets/js/11.9ef173c9.js"><link rel="prefetch" href="/assets/js/13.f541f1ae.js"><link rel="prefetch" href="/assets/js/14.41b5b656.js"><link rel="prefetch" href="/assets/js/15.9cce3051.js"><link rel="prefetch" href="/assets/js/16.a55c70f6.js"><link rel="prefetch" href="/assets/js/17.f6b6f366.js"><link rel="prefetch" href="/assets/js/18.903cb0fc.js"><link rel="prefetch" href="/assets/js/19.0f70a663.js"><link rel="prefetch" href="/assets/js/20.2aee8557.js"><link rel="prefetch" href="/assets/js/3.cad49ef4.js"><link rel="prefetch" href="/assets/js/4.4f1e0ba8.js"><link rel="prefetch" href="/assets/js/5.75b842bf.js"><link rel="prefetch" href="/assets/js/6.bb08185b.js"><link rel="prefetch" href="/assets/js/7.6919d521.js"><link rel="prefetch" href="/assets/js/8.f9443b02.js"><link rel="prefetch" href="/assets/js/9.1a79cd0f.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.26cb1efd.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Study Note</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/js/" class="sidebar-link">js 基础</a></li><li><a href="/css/" class="sidebar-link">CSS 基础</a></li><li><a href="/css-practice/" class="sidebar-link">CSS 应用</a></li><li><a href="/dac/" class="sidebar-link">数据结构与算法</a></li><li><a href="/web/" class="sidebar-link">Web 与网络</a></li><li><a href="/git/" class="sidebar-link">git</a></li><li><a href="/linux/" class="sidebar-link">Linux</a></li><li><a href="/nginx/" class="sidebar-link">Nginx</a></li><li><a href="/node/" class="sidebar-link">node</a></li><li><a href="/react/" class="sidebar-link">React</a></li><li><a href="/vue/" class="sidebar-link">Vue</a></li><li><a href="/write/" class="sidebar-link">js 手写系列</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="自动注入样式变量、mixins"><a href="#自动注入样式变量、mixins" class="header-anchor">#</a> 自动注入样式变量、mixins</h2> <p>使用<code>style-resources-loader</code>包，配置 webpack 如下：</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code>module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+  module<span class="token operator">:</span> <span class="token punctuation">{</span>
+    rules<span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        test<span class="token operator">:</span> <span class="token regex">/\.less$/</span><span class="token punctuation">,</span>
+        use<span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;style-loader&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;css-loader&quot;</span><span class="token punctuation">,</span>
+          <span class="token string">&quot;less-loader&quot;</span><span class="token punctuation">,</span>
+          <span class="token punctuation">{</span>
+            loader<span class="token operator">:</span> <span class="token string">&quot;style-resources-loader&quot;</span><span class="token punctuation">,</span>
+            options<span class="token operator">:</span> <span class="token punctuation">{</span>
+              patterns<span class="token operator">:</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>
+                __dirname<span class="token punctuation">,</span>
+                <span class="token string">&quot;path/to/less/variables/*.less&quot;</span>
+              <span class="token punctuation">)</span><span class="token punctuation">,</span>
+              injector<span class="token operator">:</span> <span class="token string">&quot;append&quot;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="关于vue-cli"><a href="#关于vue-cli" class="header-anchor">#</a> 关于<code>vue-cli</code></h2> <h3 id="通过mode设置不同版本差异"><a href="#通过mode设置不同版本差异" class="header-anchor">#</a> 通过mode设置不同版本差异</h3> <p>根目录建立<code>.env.模式名称1</code>文件。</p> <p>即可在命令<code>vue-cli-service serve -mode 模式名称1</code>启用相应的配置文件。</p> <p>这里的mode要注意与webpack的NODE_ENV区分，NODE_ENV是打包必须的一个变量，而<code>vue-cli-service</code>的mode只是决定使用哪个变量文件。</p> <p>如果自定义的变量文件不指定NODE_ENV，那么<code>vue-cli-service serve</code>的NODE_ENV默认development，build命令默认production。</p> <h3 id="图片等资源引入"><a href="#图片等资源引入" class="header-anchor">#</a> 图片等资源引入</h3> <ul><li>template
+<ul><li>相对路径，经过webpack处理</li> <li>绝对路径，不处理，路径原封不动</li></ul></li> <li>javascript
+<ul><li>相对路径，经过webpack处理</li> <li>绝对路径，经过webpack处理</li></ul></li> <li>style
+<ul><li>相对路径，经过loader处理</li> <li>绝对路径，经常loader处理，~符号由webpack处理</li></ul></li> <li>css属性
+<ul><li>相对路径，经过webpack处理</li> <li>绝对路径，不处理，路径原封不动</li></ul></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.22b878a7.js" defer></script><script src="/assets/js/2.ee146c9e.js" defer></script><script src="/assets/js/12.826a2258.js" defer></script>
+  </body>
+</html>
