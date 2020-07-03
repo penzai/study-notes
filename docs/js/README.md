@@ -2,29 +2,33 @@
 
 ## 数据类型
 
-5种 基本类型，后续加入了 Symbol、BigInt
+5 种 基本类型，后续加入了 Symbol、BigInt
 
 ### Undefined
-`Undefined`是一种类型，`undefined`既是全局的一个变量（以前可更改，现在变成了no-configurable、no-writable、no-enumerable，不过局部作用域如IEFE可重写）,也是全局变量`undefined`的值，也就是全局变量`window.undefined`的值为`undefined`。
 
-任何变量未赋值之前都是 Undefined 类型，且值为 undefined。而我们常用 undefined 这个全局变量来表示它，或者用 void 运算来产生一个undefined**值**。
+`Undefined`是一种类型，`undefined`既是全局的一个变量（以前可更改，现在变成了 no-configurable、no-writable、no-enumerable，不过局部作用域如 IEFE 可重写）,也是全局变量`undefined`的值，也就是全局变量`window.undefined`的值为`undefined`。
 
-> void是一个运算符，对给定的表达式求值，然后返回undefined(这里指的是值，而不是那个叫做undefined的全局变量)。
+任何变量未赋值之前都是 Undefined 类型，且值为 undefined。而我们常用 undefined 这个全局变量来表示它，或者用 void 运算来产生一个 undefined**值**。
 
+> void 是一个运算符，对给定的表达式求值，然后返回 undefined(这里指的是值，而不是那个叫做 undefined 的全局变量)。
 
 ### Null
-表示这个变量未指向任何堆对象，常用于主动GC回收。
+
+表示这个变量未指向任何堆对象，常用于主动 GC 回收。
+
 ### Boolean
-`''`/`undefined`/`null`/`0`/`+0`/`-0`/`NaN`/`false`使用Boolean转换后，均为false。
+
+`''`/`undefined`/`null`/`0`/`+0`/`-0`/`NaN`/`false`使用 Boolean 转换后，均为 false。
+
 ### String
 
-String类型是零个或多个16位无符号整数值（`UTF-16`编码方式）的所有有序序列的集合，最大长度为2^53-1个整数值。
+String 类型是零个或多个 16 位无符号整数值（`UTF-16`编码方式）的所有有序序列的集合，最大长度为 2^53-1 个整数值。
 
-Unicode码点范围为U+0000~U+FFFF，共65536个，也叫基本字符区域（BMP）。
+Unicode 码点范围为 U+0000~U+FFFF，共 65536 个，也叫基本字符区域（BMP）。
 
 ### Number
 
-Javascript中使用基于 IEEE754 标准的双精度浮点数来表示数字，标准规定一个数表示为`+-1.M * 2^e`，结构如下：
+Javascript 中使用基于 IEEE754 标准的双精度浮点数来表示数字，标准规定一个数表示为`+-1.M * 2^e`，结构如下：
 
 - `1` 符号位 sign bit，用来表示正负号
 - `11` 指数位 exponent，用来表示次方数
@@ -32,21 +36,24 @@ Javascript中使用基于 IEEE754 标准的双精度浮点数来表示数字，�
 
 ![](~images/js/General_double_precision_float.png)
 
-> 0.1 + 0.2 运算不标准的原因就在于有的数（比如0.1）用该方法表达时是无穷的，必须进行截断，所以不精确。而此运算，有2次的摄入，造成了精度丢失很大。比较大小正确的方式是检查等式左右两边差的绝对值是否小于最小精度：
+> 0.1 + 0.2 运算不标准的原因就在于有的数（比如 0.1）用该方法表达时是无穷的，必须进行截断，所以不精确。而此运算，有 2 次的摄入，造成了精度丢失很大。比较大小正确的方式是检查等式左右两边差的绝对值是否小于最小精度：
 > `Math.abs(0.1 + 0.2 - 0.3) <= Number.EPSILON`
 
 最大最小值分别为：
-``` javascript
-Number.MIN_SAFE_INTEGER = -(2**53 - 1)
-Number.MAX_SAFE_INTEGER = 2**53 - 1
+
+```javascript
+Number.MIN_SAFE_INTEGER = -(2 ** 53 - 1);
+Number.MAX_SAFE_INTEGER = 2 ** 53 - 1;
 ```
 
-#### window.isNaN与Number.isNaN
-Number是新来的，判断更贴合字面意思，就是判断此值是不是NaN。而window.isNaN在判断前会进行数字转换一次，看此值到底能不能当成数字使用。
+#### window.isNaN 与 Number.isNaN
 
+Number 是新来的，判断更贴合字面意思，就是判断此值是不是 NaN。而 window.isNaN 在判断前会进行数字转换一次，看此值到底能不能当成数字使用。
 
 ### Symbol
-表示一个独一无二的值，直接使用不带new的构造函数生成。
+
+表示一个独一无二的值，直接使用不带 new 的构造函数生成。
+
 ### Object
 
 #### 属性种类
@@ -113,65 +120,102 @@ Number是新来的，判断更贴合字面意思，就是判断此值是不是Na
 #### 对象遍历
 
 ##### for in
+
 含原型的可枚举属性。
 
 ##### Reflect.ownKeys()
-自身的可枚举、不可枚举、symbol属性。
+
+自身的可枚举、不可枚举、symbol 属性。
 
 ##### Object.keys()
+
 自身的可枚举属性。
 
 ##### Object.getOwnPropertyNames()
+
 自身的可枚举与不可枚举属性。
 
 ##### Object.getOwnPropertySymbols()
-自身的symbol属性。
 
-##### Object.values()与Object.entries()
-与Object.keys()成对，所以一样，自身的可枚举属性的属性值。
+自身的 symbol 属性。
+
+##### Object.values()与 Object.entries()
+
+与 Object.keys()成对，所以一样，自身的可枚举属性的属性值。
 
 - 首先遍历所有数值键，按照数值升序排列。
 - 其次遍历所有字符串键，按照加入时间升序排列。
 - 最后遍历所有 Symbol 键，按照加入时间升序排列。
 
-
 ### 类型转换
-基本类型中只有Number、String、Boolean、Symbol存在构造函数，
+
+基本类型中只有 Number、String、Boolean、Symbol 存在构造函数，
 有几条规则注意：
-- Number -> Boolean，0/+0/-0/NaN为false，其余为true包括+Infinity/-Infinity。
-- String -> Boolean, 只有''为false。
+
+- Number -> Boolean，0/+0/-0/NaN 为 false，其余为 true 包括+Infinity/-Infinity。
+- String -> Boolean, 只有''为 false。
 - Symbol -> Number/String，报错
-- Object -> Number/String，拆箱转换，调用valueOf、toString方法，遇到基本类型就停止，最后无基本类型就报错，有了基本类型再转换位Number/String。
-> 转成数字时顺序为valueOf再toString，转成字符串时相反。注意，`n + ''`与`n + 1`都是属于转数字优先，调用顺序为valueOf再toString。
+- Object -> Number/String，拆箱转换，调用 valueOf、toString 方法，遇到基本类型就停止，最后无基本类型就报错，有了基本类型再转换位 Number/String。
+  > 转成数字时顺序为 valueOf 再 toString，转成字符串时相反。注意，`n + ''`与`n + 1`都是属于转数字优先，调用顺序为 valueOf 再 toString。
 
 ### 类型判断
 
 - typeof 操作符： 简单判断类型，无法区分例如数组与对象、null 与对象。
 - instanceof 操作符/isPrototypeOf()： 测试实例与原型链中**出现过**的构造函数。
   > 当构造函数返回的是引用类型时，无法判断。
-- Object.prototype.toString.call(obj)。这个方法返回该值的class类，即`[[class]]`私有属性。在早期，由于该属性是不能更改的，所以这样判断很安全。但是，es6后该属性被`Symbol.toStringTag`所代替，变得可以被更改，如下：
-``` javascript
+- Object.prototype.toString.call(obj)。这个方法返回该值的 class 类，即`[[class]]`私有属性。在早期，由于该属性是不能更改的，所以这样判断很安全。但是，es6 后该属性被`Symbol.toStringTag`所代替，变得可以被更改，如下：
+
+```javascript
 var o = {
-  [Symbol.toStringTag]: "HelloKitty"
+  [Symbol.toStringTag]: "HelloKitty",
 };
 
 console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 ```
-> 当变量为装箱类型时，需要再加上typeof判断是否是基本类型。
+
+> 当变量为装箱类型时，需要再加上 typeof 判断是否是基本类型。
+
 - obj.hasOwnProperty(key) 判断 obj 实例有没有 key 属性
 
+
+### Map
+保存键值对。
+- 能够记住键的原始插入顺序
+- 任何值都可以作为键值
+- 是iterable的，可以直接被迭代
+- 在频繁增删键值对的场景下表现更好
+
+## 运算符优先级
+这里只列出易混顺序
+
+- 成员访问类：
+  - `.`访问
+  - `[]`访问
+  - `new F()`**new运算带参数列表**
+  - `F()`函数调用
+  - `?.` 可选链
+- `new F`**new运算无参数列表**
+- `&&`
+- `||`
+- 三元运算符`? :`
+- 赋值类运算符`=`
+
 ## 执行上下文
+
 执行上下文在 ES3 中，包含三个部分。
+
 - scope：作用域，也常常被叫做作用域链。
 - variable object：变量对象，用于存储变量的对象。
 - this value：this 值。
 
 在 ES5 中，我们改进了命名方式，把执行上下文最初的三个部分改为下面这个样子。
+
 - lexical environment：词法环境，当获取变量时使用。
 - variable environment：变量环境，当声明变量时使用。
 - this value：this 值。
 
 在 ES2018 中，执行上下文又变成了这个样子，this 值被归入 lexical environment，但是增加了不少内容。
+
 - lexical environment：词法环境，当获取变量或者 this 值时使用。
 - variable environment：变量环境，当声明变量时使用。
 - code evaluation state：用于恢复代码执行位置。
@@ -180,7 +224,8 @@ console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 - Realm：使用的基础库和内置对象实例。
 - Generator：仅生成器上下文有这个属性，表示当前生成器。
 
-> Realm即领域，国度的意思。例如两个不同iframe属于不同的realm，此时一些对象并不是共用的。
+> Realm 即领域，国度的意思。例如两个不同 iframe 属于不同的 realm，此时一些对象并不是共用的。
+
 ```javascaript
 var iframe = document.createElement('iframe')
 document.documentElement.appendChild(iframe)
@@ -190,40 +235,46 @@ var b2 = {};
 console.log(typeof b1, typeof b2); //undefined object
 console.log(b1 instanceof Object, b2 instanceof Object); //false true
 ```
-### 作用域
-es6中，很多块中都会使let和const变量产生作用域。
 
-var声明的作用域是最近的函数体，所以会产生变量穿透，甚至产生变量声明的和赋值的不是同一个变量的奇怪现象，例如：
-``` javascript
+### 作用域
+
+es6 中，很多块中都会使 let 和 const 变量产生作用域。
+
+var 声明的作用域是最近的函数体，所以会产生变量穿透，甚至产生变量声明的和赋值的不是同一个变量的奇怪现象，例如：
+
+```javascript
 var b;
-void function(){ 
-  var env = {b:1}; 
-  b = 2; 
+void (function() {
+  var env = { b: 1 };
+  b = 2;
   console.log("In function b:", b); // 2
-  with(env) { 
-    var b = 3; 
+  with (env) {
+    var b = 3;
     console.log("In with b:", b); // 3
   }
-}();
+})();
 console.log("Global b:", b); // undefined
 ```
 
 "具有名称的函数表达式"会在外层词法环境和它自己执行产生的词法环境之间产生一个词法环境，再把自己的名称和值当作变量塞进去。
-``` javascript
+
+```javascript
 var b = 10;
-(function b(){
-b = 20;
-console.log(b); // [Function: b]
+(function b() {
+  b = 20;
+  console.log(b); // [Function: b]
 })();
 ```
-所以这里的b = 20 并没有改变外面的b，而是试图改变一个只读的变量b。
+
+所以这里的 b = 20 并没有改变外面的 b，而是试图改变一个只读的变量 b。
 
 ### 闭包
-闭包是一个绑定了执行环境的函数  
+
+闭包是一个绑定了执行环境的函数
 
 ### this
-获取函数的表达式，它实际上返回的并非函数本身，而是一个Reference类型，它由一个对象和一个属性值构成。
 
+获取函数的表达式，它实际上返回的并非函数本身，而是一个 Reference 类型，它由一个对象和一个属性值构成。
 
 ### 变量对象
 
@@ -273,17 +324,23 @@ arguments 对象的 properties-indexes 的值与当前（实际传递的）形�
 2. 执行代码
 
 ## 语句
+
 ### 普通语句
+
 - 声明类语句（var/const/let/function/class）
 - 表达式语句
 - 空语句
-- with语句
-- debugger语句
+- with 语句
+- debugger 语句
+
 ### 语句块
+
 ### 控制型语句
+
 if/switch/for/while/continue/break/return/throw/try
 
 在各种控制语句组合中，有如下情况：
+
 - 产生“消费的”：
   - switch + break
   - for/while + break
@@ -294,12 +351,14 @@ if/switch/for/while/continue/break/return/throw/try
   - function + break
   - function + continue
 - 特殊处理的，try/catch/finally + break/continue/return
-> 这里的特殊处理指的是，try/catch的非normal型完成记录并不会立即返回，而是还要加上finally的完成记录一起判断。
+  > 这里的特殊处理指的是，try/catch 的非 normal 型完成记录并不会立即返回，而是还要加上 finally 的完成记录一起判断。
 - 其余均穿透
-### 带标签的语句
-形如`hello: var a = 3`，冒号前面的字符串用于设定“完成记录类型Completion Record”的[[target]]字段，主要用于以指定方式跳出多重循环。
 
-例如`break hello`会产生带有[[target]]为hello的完成记录，那么只有带有hello的标签才能“消费”它。
+### 带标签的语句
+
+形如`hello: var a = 3`，冒号前面的字符串用于设定“完成记录类型 Completion Record”的[[target]]字段，主要用于以指定方式跳出多重循环。
+
+例如`break hello`会产生带有[[target]]为 hello 的完成记录，那么只有带有 hello 的标签才能“消费”它。
 
 ## switch
 
@@ -322,15 +381,9 @@ if/switch/for/while/continue/break/return/throw/try
 
 ### 定义
 
-es6 的 class 关键词与 es5 构造函数的定义区别，注意次序
+class 为构造函数的语法糖。
 
-- 实例属性
-  - 1. 使用=的属性和属性方法，在构造函数中生成，this 永久指向实例
-  - 2. 不使用=的属性，在构造函数中生成
-  - 3. 不使用=的属性方法，在类生成中生成，加入到类的原型上（多实例公用），this 指向随动
-- 类属性
-  - 4. 不使用等于=，在类生成中生成，this 指向随动
-  - 5. 使用=的属性和属性方法，在类生成后才加上去，且 this 永久指向类本身
+在 react 中经常会用到=符号设置属性，转化为 es5 的过程稍有区别，=符号设置的实例属性是直接挂载在生成的实例属性上，而构造函数里的属性则是挂载在类的 prototype 对象上。类的属性设置区别不大。
 
 ```javascript
 class Cat {
@@ -339,18 +392,24 @@ class Cat {
   }
 
   fn = () => {
+    console.log('from "=" setting', this);
+  };
+
+  fn2 = function() {
     console.log(this);
   };
   name = 3;
 
   fn() {
-    console.log(this);
+    console.log('from "()" setting', this);
   }
 
   static s = 1;
-  static sfn() {}
+  static sfn() {
+    console.log('from "()" setting', this);
+  }
   static sfn = () => {
-    console.log(this);
+    console.log('from "=" setting', this);
   };
 }
 ```
@@ -358,38 +417,57 @@ class Cat {
 转化后
 
 ```javascript
-var Cat = (function() {
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+
+var Cat = /*#__PURE__*/ (function() {
+  "use strict";
+
   function Cat(name) {
     var _this = this;
 
-    this.fn = function() {
-      console.log(_this);
-    };
+    _defineProperty(this, "fn", function() {
+      console.log('from "=" setting', _this);
+    });
 
-    this.name = 3;
+    _defineProperty(this, "fn2", function() {
+      console.log(this);
+    });
+
+    _defineProperty(this, "name", 3);
+
     this.name = name;
   }
 
-  Object.defineProperties(Cat.prototype, {
-    fn: function() {
-      console.log(this);
-    }
-  });
+  var _proto = Cat.prototype;
 
-  Object.defineProperties(Cat, {
-    sfn: function() {
-      console.log(this);
-    }
-  });
+  _proto.fn = function fn() {
+    console.log('from "()" setting', this);
+  };
+
+  Cat.sfn = function sfn() {
+    console.log('from "()" setting', this);
+  };
 
   return Cat;
 })();
 
-Cat.s = 1;
+_defineProperty(Cat, "s", 1);
 
-Cat.sfn = function() {
-  console.log(Cat);
-};
+_defineProperty(Cat, "sfn", function() {
+  console.log('from "=" setting', Cat);
+});
 ```
 
 ### 继承
@@ -457,7 +535,9 @@ SubType.prototype.constructor = SubType;
 > 类的静态属性继承：`Object.setPrototypeOf(SubType, SuperType)`
 
 ### 原型
-原型，即[[prototype]]。目前最新的操作原型的方式如下，在早期我们只能使用new来操作原型（___proto__并不标准）：
+
+原型，即[[prototype]]。目前最新的操作原型的方式如下，在早期我们只能使用 new 来操作原型（**\_proto**并不标准）：
+
 - Object.create，根据指定对象为原型创建新的对象。
 - Object.getPrototypeOf，获取原型
 - Object.setPrototypeOf，设置原型
@@ -551,7 +631,7 @@ promise 的 then，如果在执行 promise 后，该 promise 为 resolved 状态
 
 ```javascript
 const obj = {
-  then: () => {}
+  then: () => {},
 };
 
 Promise.resolve(obj);
@@ -565,7 +645,7 @@ new Promise(obj.then);
 const obj = {};
 Promise.resolve(obj);
 // 等价于
-new Promise(resolve => resolve(obj));
+new Promise((resolve) => resolve(obj));
 ```
 
 - 不传值。等价于 Promise(undefined)
@@ -586,10 +666,10 @@ function runner(_gen) {
 
         if (obj.then) {
           obj.then(
-            res => {
+            (res) => {
               _next(res);
             },
-            err => {
+            (err) => {
               reject(err);
             }
           );
@@ -599,7 +679,7 @@ function runner(_gen) {
               .toString()
               .startsWith("function GeneratorFunction()")
           ) {
-            runner(obj).then(res => _next(res), reject);
+            runner(obj).then((res) => _next(res), reject);
           } else {
             _next(obj());
           }
@@ -639,7 +719,7 @@ runner(function*() {
 可用结构操作符`...`遍历。
 
 ```javascript
-function* initializer(count, mapFunc = i => i) {
+function* initializer(count, mapFunc = (i) => i) {
   for (let i = 0; i < count; i++) {
     const value = mapFunc(i, count);
     if (mapFunc.constructor.name === "GeneratorFunction") {
@@ -670,7 +750,7 @@ const cards = [
     yield `♣️${p}`;
     yield `♥️${p}`;
     yield `♦️${p}`;
-  })
+  }),
 ];
 ```
 
@@ -695,18 +775,18 @@ const obj = {
         if (flag) {
           return {
             value: 3,
-            done: true
+            done: true,
           };
         } else {
           flag = true;
           return {
             value: 3,
-            done: false
+            done: false,
           };
         }
-      }
+      },
     };
-  }
+  },
 };
 for (let k of obj) {
   console.log(k);
@@ -754,13 +834,13 @@ p 本身并不是匹配结果，它只是匹配的条件。例如你要匹配的
 /(?<!\\)('|"|`).*?\/\/.*?(?<!\\)\1/mg
 ```
 
-### 字符集
-
--
-
 ### 计算匹配结果
 
-match、exec、test 方法
+- `match`字符串的方法，在没g的情况下跟exec类似，但是正则表达式带g，那么就只返回匹配结果的数组，**不含括号捕获值**
+- `exec`正则表达式的方法，返回数组，**只返回第一次的匹配，后续为括号捕获值**
+- `test`返回Boolean值
+
+
 
 ## 事件循环 event loop
 
@@ -776,7 +856,7 @@ match、exec、test 方法
 - `setImmediate` (`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
 - `requestAnamationFrame`（浏览器）
 
-**microtask**（由javascript引擎发起）
+**microtask**（由 javascript 引擎发起）
 
 - `Promise`的`then`、`catch`、`finally`
 - `process.nextTick`（`node`）
@@ -951,14 +1031,14 @@ for (let i = 0; i < arr.length; i++) {
 }
 
 // map（跳过empty，返回结果包含empty）
-const mapedArr = arr.map(v => {
+const mapedArr = arr.map((v) => {
   console.log(`map ${v}`);
   return "hello";
 });
 console.log(`mapedArr ${mapedArr}`, mapedArr);
 // filter（跳过empty，返回结果不包含empty）
-arr.forEach(v => console.log(`forEach ${v}`));
-const filteredArr = arr.filter(v => {
+arr.forEach((v) => console.log(`forEach ${v}`));
+const filteredArr = arr.filter((v) => {
   console.log(`filter ${v}`);
   return true;
 });
@@ -1049,7 +1129,7 @@ function factorial(n, total) {
 对于不支持自动优化的，改写为迭代模式。
 
 ```javascript
-const factorial = v => {
+const factorial = (v) => {
   let initialValue = v;
   let result = 1;
   while (initialValue > 0) {
@@ -1077,7 +1157,7 @@ const factorial = v => {
 function f() {
   var str = Array(10000).join("#");
   var foo = {
-    name: "foo"
+    name: "foo",
   };
   const unused = () => {
     var message = "it is only a test message";
@@ -1116,7 +1196,7 @@ var replaceThing = function() {
     longStr: new Array(1000000).join("*"),
     someMethod: function() {
       console.log(someMessage);
-    }
+    },
   };
 };
 setInterval(replaceThing, 1000);
@@ -1161,6 +1241,7 @@ setInterval(replaceThing, 1000);
 每一行前面加相应的字符。
 
 ## 模块化
+
 ### AMD（require.js）
 
 依赖提前下载，然后乱序执行，等待所有模块执行完毕，执行回调函数，输出值的一份引用
@@ -1170,10 +1251,12 @@ setInterval(replaceThing, 1000);
 依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
 
 ### commonjs
-一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到module中的exports对象里
 
-node中的模块缓存对象：
-``` javascript
+一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到 module 中的 exports 对象里
+
+node 中的模块缓存对象：
+
+```javascript
 {
   '模块的绝对路径': Module {
     id: '.',
@@ -1189,9 +1272,10 @@ node中的模块缓存对象：
 }
 ```
 
-
 ### esModule
-使用`export default 值`或者`export 定义式`导出，后者使用定义式是因为打包工具需要把变量命挂在到module.exports的getter上（这样能获取到实时的值），而把前者放到module.exports.default里。
+
+使用`export default 值`或者`export 定义式`导出，后者使用定义式是因为打包工具需要把变量命挂在到 module.exports 的 getter 上（这样能获取到实时的值），而把前者放到 module.exports.default 里。
 
 ### 区别
-commonjs是运行时再加载，而esModule在初期就已经分析出依赖关系，预留好了要export的对象的内存，在具体执行时再进行填值。但是打包工具是把esModule打包成commonjs的模块。
+
+commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖关系，预留好了要 export 的对象的内存，在具体执行时再进行填值。但是打包工具是把 esModule 打包成 commonjs 的模块。

@@ -28,9 +28,50 @@
   - 创建一个新的层叠上下文
   - 表现形式为，当祖先元素出现在视口时，一直保持着top等属性值的距离，所以当滚动正在穿越祖先元素时，被设为sticky的子元素会依然一直保持着值，类似于粘在屏幕上，但是一旦祖先元素也滚出屏幕外，那么子元素也会依然跟着滚走
 
-## 盒模型
-盒子是css渲染布局的对象和基本单位，一个页面就是由若干个Box组成。
+## 排版与布局
+### 盒模型
+浏览器渲染布局时，把每个元素都当做一个盒子来处理，所以盒是css渲染布局的对象和基本单位，一个页面就是由若干个盒组成。
 
+盒分为块级盒和行内级盒
+
+### 格式化上下文
+在 CSS 标准中，规定了如何排布每一个文字或者盒的算法，这个算法依赖一个排版的“当前状态”，CSS 把这个当前状态称为“格式化上下文（formatting context）”。
+
+格式化上下文有BFC/IFC。
+
+> 文字 / 盒 + 格式化上下文 = 位置
+
+#### BFC
+排版规则：
+- 当遇到块级盒：排入块级格式化上下文。
+- 当遇到行内级盒或者文字：首先尝试排入行内级格式化上下文，如果排不下，那么创建一个行盒，先将行盒排版（行盒是块级，所以到第一种情况），行盒会创建一个行内级格式化上下文。
+- 遇到 float 盒：把盒的顶部跟**当前行内级**上下文上边缘对齐，然后根据 float 的方向把盒的对应边缘对到块级格式化上下文的边缘，之后重排当前行盒。
+
+一些元素会创建新的块级格式化上下文：
+- 块级能包含块级的元素，overflow为非visible属性
+- 浮动元素
+- 绝对定位元素
+
+#### IFC
+空格与inline盒会混排导致布局混乱，解决办法有：
+- 设置父容器`font-size: 0`
+``` html
+<style>
+.item {
+  width: 33.3%;
+  height: 300px;
+  display: inline-block;
+  outline: solid 1px blue;
+}
+</style>
+<body>
+  <div>
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+  </div>
+</body>
+```
 ### 尺寸获取
 
 - `clientWidth/clientHeight`：`padding` + `content`
@@ -131,9 +172,8 @@ justify 值只影响文字。
 
 ## `css选择器`
 
-### 元素选择符
-
-略。
+### 类型选择器，全体选择器
+### id，class选择器
 
 ### 关系选择符
 
@@ -141,46 +181,58 @@ justify 值只影响文字。
 - `E ~ F`兄弟选择符
   > 区别在与，兄弟选择符只认兄弟，并不管你在不在我旁边
 
-### 属性选择符
+### 属性选择器
 
-css3：
+**css2**
 
-- `E[foo *= "bar"]`
-- `E[foo ^= "bar"]`
-- `E[foo $= "bar"]`
-
-css2:
-
-- `E[foo]`
-- `E[foo = "bar"]`
-- `E[foo ~= "bar"]`把所有类用空格分割，包含`val`的类，所以此选择器不支持复合类
+- `E[att]`E元素有att这个属性即可
+- `E[att = "bar"]`
+- `E[att ~= "bar"]`把E的att属性用空格分隔，查看是否包含bar
 - `E[att |= "en"]`
-  - 类只有一个且为`en`，`class="en"`
-  - 类以`en-`开头
+  - att属性只有一个且为`en`，`att="en"`
+  - att属性以`en-`开头(不限定E的att属性个数)
+  > 个数以空格分隔计算。
+
+**css3**
+
+可以看出css2的属性选择器并不太好用，而且复杂，所以css3的很简明容易理解：
+
+- `E[att *= "bar"]`
+- `E[att ^= "bar"]`
+- `E[att $= "bar"]`
 
 ### 伪类选择器
 
 #### 非贪婪类
 
-即你给的元素 E 和条件不搭配，就不匹配。`
+即你给的元素 E 和条件不搭配，就不匹配。
 
 - E:first-child
 - E:last-child
 - E:only-child
 - E:nth-child(n)
-- E:nth-last-child(n)`
+- E:nth-last-child(n)
 
+> n从1开始
 #### 贪婪类
 
-总是想办法找到符合条件的那个元素 E。`
+总是想办法找到符合条件的那个元素 E。
 
 - E:first-of-type
 - E:last-of-type
 - E:only-of-type
 - E:nth-of-type(n)
-- E:nth-last-of-type(n)`
+- E:nth-last-of-type(n)
 
 > 注意E为class时的情况，与标签的区别为，p:nth-of-type(2)会选择第2个p标签，.cla:nth-of-type(2)并不会选择第二个类为cla的元素。
+
+
+#### （more）伪元素
+伪元素不单单是一种规则，也是一种机制
+- `::first-line`
+- `::first-letter`
+- `::before`
+- `::after`
 
 ## 权重
 

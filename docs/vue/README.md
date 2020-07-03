@@ -1,5 +1,30 @@
 # Vue
 
+## Virtual DOM
+DOM对象很庞大，创建代价高，所以就由普通的js对象来描述DOM对象。
+
+DOM频繁操作还会引起性能问题，于是把一系列操作改成立即操作VirtualDOM，最终通过diff算法，来进行比对前后的VirtualDOM区别，来进行有效的更新DOM。
+
+> diff算法只针对于同级
+
+>某些简单情况，使用VirtualDOM还会变慢（多了创建和比对步骤）。
+#### 应用
+跨平台（移动端、小程序）、SSR
+
+### diff算法
+对于识别出来的不同元素，算法并不会单纯的把原来的删除，然后建立新的，而是会重用dom本身，再进行一些数据设置，所以当一个dom的其它特性被修改时，又没有跟数据本身关联（比如checked效果、你自己设置的dom属性），那么重用的元素依然保留该效果。
+
+例如一个没有设置key的li列表，当list数据变化时，checkbox的勾选状态并不会跟着数据走，如果是第一个li标签，就一直是第一个li标签被选中。
+```
+<ul>
+  <li v-for="item in list">
+    <input type="checkbox">
+    {{ item }}
+  </li>
+</ul>
+```
+
+> 所以在动态子节点中，一个独立的key尤为重要！！！
 ## 生命周期
 
 ### 创建阶段
@@ -104,6 +129,65 @@ function computedGetter() {
 ```
 
 ### 处理 watch
+
+### vue3.0响应式（使用proxy）
+``` javascript
+const effects = new Map();
+
+const proxyHandler = {
+  get(target, property) {
+    // 收集依赖
+    if (effects.last) {
+      // 确保当前这个对象下这个属性所对应依赖列表
+      effects.set(target, {
+        [property]: [],
+        ...effects.get(target)
+      });
+      // 记录依赖
+      effects.get(target)[property].push(effects.last);
+    }
+
+    return Reflect.get(target, property);
+  },
+  set(target, property, value) {
+    const succeed = Reflect.set(target, property, value);
+    const deps = effects.get(target)[property];
+    deps.forEach(e => e());
+
+    return succeed;
+  }
+};
+
+function reactive(obj) {
+  // 为每个对象记录映射一个依赖列表对象（这是使用map可以识别出记录过的对象）
+  effects.set(obj, {});
+  // 复用proxyHandler，减少内存消耗
+  return new Proxy(obj, proxyHandler);
+}
+
+function watch(effect) {
+  // 挂载即将要处理的依赖
+  effects.last = effect;
+  effect();
+  effects.last = null;
+}
+
+const state = reactive({
+  foo: 100,
+  bar: 200
+});
+
+watch(() => {
+  console.log("foo changed", state.foo);
+});
+
+watch(() => {
+  console.log("bar changed", state.bar);
+});
+
+state.foo++;
+state.bar++;
+```
 
 直接调用 vm.\$watch()
 
