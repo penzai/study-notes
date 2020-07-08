@@ -185,6 +185,43 @@ console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 - 是iterable的，可以直接被迭代
 - 在频繁增删键值对的场景下表现更好
 
+### WeakMap
+与map的区别：
+- 只能使用引用类型作为key
+- key保存的是弱引用，会直接被gc回收，因此不能遍历WeakMap的key
+
+在shim中被用于类的私有变量`#`的实现。
+``` javascript
+class Foo {
+  constructor(p) {
+    this.#p = p
+  },
+
+  fn() {
+    console.log(this.#p)
+  }
+}
+
+// 转换后代码
+var __classPrivateFieldSet = (receiver, privateMap, value) => privateMap.set(receiver, value);
+var __classPrivateFieldGet = (receiver, privateMap) => privateMap.get(receiver);
+
+var _p;
+class Foo {
+  constructor(p) {
+    _p.set(this, void 0)
+    __classPrivateFieldSet(this, _p, p)
+  }
+
+  fn() {
+    console.log(__classPrivateFieldGet(this, _p))
+  }
+}
+_p = new WeakMap();
+```
+
+> 在ts中，#私有变量与private的区别在于，private只是ts内定的，其实转换后代码无变化，在继承中相同的private变量会被覆盖，而#私有变量跟**当前类**跟**实例**挂钩，不会被覆盖，始终是取的当前类中的变量。
+
 ## 运算符优先级
 这里只列出易混顺序
 
