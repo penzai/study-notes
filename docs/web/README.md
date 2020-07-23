@@ -235,12 +235,10 @@ TCP 首部如下：
 
 渲染过程：
 
-- HTML -> DOM
-- CSS -> CSSOM
-- DOM + CSSOM -> Render Tree
-  > Render Tree 跟 DOM Tree 并不是一一对应，比如 head 节点和 display:none 的节点
-- 重排/回流（reflow），计算节点的几何信息（位置、大小）
-- 重绘（repaint），转化为屏幕的实际像素
+- HTML -> DOM、CSS规则计算
+- 把CSS规则应用到DOM树上
+- Render Tree 排版，即所谓的重排/回流（reflow），计算节点的几何信息（位置、大小）
+- 重绘（repaint），绘制、合成位图显示
 
 重排代价太多，所以浏览器使用队列栈来减少消耗。因此获取几何信息时，会强制清空栈而触发重排操作。
 
