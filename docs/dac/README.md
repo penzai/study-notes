@@ -247,3 +247,39 @@ const quickSelect = (arr, k) => {
 ```
 
 ### （linear select）
+## 常见算法时间复杂度
+- 二分`O(logn)`
+- 二叉树遍历`O(n)`
+- 合并排序`O(nlogn)`
+
+## 递归
+- 避免人肉递归
+> 这是最易想到，也是效率最低的方法
+- 找到最近最简方法，将其拆解成可重复解决的问题（重复子问题）
+> 从最初始出发，边穷举边归纳重复的东西（例如爬楼梯问题）
+- 数学归纳法思维
+
+JAVA递归模板：
+``` java
+public void recur(int level, int param) {
+  // terminator 跳出条件
+  if(level > MAX_LEVEL) {
+    return 
+  }
+
+  // process current logic 逻辑代码
+  process(level, param)
+
+  // drill down 下钻下一次逻辑
+  recur(level + 1, new Param)
+
+  // restore current status 一般不需要，重置状态
+}
+```
+
+如果计算类的递归，那么递归结果应该返回计算值。如果是查找类的递归，那么递归结果应该返回结果。
+
+## 零星知识点
+- 加速数据经常采用的方式就是升维，多了一个维度就多了一些信息
+- 双指针的用法，可以同向进行（26删除排序数组重复项），也可以从两端开始往中间靠拢（11盛最多水容器）
+- 检测重复性用哈希数据结构（3无重复子串）
