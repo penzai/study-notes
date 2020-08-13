@@ -1,4 +1,6 @@
-# js 基础
+# Javascript
+## 起源
+ECMA国际（前身为欧洲计算机制造协会）在标准ECMA-262中定义了一种脚本语言规范ECMAScript。JavaScript实现了它，类似还有微软实现的JScript。
 
 ## 数据类型
 

@@ -1,13 +1,12 @@
 # Web 与网络
 
-## 小知识
-
-### 术语缩写
+## 术语缩写
 
 - `WWW` (Word Wide Web) 万维网
 - `AJAX` (Asynchronous JavaScript and XML) 异步 JavaScript 与 XML 技术
 - `URI` (Uniform Resource Identifier) 统一资源标识符
 - `URL` (Uniform Resource Locator) 统一资源定位符
+- `XML` (Extensible Markup Language) 可扩展标记语言
 - `HTML` (HyperText Markup Language) 超文本标记语言
 - `HTTP` (HyperText Transfer Protocol) 超文本状态转移协议
 - `FTP` (File Transfer Protocol) 文件传输协议
@@ -27,26 +26,20 @@
 - `CAS` (Central Authentication Service) 中央认证服务
 - `CORS` (cross-origin resource-sharing) 跨域资源共享标准
 
-### 容量
+## DOM
+> 标记语言是一种将文本和一些其他信息结合的计算机文字编码。在这基础之上加入超链接，即构成了HTML。与HTML一起构建网页的还有CSS和JavaScript，HTML和CSS的标准主要由W3C组织维护。
 
-1 字节（Byte）= 8 比特（bit)（也就是位）
+DOM，即文档对象模型。是处理可扩展标记语言（XML和HTML等）的标准编程接口。
 
-1KB = 1000Byte
+DOM不仅能用js实现，比如python也一样能实现。
 
-1KiB = 1024Byte
+**`API = DOM + Javascript`**
 
-### 编码与解码
+API暴露给开发者使用，后面的结合由浏览器来实现。
 
-`encodeURI`、`decodeURI`、`encodeURIComponent`、`decodeURIComponent`
+### shadow DOM
+为了更独立的使用DOM，可以给DOM中的节点添加另外一颗类DOM树（取名叫shadowDOM），此树与常规DOM树不同（以shadow的形式存在，但是内部就是dom树），且可以控制被外界访问还是不能访问（比如video标签的shadowDOM部分就不能被外界访问）。
 
-```javascript
-encodeURI("http://www.baidu.com/My First");
-encodeURIComponent("http://www.baidu.com/My First");
-// http://www.baidu.com/My%20First
-// http%3A%2F%2Fwww.baidu.com%2FMy%20First
-decodeURI("http://www.baidu.com/My%20First");
-decodeURIComponent("http%3A%2F%2Fwww.baidu.com%2FMy%20First");
-```
 
 ## HTPP2
 
@@ -61,6 +54,7 @@ decodeURIComponent("http%3A%2F%2Fwww.baidu.com%2FMy%20First");
 - link 在没有 script 的情况下不会阻塞渲染，有 script 的情况下会阻塞
 - 两种标签均可设置异步避免阻塞，script 使用 defer/sync，link 使用`media="print"`。
   > async 加载后立即执行，没有顺序可言。script 按顺序异步加载，所以比 async 慢。
+
 
 ## 事件模型
 
