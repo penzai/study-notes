@@ -882,7 +882,7 @@ p 本身并不是匹配结果，它只是匹配的条件。例如你要匹配的
 ## 事件循环 event loop
 
 - 主进程（即整体代码）属于`macrotasks`（`tasks`）。待执行完毕才会去寻找`microtask` (主动使用`.click()`触发事件，不属于异步！此时并没结束主进程，所以如果有事件冒泡，这时会先冒完，而且此时`MutationObserver`处于`pending`状态，无法多次实现)
-- `js`通过事件循环（`event loop`）机制来定期访问异步任务队列
+- `js`通过事件循环（`event loop`）机制来定期访问异步任务队列
 - `macroTasks`的任务，一次循环只处理一次（比如嵌套`setTimeout`)，而`microtask`队列能处理多次（比如`Promise`的`then`回调）
 
 **宏任务 macro-task**（由宿主发起）
@@ -893,7 +893,7 @@ p 本身并不是匹配结果，它只是匹配的条件。例如你要匹配的
 - `setImmediate` (`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
 - `requestAnamationFrame`（浏览器）
 
-**microtask**（由 javascript 引擎发起）
+**微任务 microtask**（由 javascript 引擎发起）
 
 - `Promise`的`then`、`catch`、`finally`
 - `process.nextTick`（`node`）
