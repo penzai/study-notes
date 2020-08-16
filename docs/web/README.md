@@ -152,12 +152,13 @@ function getH(el) {
 
 #### 优化
 
-- 减少 DNS 的请求次数
 - DNS 预解析
   ```html
   <meta http-equiv="x-dns-prefetch-control" content="on" />
   <link rel="dns-prefetch" href="//example.com" />
   ```
+- 异步下载js，`script`标签上使用`defer`与`async`。两者均会异步下载js；区别在于defer会在dom解析完后执行js，不阻塞DOM解析；而async会在下载完成后就立即执行，阻塞DOM解析；
+- 对资源使用prelaod和prefetch。
 - CDN，通过在现有的 Internet 中增加一层新的 CACHE(缓存)层，将网站的内容发布到最接近用户的网络”边缘“的节点
 - HTTPDNS，使用 HTTP 协议替代 UDP 协议，绕过 LocalDNS，可以有效防止域名劫持
 - DNS 负载均衡（根据权重轮询返回不同的服务器地址）
@@ -205,6 +206,8 @@ TCP 首部如下：
 
 > TCP规定，SYN=1的报文段不能携带数据（指TCP数据部分），且会消耗掉一个序号（下次必须使用另外的序号了，比如x+1）。
 
+标志位代表此TCP报文的目的，常用的有表示同步SYN(synchronisation)、表示确认ACK(acknowlegement)、表示完成FIN(finally)
+
 最终，建立连接的握手流程如下（x，y 为各自的初始序号）：
 
 1. C ----(SYN=1，seq=x)----> S
@@ -222,6 +225,9 @@ TCP 首部如下：
 - C <----(ACK=1，seq=v，ack=u+1)---- S
 - C <----(FIN=1，ACK=1，seq=w，ack=u+1)---- S
 - C ----(ACK=1，seq=u+1，ack=w+1)----> S
+
+#### 优化
+- 优化请求的流量，服务器开启Gzip
 
 ### 4. 渲染
 
@@ -241,6 +247,17 @@ TCP 首部如下：
 - 重绘（repaint），绘制、合成位图显示
 
 重排代价太多，所以浏览器使用队列栈来减少消耗。因此获取几何信息时，会强制清空栈而触发重排操作。
+
+#### 一些用户体验指标
+- 100ms，用户输入反馈。
+- 60FPS，网页动画的帧数（使用requestAnimatinFrame）。
+- 1s，网页加载完毕的时间。
+- 50ms，空闲周期的任务（requestIdleCallback）。
+
+优化：
+- 读取那些需要回流的值时，用变量缓存。
+- 使用requestAnimatinFrame执行动画，transfrom操作动画
+
 
 ## WEB 安全
 
