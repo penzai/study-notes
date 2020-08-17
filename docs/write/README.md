@@ -75,37 +75,41 @@ const MyParse = str => new Function(`return ${str}`)();
 ```
 
 ## call/apply
+帮助进行一次函数调用，可以想象成正向代理，目的是调整this指针的指向
 
 ```javascript
-const MyCall = function(context = window, ...args) {
-  context.fn = this;
-  const ret = context.fn(...args);
-  delete context.fn;
-  return ret;
-};
+const MyCall = function (context = window, ...args) {
+  const p = Symbol('unique property')
+  context[p] = this
+  const ret = context[p](...args)
+  delete context[p]
+  return ret
+}
+
 const MyApply = function(context = window, args) {
-  context.fn = this;
-  const ret = context.fn(...args);
-  delete context.fn;
-  return ret;
+  const p = Symbol('unique property')
+  context[p] = this
+  const ret = context[p](...args)
+  delete context[p]
+  return ret
 };
 ```
 
 ## bind
-
+生成一个新的函数，可以想象成反向代理，目的是调整this指针的指向
 - 注意新函数使用 new 操作符的情况，需要
   - 灵活调整 apply 方法的 this 指针
   - 设置 prototype
 
 ```javascript
-const myBind = function(obj, ...args) {
-  const F = this;
-  function ret(...args2) {
-    F.apply(this instanceof ret ? this : obj, [...args, ...args2]);
+const MyBind = function (context = window, ...args) {
+  const fn = this
+  const newFn = (...args2) => {
+    return fn.call(this instanceof newFn ? this : context, ...[...args, ...args2])
   }
-  ret.prototype = this.prototype;
-  return ret;
-};
+  newFn.prototype = Object.create(fn.prototype)
+  return newFn
+}
 ```
 
 ## 继承
@@ -133,9 +137,13 @@ const MyCurry = (fn, arr = []) => (...args) =>
 ## promise
 注意一下几点：
 
-- 链式调用（返回promise，并且一个then的微任务要执行完毕，才可以执行下一个then的回调）。
-- 每一次回调检测状态(状态发生变更，要立即执行对应的操作)
+- 链式调用情况。
+  - 针对`p.then(fn1); p.then(fn2);`类，在resolve方法的遍历里面处理。
+  - 针对`p.then(fn1).then(fn2);`类，需要在then方法中返回一个新的实例p2，下一个then方法挂在p1上，后面依次类推；
+> 对于fn1方法的封装执行，手写Promise只能使用setimeout来模拟异步，这样会造成fn1,fn2并不是一起放在微队列的（中间隔了一次宏任务setimeout），而实际js引擎内部则会把其放在一个微队列中。
+- 每一次回调检测状态(状态发生变更，要立即执行对应的操作)。
 - 处理同步情况（必须让resolve发生在then之后）。
+
 
 ```javascript
 function MyPromise(fn) {

@@ -146,12 +146,13 @@ function getH(el) {
 
 #### 优化
 
-- 减少 DNS 的请求次数
 - DNS 预解析
   ```html
   <meta http-equiv="x-dns-prefetch-control" content="on" />
   <link rel="dns-prefetch" href="//example.com" />
   ```
+- 异步下载js，`script`标签上使用`defer`与`async`。两者均会异步下载js；区别在于defer会在dom解析完后执行js，不阻塞DOM解析；而async会在下载完成后就立即执行，阻塞DOM解析；
+- 对资源使用prelaod和prefetch。
 - CDN，通过在现有的 Internet 中增加一层新的 CACHE(缓存)层，将网站的内容发布到最接近用户的网络”边缘“的节点
 - HTTPDNS，使用 HTTP 协议替代 UDP 协议，绕过 LocalDNS，可以有效防止域名劫持
 - DNS 负载均衡（根据权重轮询返回不同的服务器地址）
@@ -199,6 +200,8 @@ TCP 首部如下：
 
 > TCP规定，SYN=1的报文段不能携带数据（指TCP数据部分），且会消耗掉一个序号（下次必须使用另外的序号了，比如x+1）。
 
+标志位代表此TCP报文的目的，常用的有表示同步SYN(synchronisation)、表示确认ACK(acknowlegement)、表示完成FIN(finally)
+
 最终，建立连接的握手流程如下（x，y 为各自的初始序号）：
 
 1. C ----(SYN=1，seq=x)----> S
@@ -216,6 +219,9 @@ TCP 首部如下：
 - C <----(ACK=1，seq=v，ack=u+1)---- S
 - C <----(FIN=1，ACK=1，seq=w，ack=u+1)---- S
 - C ----(ACK=1，seq=u+1，ack=w+1)----> S
+
+#### 优化
+- 优化请求的流量，服务器开启Gzip
 
 ### 4. 渲染
 
@@ -235,6 +241,17 @@ TCP 首部如下：
 - 重绘（repaint），绘制、合成位图显示
 
 重排代价太多，所以浏览器使用队列栈来减少消耗。因此获取几何信息时，会强制清空栈而触发重排操作。
+
+#### 一些用户体验指标
+- 100ms，用户输入反馈。
+- 60FPS，网页动画的帧数（使用requestAnimatinFrame）。
+- 1s，网页加载完毕的时间。
+- 50ms，空闲周期的任务（requestIdleCallback）。
+
+优化：
+- 读取那些需要回流的值时，用变量缓存。
+- 使用requestAnimatinFrame执行动画，transfrom操作动画
+
 
 ## WEB 安全
 
@@ -347,3 +364,36 @@ TODO: 待实践验证
 - `Access-Control-Request-Headers`，一个以逗号分隔的字符串，包含 cors 会额外发送的头信息字段，**如果浏览器发送了这个字段，那么服务器也必须按返回相应的`Access-Control-Allow-Headers`字段，否则预检失败。**
 
 预检请求只发一次，后面的 not-so-simple request 当做 simple request 请求处理，因为服务器可以在第一次预检请求的 response header 中设置`Access-Control-Max-Age`。
+
+## HTTP
+### 特点
+优点：
+- 灵活，可传递文本，图片，视频。
+- 可靠性传输，因为其架设在TCP/IP这个传输层协议上。
+
+缺点：
+- 无状态（有好有坏）
+- 队头阻塞
+- 明文传输
+
+### HTTP2.0
+- 二进制分帧，头信息和数据体都是二进制格式。
+- 头部压缩，主要还是利用索引的方式压缩。
+- 多路复用。
+- 服务器推送。
+- 请求优先级设置。
+
+在http2中，一份报文被拆成若干二进制帧，以帧的形式传输，根据帧首部的流标识，再按顺序可以组装成相应的报文（同一份报文的帧传输顺序是有序的，所以可以按顺序组装）。
+### HTTPS
+HTTPS并不是一个新的协议，是HTTP与TLS的组合。
+- 服务器发送给客户端公钥
+- 客户端利用自带认证中心证书验证是不是客户端
+- 是，本地生成密钥A，利用公钥发给服务器（只有服务器拥有的私钥能解开）
+- 此后交流都用密钥A
+
+## DNS
+DNS协议是应用层协议，运行在UDP协议之上，使用端口号53。利用它来找到域名所对应的ip，有了ip才能连接到主机。
+
+首先会在本机以及路由器使用递归查询找寻。然后再由本地dns服务器(通常是ISP那儿)使用迭代查询找到ip返给你。
+
+实现负载均衡时，由于缓存原因，会把已经失效的ip地址一直返回给你。
