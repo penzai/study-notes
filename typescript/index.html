@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>定义 | Study Note</title>
+    <meta name="generator" content="VuePress 1.5.3">
+    
+    <meta name="description" content="学无止境">
+    <link rel="preload" href="/assets/css/0.styles.abfd12c2.css" as="style"><link rel="preload" href="/assets/js/app.36ad382c.js" as="script"><link rel="preload" href="/assets/js/2.a1ac94cf.js" as="script"><link rel="preload" href="/assets/js/18.0fb7c1b5.js" as="script"><link rel="prefetch" href="/assets/js/10.b6996d25.js"><link rel="prefetch" href="/assets/js/11.b0661856.js"><link rel="prefetch" href="/assets/js/12.cf1bf860.js"><link rel="prefetch" href="/assets/js/13.13dfa2d2.js"><link rel="prefetch" href="/assets/js/14.ec039f46.js"><link rel="prefetch" href="/assets/js/15.1f2f5719.js"><link rel="prefetch" href="/assets/js/16.ed05caeb.js"><link rel="prefetch" href="/assets/js/17.e60d8d3a.js"><link rel="prefetch" href="/assets/js/19.07ebb6bd.js"><link rel="prefetch" href="/assets/js/20.e89d52a2.js"><link rel="prefetch" href="/assets/js/3.93bd9308.js"><link rel="prefetch" href="/assets/js/4.fde1b9ea.js"><link rel="prefetch" href="/assets/js/5.90e610a4.js"><link rel="prefetch" href="/assets/js/6.3272386e.js"><link rel="prefetch" href="/assets/js/7.6e03230f.js"><link rel="prefetch" href="/assets/js/8.d3db6f3f.js"><link rel="prefetch" href="/assets/js/9.f2880887.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.abfd12c2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Study Note</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/js/" class="sidebar-link">Javascript</a></li><li><a href="/css/" class="sidebar-link">CSS 基础</a></li><li><a href="/css-practice/" class="sidebar-link">CSS 应用</a></li><li><a href="/dac/" class="sidebar-link">数据结构与算法</a></li><li><a href="/web/" class="sidebar-link">Web 与网络</a></li><li><a href="/git/" class="sidebar-link">git</a></li><li><a href="/linux/" class="sidebar-link">Linux</a></li><li><a href="/nginx/" class="sidebar-link">Nginx</a></li><li><a href="/node/" class="sidebar-link">node</a></li><li><a href="/react/" class="sidebar-link">React</a></li><li><a href="/vue/" class="sidebar-link">Vue</a></li><li><a href="/write/" class="sidebar-link">js 手写系列</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="定义"><a href="#定义" class="header-anchor">#</a> 定义</h2> <p>TypeScript是JavaScript类型的超集，它会编译成纯JavaScript。</p> <p>在原生上加入了更多的功能和限制，能让你的代码更健壮。</p> <h2 id="类型"><a href="#类型" class="header-anchor">#</a> 类型</h2> <ul><li>枚举变量对于number类型的值会进行反向映射</li></ul> <h3 id="never类型"><a href="#never类型" class="header-anchor">#</a> never类型</h3> <p>never 类型表示的是那些永不存在的值的类型。 例如，never 类型是那些总是会抛出异常或根本就不会有返回值的函数表达式或箭头函数表达式的返回值类型。</p> <p>可以利用其进行全面性检查：</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">type</span> <span class="token class-name">Foo</span> <span class="token operator">=</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">controlFlowAnalysisWithNever</span><span class="token punctuation">(</span>foo<span class="token operator">:</span> Foo<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> foo <span class="token operator">===</span> <span class="token string">&quot;string&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> foo <span class="token operator">===</span> <span class="token string">&quot;number&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token comment">// foo 在这里是 never</span>
+    <span class="token keyword">const</span> check<span class="token operator">:</span> <span class="token builtin">never</span> <span class="token operator">=</span> foo<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="断言"><a href="#断言" class="header-anchor">#</a> 断言</h2> <p>尖括号与as的使用</p> <h2 id="接口"><a href="#接口" class="header-anchor">#</a> 接口</h2> <p>对类的一部分抽象或者对<strong>对象的形状</strong>进行描述</p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.36ad382c.js" defer></script><script src="/assets/js/2.a1ac94cf.js" defer></script><script src="/assets/js/18.0fb7c1b5.js" defer></script>
+  </body>
+</html>
