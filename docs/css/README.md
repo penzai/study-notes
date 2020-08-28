@@ -218,14 +218,11 @@ justify 值只影响文字。
 
 ## 层级
 
+控制定位元素的层叠顺序。也就是说position:static无效。
+
 默认后定义的元素比先定义的层级高，相对定位比默认定位的元素层级高。
 
-### `z-index`
-
-在设置`position: absolute`时，解决引起的元素重叠顺序问题。
-
-- 当与`float: left`的元素重叠时，`absolute`的元素在上层
-- `z-index`指的是在一个堆叠上下文的层级，而且自身会创建一个新的上下文
+当与`float: left`的元素重叠时，`absolute`的元素在上层
 
 ## `css选择器`
 
@@ -415,11 +412,10 @@ float、clear、vertical-align 不能影响 item
 
 ## 响应式设计
 
-- fluid grids
-- flexible images，设置 max-width: 100%
-- media queries
-- mobile first
-
+### 像素
+- 物理像素(physical pixel)。又称设备像素、分辨率。电子产品实际发亮部件的个数。
+- 设备独立像素(device independent pixels)。又称逻辑像素，CSS像素。给程序使用的最小单位。
+- DPR。物理像素/CSS像素，以前的普通的设备都是1，但是苹果的视网膜屏幕为了让屏幕更清晰，使用了2或者3。
 ## 文本
 
 ### white-space
