@@ -88,46 +88,26 @@
 
 ### 冒泡排序（bubble sort）
 
-O(n^2)
-
-优化：
-
-1. 提前发现左侧的有序队列，在判断中加入是否进行交换的标志，如果未进行交换，说明 剩下的序列全是有序的。
+`O(n^2)` / 稳定
 
 #### 基础写法
 
 ```javascript
 const bubbleSortByASC = arr => {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-    }
-  }
-};
-```
-
-#### 优化 1：外层轮回次数优化
-
-当一轮没进行任何交换时，已是有序状态，不再轮回排序
-
-```javascript
-const bubbleSortByASC = arr => {
-  for (let i = 0; i < arr.length; i++) {
-    let isSorted = true;
+  let flag = true
+  for (let i = 0; i < arr.length && flag; i++) {
+    flag = false
     for (let j = 0; j < arr.length - i - 1; j++) {
       if (arr[j] > arr[j + 1]) {
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        isSorted = false;
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+        flag = true
       }
-    }
-    if (isSorted) {
-      break;
     }
   }
 };
 ```
 
-#### 优化 2：找出有序边界
+#### 优化：找出有序边界
 
 每轮回一次，尽量缩小无序数组的范围
 
@@ -160,32 +140,36 @@ const bubbleSortByASC = arr => {
 };
 ```
 
+### 插入排序 (insertion sort)
+依次比较前面有序的部分，不满足条件的就向后移动一位。原始序列越有序，时间复杂度越低。
+
+`O(n^2)` / `Ω(n)` / `Θ(n^2)` / 稳定。
+
+```javascript
+const insertionSort = arr => {
+  for (let i = 1; i < arr.length; i++) {
+    let curr = arr[i];
+    let j = i - 1;
+    while (j >= 0 && arr[j] > curr) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+    arr[j + 1] = curr;
+  }
+};
+```
+
 ### 归并排序（merge sort）
 
 分治策略（重点在合）
 不超过 O(nlogn)
 
-### 选择排序（selection sort）
 
-O(n^2)/Θ(n^2)，雷打不动 n^2。
 
-### 插入排序 (insertion sort)
 
-O(n^2)/Ω(n)/Θ(n^2)，原始序列越有序，时间复杂度越低。
 
-```javascript
-const insertionSort = arr => {
-  for (let i = 1; i < arr.length; i++) {
-    const temp = arr[i];
-    let j = i;
-    while (j > 0 && temp < arr[j - 1]) {
-      arr[j] = arr[j - 1];
-      j--;
-    }
-    arr[j] = temp;
-  }
-};
-```
+### 拓扑排序 (topological sort)
+
 
 ### 快速排序 (quick sort)
 
@@ -234,7 +218,12 @@ const partition = (arr, lo, hi) => {
 };
 ```
 
-### 希尔排序（shell sort）
+### 选择排序（selection sort）
+
+O(n^2)/Θ(n^2)，雷打不动 n^2。
+
+### 堆排序（heap sort）
+### 桶排序（bucket sort）
 
 ## 树
 
