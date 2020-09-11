@@ -44,37 +44,13 @@ DOM频繁操作还会引起性能问题，于是把一系列操作改成立即�
 ```
 
 > 所以在动态子节点中，一个独立的key尤为重要！！！
-## 生命周期
-
-### 创建阶段
-
-- `beforeCreate` 钩子
-- injections ➡️prop ➡️methods ➡️data ➡️computed ➡️ watch ➡️ provide
-- `created`
-- 模板编译到 render 函数(vNode)
-  > 注：这个时候还未执行模板里的代码，只是编译成 render 函数。如果写了 render 函数，那么自动跳过这一步。
-- `beforeMount` 钩子
-- render 函数代码执行
-- `mounted` 钩子
-
-### 更新阶段
-
-- 依赖变更(或者执行`$forceUpdate`方法)
-- `beforeUpdate`
-- render 函数代码执行
-- `updated`
-
-### 销毁阶段
-
-- `beforeDestroy`
-- `destroyed`
-
-### 父子组件的生命周期
-
-- 父组件会等待子组件挂载
-- 当子组件完成挂载后，父组件会主动执行一次 beforeUpdate/updated 钩子函数
 
 ## 响应式原理
+### 概述
+- 响应的是数据，准确的说，是一个对象与DOM之间的关系。而响应又主要分为监听与执行两个动作。
+- 对于数据的响应。利用Object.defineProperty进行数据的监听设置，不过光监听还不够，还需要知道执行的具体操作。于是在**监听设定时**（不是监听触发时）建立一个收集器（Dep的实例，即被观察者）进行收集已经**设定好了**的缓存依赖（Watcher的实例，即观察者）。这样监听到数据修改后，就可以自动修改虚拟DOM，进而反馈到真实DOM上。
+> 依赖不是在get方法里知道的（get方法里只知道当前有没有依赖需要收集，而不是知道依赖具体是什么），是在每个具体的地方，例如模板解析、computed/watch解析等地方，临时挂载到Dep.target上的操作。
+- 对于DOM的响应，主要利用事件等机制，监听到DOM的变化，然后修改数据。
 
 ### Dep 与 Watcher
 
@@ -210,6 +186,36 @@ state.bar++;
 
 直接调用 vm.\$watch()
 
+## 生命周期
+
+### 创建阶段
+
+- `beforeCreate` 钩子
+- injections ➡️prop ➡️methods ➡️data ➡️computed ➡️ watch ➡️ provide
+- `created`
+- 模板编译到 render 函数(vNode)
+  > 注：这个时候还未执行模板里的代码，只是编译成 render 函数。如果写了 render 函数，那么自动跳过这一步。
+- `beforeMount` 钩子
+- render 函数代码执行
+- `mounted` 钩子
+
+### 更新阶段
+
+- 依赖变更(或者执行`$forceUpdate`方法)
+- `beforeUpdate`
+- render 函数代码执行
+- `updated`
+
+### 销毁阶段
+
+- `beforeDestroy`
+- `destroyed`
+
+### 父子组件的生命周期
+
+- 父组件会等待子组件挂载
+- 当子组件完成挂载后，父组件会主动执行一次 beforeUpdate/updated 钩子函数
+
 
 ## 插槽
 
@@ -245,10 +251,6 @@ export default {
 - $broadcast、$dispatch
 - vuex
 
-## render
-
-> 更抽象一点来看，我们可以把组件区分为两类：一类是偏视图表现的 (presentational)，一类则是偏逻辑的 (logical)。我们推荐在前者中使用模板，在后者中使用 JSX 或渲染函数。这两类组件的比例会根据应用类型的不同有所变化，但整体来说我们发现表现类的组件远远多于逻辑类组件。
-
 ## Composition API
 使用setup函数包装所有逻辑操作，返回**模板**要使用的或者**其他逻辑处**要使用的对象集合（响应式的对象）。
 
@@ -266,8 +268,15 @@ modules: {
 ```
 
 ## vue-router
+### 模式
+前端路由的目的就是为了不刷新页面又能改变URL地址，同时渲染不同的页面，那么两种的模式的区别在于：
+- hash模式。利用hash地址改变来模拟地址变化。配合hashchange事件做渲染。
+  > hash值不会发送给服务端。
+- history模式，利用 pushState 和 repalceState 两个 API 来操作 URL 的改变，再配合popstate事件做渲染。因为发送给服务器的地址会改变，所以需要服务器进行一定的配合。
+  > 当历史记录条目更改时，将触发popstate事件。pushState/repalceState不会触发popstate事件。
 
-- `routes`第一层的`path`必须加`/`符号，或者为`''`，代表默认路径。
+### 注意事项
+- `routes`第一层的`path`必须加`/`符号，或者为`''`，代表默认路径。否则虽然会跳转地址，但却不会渲染任何内容。
 - 匹配路由时，当匹配到第一个时，就停止。
 - 同时设置`redirect`和`{ children: { path: '' }}`时，将无视前者。
   > 先匹配后计算

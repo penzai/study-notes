@@ -76,6 +76,12 @@
 #### 后续遍历
 当根节点的信息需要由左右子树的信息汇合而成时使用，比如求树的深度。
 
+### 优先队列 / Priority Queue
+
+### Graph
+### Trie
+### Segment Tree
+### 树状数组 Fenwick Tree / Binary Indexed Tree
 
 
 ## 排序

@@ -422,11 +422,13 @@ float、clear、vertical-align 不能影响 item
 
 决定 html 中空格的处理方式。
 
-- normal，CJK 和 Non-CJK 单词之间自动换行，空格合并为 1 个，换行符会被当作空白符来处理
-- nowrap，不换行
-- pre，保留所有特征
-- pre-wrap，保留所有特征，但是会自动换行
-- pre-line，在默认的基础上增加换行符生效特征
+- normal，CJK 和 Non-CJK 单词之间自动换行，空格合并为 1 个，换行符会被当作空白符来处理。
+- nowrap，在normal的基础上不换行。
+- pre-line，在normal的基础上保留换行符的效果。
+- pre，保留代码书写时的所有特征。
+- pre-wrap，在pre的基础上自动换行。
+
+> pre是指按照pre标签的形式来处理。另外注意换行的具体表现，当A字符的下一个字符B如果能在当前行有限的区域内排下，才会AB同行，否则B就另起一行，不管装不装得下。
 
 ### word-break
 
