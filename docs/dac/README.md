@@ -33,56 +33,79 @@
 - O(2^n)指数复杂度
 
 ## 数据结构
+
 ### Array & String
+
 优点：
+
 - 构建非常简单。
 - 获取指定位置的元素很快（下标）O(1)。
 
 缺点：
+
 - 构建时分配的空间是连续的空间。
-- 查找/增加/删除很慢O(n)。
+- 查找/增加/删除很慢 O(n)。
+
 ### Linked-List
+
 优点：
+
 - 灵活的分配内存空间。
-- 增加/删除很快O(1)。
+- 增加/删除很快 O(1)。
 
 缺点：
-- 查找很慢O(n)。
-> 经常需要构建一个虚拟的链表头进行计算。
+
+- 查找很慢 O(n)。
+  > 经常需要构建一个虚拟的链表头进行计算。
+
 ### Stack
+
 后进先出。
 
-只关心最近一次的操作，处理完最近一次操作后,能在O(1)的时间内找到上更上一次的操作。
+只关心最近一次的操作，处理完最近一次操作后,能在 O(1)的时间内找到上更上一次的操作。
 
-（20有效的括号）
-（739每日温度，存储到栈的里的是暂时不能处理的数据，因为碰到新数据大于栈顶数据才能处理栈顶，以至于处理余下的）
+（20 有效的括号）
+（739 每日温度，存储到栈的里的是暂时不能处理的数据，因为碰到新数据大于栈顶数据才能处理栈顶，以至于处理余下的）
+
 ### Queue
+
 先进先出。
 
 利用单链表实现。
 
 按照一定顺序进行操作，例如广度优先搜索。
+
 ### Deque
+
 利用双链表实现。实现一个长度动态变化的窗口或者连续区间。
+
 ### Tree
+
 满二叉树、完全二叉树、二叉搜索树、平衡二叉树、红黑树、自平衡二叉搜索树
 
-3中深度遍历方法：
+3 中深度遍历方法：
+
 #### 前序遍历
+
 #### 中序遍历
+
 对于二叉搜索树的中序遍历，是按照大小顺序遍历的。1-2-3-4。
 
-（230二叉搜索树中第K小的元素）
+（230 二叉搜索树中第 K 小的元素）
+
 #### 后续遍历
+
 当根节点的信息需要由左右子树的信息汇合而成时使用，比如求树的深度。
 
 ### 优先队列 / Priority Queue
 
 ### Graph
-### Trie
-### Segment Tree
-### 树状数组 Fenwick Tree / Binary Indexed Tree
 
+### Trie
+
+### Segment Tree
+
+### 树状数组 Fenwick Tree / Binary Indexed Tree
 
 ## 排序
 
@@ -93,14 +116,14 @@
 #### 基础写法
 
 ```javascript
-const bubbleSortByASC = arr => {
-  let flag = true
+const bubbleSortByASC = (arr) => {
+  let flag = true;
   for (let i = 0; i < arr.length && flag; i++) {
-    flag = false
+    flag = false;
     for (let j = 0; j < arr.length - i - 1; j++) {
       if (arr[j] > arr[j + 1]) {
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
-        flag = true
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+        flag = true;
       }
     }
   }
@@ -112,7 +135,7 @@ const bubbleSortByASC = arr => {
 每轮回一次，尽量缩小无序数组的范围
 
 ```javascript
-const bubbleSortByASC = arr => {
+const bubbleSortByASC = (arr) => {
   // 上次交换位置
   let lastExchangeIndex = 0;
   // 无序数组边界，即在这个范围内进行两两比较
@@ -141,12 +164,13 @@ const bubbleSortByASC = arr => {
 ```
 
 ### 插入排序 (insertion sort)
+
 依次比较前面有序的部分，不满足条件的就向后移动一位。原始序列越有序，时间复杂度越低。
 
 `O(n^2)` / `Ω(n)` / `Θ(n^2)` / 稳定。
 
 ```javascript
-const insertionSort = arr => {
+const insertionSort = (arr) => {
   for (let i = 1; i < arr.length; i++) {
     let curr = arr[i];
     let j = i - 1;
@@ -162,14 +186,9 @@ const insertionSort = arr => {
 ### 归并排序（merge sort）
 
 分治策略（重点在合）
-不超过 O(nlogn)
-
-
-
-
+`O(nlogn)`
 
 ### 拓扑排序 (topological sort)
-
 
 ### 快速排序 (quick sort)
 
@@ -223,6 +242,7 @@ const partition = (arr, lo, hi) => {
 O(n^2)/Θ(n^2)，雷打不动 n^2。
 
 ### 堆排序（heap sort）
+
 ### 桶排序（bucket sort）
 
 ## 树
@@ -236,8 +256,8 @@ O(n^2)/Θ(n^2)，雷打不动 n^2。
 选取方法：
 
 ```javascript
-const majority = arr => {
-  const majEleCandidate = arr => {
+const majority = (arr) => {
+  const majEleCandidate = (arr) => {
     let maj;
     for (let i = 0, c = 0; i < arr.length; i++) {
       if (c === 0) {
@@ -288,28 +308,75 @@ const quickSelect = (arr, k) => {
 ```
 
 ### （linear select）
+
 ## 常见算法时间复杂度
+
 - 二分`O(logn)`
 - 二叉树遍历`O(n)`
 - 合并排序`O(nlogn)`
 
-## 递归
+## 递归（recursion）
+递归就是函数调用自身，把一个复杂的问题，逐渐缩小要解决的范围，直至解决问题，核心就是测试规模n的问题，是不是可以利用规模n-1的结果。
+
+例如汉诺塔问题，把n块的移动规划成了移动n-1块加1个已知的简单操作（这个简单操作就是构成解决实际问题的基础操作），然后依次类推得出结果。
+``` javascript
+const hano = (a, b, c, n) => {
+  if (n > 0) {
+    hano(a, c, b, n - 1);
+    console.log(a, "->", c);
+    hano(b, a, c, n - 1);
+  }
+};
+```
+
+再比如，中心对称数问题：
+``` javascript
+// 中心对称数是指一个数字在旋转了180度之后看起来依旧相同的数字
+const findCentralSymmetricalNumber = (n, m) => {
+  if (n < 0 || m < 0) return;
+  if (n === 0) {
+    return [];
+  }
+  if (n === 1) {
+    return ["0", "1", "8"];
+  }
+  if (n === 2) {
+    return ["11", "88", "69", "96", ...(n !== m ? ["00"] : [])];
+  }
+  const ret = [];
+  const s = findCentralSymmetricalNumber(n - 2, m);
+  const temp = [
+    ["1", "1"],
+    ["8", "8"],
+    ["6", "9"],
+    ["9", "6"],
+    ...(n !== m ? [["0", "0"]] : [])
+  ];
+  s.forEach(v => {
+    temp.forEach(v2 => {
+      ret.push(`${v2[0]}${v}${v2[1]}`);
+    });
+  });
+  return ret;
+};
+```
 递归次数，取决于递归树，而递归树取决于轴枢的选择。树越平衡，递归次数越少。
 
 而对分区的长短处理顺序，影响的是递归时对栈的使用内存，而不是递归次数
 
 - 避免人肉递归
-> 这是最易想到，也是效率最低的方法
+  > 这是最易想到，也是效率最低的方法
 - 找到最近最简方法，将其拆解成可重复解决的问题（重复子问题）
-> 从最初始出发，边穷举边归纳重复的东西（例如爬楼梯问题）
+  > 从最初始出发，边穷举边归纳重复的东西（例如爬楼梯问题）
 - 数学归纳法思维
 
-JAVA递归模板：
-``` java
+JAVA 递归模板：
+
+```java
 public void recur(int level, int param) {
   // terminator 跳出条件
   if(level > MAX_LEVEL) {
-    return 
+    return
   }
 
   // process current logic 逻辑代码
@@ -324,8 +391,87 @@ public void recur(int level, int param) {
 
 如果计算类的递归，那么递归结果应该返回计算值。如果是查找类的递归，那么递归结果应该返回结果。
 
+## 回溯（backtracking）
+回溯是一种试探算法，一步步的向前，每一步评估结果，一旦结果不满足条件，就即时终止并回退到上一步的状态。
+
+例如，组合总和问题（39）：
+``` javascript
+/**
+ * @param {number[]} candidates
+ * @param {number} target
+ * @return {number[][]}
+ */
+var combinationSum = function(candidates, target) {
+  const res = [];
+  helper(candidates, target, 0, [], res);
+  return res;
+};
+
+const helper = (candidates, target, start, solution, res) => {
+  if (target < 0) {
+    return;
+  }
+  if (target === 0) {
+    // 把当前结果复制出来存在最终结果中
+    res.push(solution.slice());
+    return;
+  }
+  for (let i = start; i < candidates.length; i++) {
+    solution.push(candidates[i]);
+    helper(candidates, target - candidates[i], i, solution, res);
+    solution.pop();
+  }
+};
+```
+再比如，N皇后问题（51）:
+``` javascript
+/**
+ * @param {number} n
+ * @return {string[][]}
+ */
+var solveNQueens = function(n) {
+  const columns = [];
+  const res = [];
+  backtracking(n, 0, columns, res);
+  return res;
+};
+
+const backtracking = (n, row, columns, res) => {
+  if (row === n) {
+    // 行已经用完了，说明已经排完了
+    res.push(
+      columns.map(v => {
+        const res2 = Array(n).fill(".");
+        res2[v] = "Q";
+        return res2.join("");
+      })
+    );
+    return;
+  }
+  for (let i = 0; i < n; i++) {
+    columns[row] = i;
+    if (check(row, i, columns)) {
+      // 在当前行满足条件的情况下，排下一行
+      backtracking(n, row + 1, columns, res);
+    }
+    columns[row] = -1;
+  }
+};
+
+const check = (row, col, columns) => {
+  for (let r = 0; r < row; r++) {
+    // 同列以及对角线不满足条件
+    if (columns[r] === col || row - r === Math.abs(columns[r] - col)) {
+      return false;
+    }
+  }
+  return true;
+};
+```
+
 ## 零星知识点
+
 - 加速数据经常采用的方式就是升维，多了一个维度就多了一些信息
-- 双指针的用法，可以同向进行（26删除排序数组重复项），也可以从两端开始往中间靠拢（11盛最多水容器）
-- 检测重复性用哈希数据结构（3无重复子串）
-- for/while循环中可提前返回（242有效的字母异位词）
+- 双指针的用法，可以同向进行（26 删除排序数组重复项），也可以从两端开始往中间靠拢（11 盛最多水容器）
+- 检测重复性用哈希数据结构（3 无重复子串）
+- for/while 循环中可提前返回（242 有效的字母异位词）
