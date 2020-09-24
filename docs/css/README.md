@@ -465,3 +465,14 @@ float、clear、vertical-align 不能影响 item
 
 - 浏览器自动优化
 - 使用硬件加速
+
+### LESS
+#### 配色
+- 补色`spin(@theme-color, 180)`
+- 三元色`spin(@theme-color, 120)`、`spin(@theme-color, -120)`
+> 想象一个圆形色盘，补色即找寻对面的色，即180°。
+- 当另一个种颜色，你想运用到时，可以与主题色进行混合，使之更和谐。`mix(@theme-color, mediumvioletred)`
+- 明暗度。比如按钮的不同状态。`lighten(@theme-color, 10%)`、`darken(@theme-color, 10%)`
+- 饱和度。越饱和越亮丽。`saturate(@theme-color, 10%)`、`desaturate(@theme-color, 10%)`
+- 对比色。比如背景与文字颜色。`contrast(@bg-color)`
+- 透明度。`fade(@theme-color, 10%)`，相当于设置`rgba(221,123,122,0.1)`

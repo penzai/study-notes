@@ -268,8 +268,8 @@ TCP 首部如下：
 - cookie 获取：设置 cookie 的 domain 属性
   > cookie 的 sameSite 属性分为三个值：
   >
-  > - `Strict` 非同源不发送 cookie。
-  > - `Lax` get 请求发送，post 不发送，img 与 script 标签不发送。
+  > - `Strict` 跨站不发送 cookie。
+  > - `Lax` a标签/link/form（get）发送，post/img标签/script标签/iframe/ajax不发送。
   > - `None` 都发送
 - 事件：使用 window.postMessage
 
@@ -397,3 +397,24 @@ DNS协议是应用层协议，运行在UDP协议之上，使用端口号53。利
 首先会在本机以及路由器使用递归查询找寻。然后再由本地dns服务器(通常是ISP那儿)使用迭代查询找到ip返给你。
 
 实现负载均衡时，由于缓存原因，会把已经失效的ip地址一直返回给你。
+
+## Header
+### Host/Referer/Origin/
+- Host。由`域名/ip + 端口号`组成，主要用于同一ip地址部署多个项目时，识别来源。
+- Referer。来源页面，由url地址组成（不含hash值）。常用于图片防盗链。
+- Origin。由`协议 + 域名/ip + 端口号`组成。用于CORS请求后者host请求（因此比host多了协议部分）。
+
+## 浏览器版本判断
+### IE
+只IE判断，使用api方式。
+``` javascript
+const isIE = () => document.documentMode
+```
+判断IE具体版本号，使用条件语句。
+``` javascript
+const isIE = version => {
+  const b = document.createElement('b')
+  b.innerHTML = `<!-- [if IE ${version}]>1<![endif]-->`
+  return b.innerHTML === '1' || b.innerHTML === 1
+}
+```

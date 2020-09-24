@@ -475,3 +475,21 @@ const check = (row, col, columns) => {
 - 双指针的用法，可以同向进行（26 删除排序数组重复项），也可以从两端开始往中间靠拢（11 盛最多水容器）
 - 检测重复性用哈希数据结构（3 无重复子串）
 - for/while 循环中可提前返回（242 有效的字母异位词）
+- 递归中如果有if句柄，会很容易陷入堆栈溢出，这时可以用迭代处理（34 在排序数组中查找元素的第一个和最后一个位置）
+``` javascript
+if (nums[p] === target) {
+  if (p === 0 || nums[p - 1] !== target) {
+    ret[0] = p;
+    return;
+  } else {
+    helper(nums, 0, p - 1, target);
+  }
+  if (p === nums.length - 1 || nums[p + 1] !== target) {
+    ret[1] = p;
+    return;
+  } else {
+    helper(nums, p + 1, hi, target);
+  }
+}
+```
+- 二分查找边界控制（同上34）
