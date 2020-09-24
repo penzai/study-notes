@@ -186,13 +186,41 @@ const insertionSort = (arr) => {
 ### 归并排序（merge sort）
 
 分治策略（重点在合）
-`O(nlogn)`
+不超过 O(nlogn)
 
-### 拓扑排序 (topological sort)
+``` javascript
+const mergeSort = (arr, lo, hi) => {
+  if(lo >= hi) return
+
+  const mid = Math.floor(lo + (hi - lo) / 2)
+  console.log(mid)
+  mergeSort(arr, lo, mid)
+  mergeSort(arr, mid + 1, hi)
+
+  merge(arr, lo, mid, hi)
+}
+
+const merge = (arr, lo, mid, hi) => {
+  const temp = arr.slice()
+  let i = lo, j = mid + 1, k = lo
+  while(k  <= hi) {
+    if(i > mid) {
+      arr[k++] = temp[j++]
+    } else if(j > hi) {
+      arr[k++] = temp[i++]
+    } else if(temp[i] <= temp[j]) {
+      arr[k++] = temp[i++]
+    } else if(temp[i] > temp[j]) {
+      arr[k++] = temp[j++]
+    }
+  }
+}
+```
 
 ### 快速排序 (quick sort)
 
 O(n^2)/Θ(nlogn)，分治策略（重点在分），不稳定，就地
+空间复杂度：O(logn)
 
 方案一：两个指针向中间靠，通过空闲元素来进行交换，最后把轴点交换到中间
 
@@ -236,6 +264,10 @@ const partition = (arr, lo, hi) => {
   return mi;
 };
 ```
+
+### 拓扑排序 (topological sort)
+
+
 
 ### 选择排序（selection sort）
 
