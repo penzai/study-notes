@@ -1,6 +1,6 @@
 # Javascript
 ## 起源
-ECMA国际（前身为欧洲计算机制造协会）在标准ECMA-262中定义了一种脚本语言规范ECMAScript。JavaScript实现了它，类似还有微软实现的JScript。
+ECMA国际（前身为欧洲计算机制造协会）在标准ECMA-262中定义了一种脚本语言规范ECMAScript。JavaScript实现了它，类似还有微软实现的JScript，服务端实现的nodejs等都是对这种规范的扩展。
 
 ## 数据类型
 
@@ -886,6 +886,23 @@ p 本身并不是匹配结果，它只是匹配的条件。例如你要匹配的
 - 主进程（即整体代码）属于`macrotasks`（`tasks`）。待执行完毕才会去寻找`microtask` (主动使用`.click()`触发事件，不属于异步！此时并没结束主进程，所以如果有事件冒泡，这时会先冒完，而且此时`MutationObserver`处于`pending`状态，无法多次实现)
 - `js`通过事件循环（`event loop`）机制来定期访问异步任务队列
 - `macroTasks`的任务，一次循环只处理一次（比如嵌套`setTimeout`)，而`microtask`队列能处理多次（比如`Promise`的`then`回调）
+
+
+事件循环是**浏览器的JavaScript运行时环境**的一部分，是为了让JS引擎更好的处理代码（异步并发）的一种模型或者叫做机制。
+> 因此浏览器的setTimeout、XHR等是以异步方式实现，来支撑这种模型。
+
+> JS引擎即V8、JavascriptCore、SpiderMonkey。主要实现ECMAScript标准。这是Engine。而运行时环境即浏览器、node，属于runtime。
+
+JS引擎执行时，会利用到Stack与Heap，Heap主要存储一些非结构化数据，比如对象。而Stack，JS引擎在执行代码时会将执行上下文（也可以称作函数帧）压入其中，当Stack为空，就代表当前主线程空闲。
+> ???主线程是否也会产生第一帧？
+
+还有一个Queue，也称消息队列，异步操作会往里面添加一个又一个的事件操作，等待JS主线程空闲的时候执行。具体执行过程为：
+主线程 + 微任务 + 宏任务 + 微任务...循环下去。
+
+JS主线程未空闲时，其它操作会被阻塞，比如点击事件响应。且JS主线程与渲染线程是独立的。
+
+> 关于点击事件，
+
 
 **宏任务 macro-task**（由宿主发起）
 
