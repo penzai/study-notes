@@ -500,6 +500,29 @@ const check = (row, col, columns) => {
   return true;
 };
 ```
+## 二分法
+常用写法，主要领略**左闭右开**区间的魅力。
+``` python
+def bisect_left(arr, lo, hi, target):
+    while lo < hi:
+        mid = lo + (hi - lo) // 2
+        if arr[mid] < target: lo = mid + 1
+        else: hi = mid
+    return lo 
+```
+
+> 左闭右开。循环后lo = hi。
+
+如何用lower_bound和upper_bound在[first, last)完成所有四种binary search (上/下界，开/闭区间)？
+
+- lower_bound(value)本身找的是x >= value的下界，若为last则不存在；
+- upper_bound(value)本身找的是x > value的下界，若为last则不存在；
+
+因为区间是离散的，所以：
+- lower_bound(value) - 1 即为x < value的上界，若为first - 1则不存在；
+- upper_bound(value) - 1 即为x <= value的上界，若为first - 1则不存在。
+
+
 
 ## 零星知识点
 
