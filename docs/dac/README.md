@@ -501,7 +501,8 @@ const check = (row, col, columns) => {
 };
 ```
 ## 二分法
-常用写法，主要领略**左闭右开**区间的魅力。
+常用写法，主要领略**左闭右开**区间加上`lo = mid + 1和hi = mid`组合的魅力。前者方便循环起始值设置，后者方便处理数组长度为1的情况。
+> 参考[知乎回答](https://www.zhihu.com/question/36132386/answer/530313852)
 ``` python
 def bisect_left(arr, lo, hi, target):
     while lo < hi:
@@ -516,8 +517,6 @@ def bisect_right(arr, lo, hi, target):
       if target < arr[mid]: hi = mid
       else: lo = mid + 1
 ```
-
-> 左闭右开。循环后lo = hi。
 
 如何用lower_bound和upper_bound在[first, last)完成所有四种binary search (上/下界，开/闭区间)？
 
