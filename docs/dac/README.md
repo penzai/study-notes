@@ -509,6 +509,12 @@ def bisect_left(arr, lo, hi, target):
         if arr[mid] < target: lo = mid + 1
         else: hi = mid
     return lo 
+
+def bisect_right(arr, lo, hi, target):
+    while lo < hi:
+      mid = lo + (hi - lo) // 2
+      if target < arr[mid]: hi = mid
+      else: lo = mid + 1
 ```
 
 > 左闭右开。循环后lo = hi。
