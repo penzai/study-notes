@@ -1328,3 +1328,11 @@ node 中的模块缓存对象：
 ### 区别
 
 commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖关系，预留好了要 export 的对象的内存，在具体执行时再进行填值。但是打包工具是把 esModule 打包成 commonjs 的模块。
+
+
+## Blob 、 File 、 Data URL
+- Data URL，即以`data:`协议开头的URL，故名思议，就是地址本身代表了内容。当为非文本时，即使用base64编码标识，常见于图片。
+- Blob，表示一个只读原始的数据的类文件对象。
+- File，继承自Blob，并提供了一些额外的元数据，例如：name、lastModified等。
+
+### blob
