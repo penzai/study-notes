@@ -252,6 +252,14 @@ TCP 首部如下：
 - 读取那些需要回流的值时，用变量缓存。
 - 使用requestAnimatinFrame执行动画，transfrom操作动画
 
+#### 帧
+浏览器刷新率一般为60HZ，即一秒钟刷新60次，所以每次的间隔为16.6ms，叫一帧。在每一帧中，浏览器会完成task + microTask + task2 + microTask2 + ... +render的操作（这里任务数不定）。
+
+所以如果task任务过长，那么这一帧就没有render，就会卡顿即掉帧。
+
+而requestAnimationFrame则为在每一帧render前执行，所以动画常使用此函数，保证效果最好。
+
+requestIdleCallback则为在render之后，如果还有剩余时间（整个过程时间未超过16.6ms）,就执行此函数任务。
 
 ## WEB 安全
 
