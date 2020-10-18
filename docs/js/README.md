@@ -1356,3 +1356,5 @@ commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖�
 - File，继承自Blob，并提供了一些额外的元数据，例如：name、lastModified等。
 
 ### blob
+## Reflect
+Reflect是一个内置对象，它提供了拦截和操作对象的api，类似于Math。
