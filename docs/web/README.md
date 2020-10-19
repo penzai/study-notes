@@ -284,8 +284,9 @@ requestIdleCallback则为在render之后，如果还有剩余时间（整个过�
 如果是要获取数据，可以使用：
 
 1. JSONP
-2. CORS
+2. CORS（post请求）
 3. nginx 反向代理
+4. 设置crossOrigin属性（html元素，script/img/video等）
 
 TODO: 待实践验证
 
