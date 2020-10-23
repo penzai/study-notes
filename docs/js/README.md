@@ -915,6 +915,7 @@ long(); //在这期间点击按钮
 
 // 最后输出为：btn clik -> setTimeout
 ```
+> 另外，人工合成的事件的回调中throw error并不会中断当前线程。
 
 
 **宏任务 macro-task**（由宿主发起）
@@ -1211,10 +1212,17 @@ const factorial = (v) => {
 
 ## 内存管理
 
-### GC（Garbage Collection）
+### 垃圾回收GC（Garbage Collection）
 
 - 引用计数（reference counting）。缺点：无法解决循环引用。
-- 标记清除（mark and sweep algorithm）
+- 标记-清除（mark and sweep algorithm）
+
+堆中分为新生代和老生代两个区域。
+
+#### 老生代
+存放持久对象，由主垃圾回收器管理。
+#### 新生代
+存放临时对象，由副垃圾回收器管理。
 
 ### 常见内存泄漏
 
@@ -1349,10 +1357,30 @@ node 中的模块缓存对象：
 
 commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖关系，预留好了要 export 的对象的内存，在具体执行时再进行填值。但是打包工具是把 esModule 打包成 commonjs 的模块。
 
-
-## Blob 、 File 、 Data URL
+## 文件
+### Blob 、 File 、 Data URL 、 ArrayBuffer
 - Data URL，即以`data:`协议开头的URL，故名思议，就是地址本身代表了内容。当为非文本时，即使用base64编码标识，常见于图片。
 - Blob，表示一个只读原始的数据的类文件对象。
 - File，继承自Blob，并提供了一些额外的元数据，例如：name、lastModified等。
+- ArrayBuffer，ArrayBuffer对象用来表示通用的、固定长度的原始二进制数据缓冲区。我们可以通过new ArrayBuffer(length)来获得一片连续的内存空间，它不能直接读写，但可根据需要将其传递到TypedArray视图或 DataView 对象来解释原始缓冲区。实际上视图只是给你提供了一个某种类型的读写接口，让你可以操作ArrayBuffer里的数据。TypedArray需指定一个数组类型来保证数组成员都是同一个数据类型，而DataView数组成员可以是不同的数据类型。
 
-### blob
+  TypedArray视图的类型数组对象有以下几个:
+
+  - Int8Array：8位有符号整数，长度1个字节。
+  - Uint8Array：8位无符号整数，长度1个字节。
+  - Uint8ClampedArray：8位无符号整数，长度1个字节，溢出处理不同。
+  - Int16Array：16位有符号整数，长度2个字节。
+  - Uint16Array：16位无符号整数，长度2个字节。
+  - Int32Array：32位有符号整数，长度4个字节。
+  - Uint32Array：32位无符号整数，长度4个字节。
+  - Float32Array：32位浮点数，长度4个字节。
+  - Float64Array：64位浮点数，长度8个字节。
+
+  Blob和ArrayBuffer之间可以进行转换。
+
+  Blob -> ArrayBuffer，利用FileReader的`readAsArrayBuffer()`读取，在onload事件中的result即为结果。
+
+  ArrayBuffer -> Blob / File，直接`new Blob([u8Buf], { type: 'text/html' })`
+
+### URL.createObjectURL()
+该方法创建一个DOMString，表示指定的File或Blob对象，这个URL的生命周期和document绑定。

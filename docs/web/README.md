@@ -132,6 +132,8 @@ function getH(el) {
 
 通过域名找寻 ip 地址
 
+在如今的网络之下，各网站都会接入cdn，来进行内容分发，这时`智能调度DNS`系统就会根据用户的不同分配不同的“边缘”服务器（CNAME域名导向，网站域名 -> CDN提供的域名 -> “边缘”服务器ip），让更快的进行访问。
+
 #### 顺序
 
 1. 浏览器缓存
@@ -426,3 +428,9 @@ const isIE = version => {
   return b.innerHTML === '1' || b.innerHTML === 1
 }
 ```
+
+## 新星技术
+- Web Assembly，又称wasm，是一种实验性的低级语言。旨在浏览器里提供接近本地的速度运行其它低级语言。如c。
+- Web Worker，通过使用Worker对象，可以构建一个独立于主线程之外的后台线程，但有很多限制。
+- Service Worker，运行在浏览器背后的脚本，可以进行资源和网络上的操作。所以常用做离线缓存（pwa）、数据推送。
+- Web Component，允许自定义HTML标签，也就是组件，会以shadow dom的方式加入到DOM中。
