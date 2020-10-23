@@ -82,6 +82,8 @@ long(); //在这期间点击按钮
 
 // 最后输出为：btn clik -> setTimeout
 ```
+> 另外，人工合成的事件的回调中throw error并不会中断当前线程。
+
 
 **宏任务 macro-task**（由宿主发起）
 
