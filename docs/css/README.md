@@ -322,7 +322,7 @@ div {
 常用简写形式：
 
 ```css
-background: url(图片地址) position属性/size属性 重复属性;
+background: 背景色 url(图片地址) position属性/size属性 重复属性;
 ```
 
 ### background-position
