@@ -1,6 +1,24 @@
 # Javascript
 ## 起源
-ECMA国际（前身为欧洲计算机制造协会）在标准ECMA-262中定义了一种脚本语言规范ECMAScript。JavaScript实现了它，类似还有微软实现的JScript，服务端实现的nodejs等都是对这种规范的扩展。
+ECMA International（前身为欧洲计算机制造协会）在标准ECMA-262中定义了一种脚本语言规范ECMAScript。JavaScript实现了它，类似还有微软实现的JScript，服务端实现的nodejs等都是对这种规范的扩展。
+### Engine
+指JavaScript引擎，比如V8、SpiderMonkey等。负责解释代码并执行。
+
+大概过程：
+1. byte stream decoder解码代码为一个个的token，传给Parser，然后构造出AST；
+2. Interpreter遍历AST，生成字节码；
+3. Profiler监视代码并对其进行优化；
+4. Compiler将字节码编译为机器可以读取的低级语言；
+
+js代码 -> (Parser) -> AST -> (Interpreter) -> ByteCode -> (Compiler) -> MachineCode
+### Runtime
+指Engine的具体运行环境，比如浏览器、NodeJS等。
+
+它们提供了一些额外的接口模块，且按**事件驱动**的方式调度任务（EventLoop）。
+### 单线程
+因为js面对的应用大部分是I/O密集型应用，例如文件读写操作硬盘、网络请求操作网卡，所以使用单线程较为方便（cpu大部分很闲，事情交给不同的线程在处理）。
+
+如果是CPU密集型应用，那么使用功能多线程就较为更好；
 
 ## 数据类型
 
