@@ -1315,6 +1315,10 @@ commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖�
 ## 文件
 ### Blob 、 File 、 Data URL 、 ArrayBuffer
 - Data URL，即以`data:`协议开头的URL，故名思议，就是地址本身代表了内容。当为非文本时，即使用base64编码标识，常见于图片。
+
+  Base64 -> Blob，先利用atob函数还原base64数据区域的内容，得到一个字符串。然后依次遍历字符串，利用charCodeAt提取每一个字符的Unicode码并放在Uint8Array中，最后直接使用new构建Blob或者文件。
+
+  Blob/File -> Base64，
 - Blob，表示一个只读原始的数据的类文件对象。
 - File，继承自Blob，并提供了一些额外的元数据，例如：name、lastModified等。
 - ArrayBuffer，ArrayBuffer对象用来表示通用的、固定长度的原始二进制数据缓冲区。我们可以通过new ArrayBuffer(length)来获得一片连续的内存空间，它不能直接读写，但可根据需要将其传递到TypedArray视图或 DataView 对象来解释原始缓冲区。实际上视图只是给你提供了一个某种类型的读写接口，让你可以操作ArrayBuffer里的数据。TypedArray需指定一个数组类型来保证数组成员都是同一个数据类型，而DataView数组成员可以是不同的数据类型。
