@@ -538,3 +538,11 @@ const isIE = (version) => {
 - Web Worker，通过使用Worker对象，可以构建一个独立于主线程之外的后台线程，但有很多限制。
 - Service Worker，运行在浏览器背后的脚本，可以进行资源和网络上的操作。所以常用做离线缓存（pwa）、数据推送。
 - Web Component，允许自定义HTML标签，也就是组件，会以shadow dom的方式加入到DOM中。
+
+## 事件
+
+### 鼠标事件
+- mousemove，移动相关的事件(move/over/out/enter/leave)时，可以通过`e.relatedTarget`获取最近元素，不过浏览器会优化事件，因此这个鼠标移动的元素并不是连续的，移动太快会跳过中间的元素。
+- mouseup/mousedown，当元素没有在绑定元素之内时，放开鼠标并不会触发mouseup事件。
+- mouseover/mouseout，冒泡。
+- mouseenter/mouseleave，不冒泡，因此绑定元素之内的移动不会触发该事件。
