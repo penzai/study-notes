@@ -14,6 +14,9 @@
 
 浏览器渲染布局时，把每个元素都当做一个盒子来处理，所以盒是 css 渲染布局的对象和基本单位，一个页面就是由若干个盒组成。
 
+盒模型的解析方式分为标准盒模型和IE盒模型，通过`box-sizing`属性控制。
+> 虽然默认是标准盒模型content-box，但是IE盒模型border-box更符合常理。
+
 盒分为块级盒和行内级盒
 
 ### 格式化上下文
@@ -420,6 +423,7 @@ float、clear、vertical-align 不能影响 item
     display: block;
     visibility: hidden;
     height: 0;
+    clear: both;
   }
   ```
 

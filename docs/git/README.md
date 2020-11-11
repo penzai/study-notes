@@ -112,3 +112,22 @@ git rebase --continue
 - --all 显示所有
 - --p -2 查看最新 2 条的细节变动
 - --stat -2 查看最新 2 条的文件变动
+
+### 工作流
+#### Git flow
+最早的工作流，以master为总线，develop分支做版本开发，开发结束后就合并到master分支。
+
+常常会出现一些额外分支：
+- 功能分支（feature branch）
+- 修复bug（hotfix branch）
+- 预发分支（release branch）
+
+缺点是，不利于持续发布，一有改动就部署那种（因为这样的话master和开发分支就没什么区别了）。
+#### Github flow
+依然以master作为总线，当有任何改动结束后，就以pr的形式请求合并。
+
+缺点是，不利于版本发布。
+
+> 编者注：其实版本release后依然可以根据此分支来进行bug修复再pr，不知道为什么阮一峰老师这篇文章要这么说。这种方式，我觉得其实更适合于双方陌生人的情况，毕竟有个review的过程。
+#### Gitlab flow
+依然以master作为总线，但是强调“上游”的规则，意思就是其他分支和版本都是由master生成出来。

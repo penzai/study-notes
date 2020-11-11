@@ -546,3 +546,9 @@ const isIE = (version) => {
 - mouseup/mousedown，当元素没有在绑定元素之内时，放开鼠标并不会触发mouseup事件。
 - mouseover/mouseout，冒泡。
 - mouseenter/mouseleave，不冒泡，因此绑定元素之内的移动不会触发该事件。
+
+e的相关属性：
+- `pageX`/`pageY`，相对于当前document而言（计算滚动部分）。
+- `clientX`/`clientY`，相对于浏览器窗口而言。
+- `screenX`/`screenY`，相对于屏幕而言。
+- `offsetX`/`offsetY`，相当于元素的padding edge而言。譬如offsetX为0的位置在padding-left最左边缘也就是border-left的最右边缘处。
