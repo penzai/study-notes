@@ -552,3 +552,17 @@ e的相关属性：
 - `clientX`/`clientY`，相对于浏览器窗口而言。
 - `screenX`/`screenY`，相对于屏幕而言。
 - `offsetX`/`offsetY`，相当于元素的padding edge而言。譬如offsetX为0的位置在padding-left最左边缘也就是border-left的最右边缘处。
+
+## 性能
+### 优化理念
+- 尽快接触到资源
+  - dns-prefetch
+  - cdn
+  - 缓存
+  - link标签的prefetch（空闲时处理）/preload（异步请求，完成后不执行，等待用的时候就可以马上执行，可用于加载图像字体脚本，一般用于重要资源）
+  - 脚本的async(异步请求，完成后立马执行)/defer（异步请求，最后执行），任何参数都不加（同步请求，完成后立马执行）
+- 减少资源大小
+  - jscss压缩
+  - gzip压缩
+  - 图片优化大小）
+- 时间分片“长任务”
