@@ -51,12 +51,10 @@
 
 事件循环是**浏览器的 JavaScript 运行时环境**的一部分，是为了让 JS 引擎更好的处理代码（异步并发）的一种模型或者叫做机制。
 
-> JS 引擎即 V8、JavascriptCore、SpiderMonkey。主要实现 ECMAScript 标准。这是 Engine。而运行时环境即浏览器、node，属于 runtime。
-
 JS 引擎执行时，会利用到 Stack 与 Heap，Heap 主要存储一些非结构化数据，比如对象。而 Stack，JS 引擎在执行代码时会将执行上下文（也可以称作函数帧）压入其中，当 Stack 为空，就代表当前主线程空闲。
 
-还有一个 Queue，也称消息队列，异步操作会往里面添加一个又一个的事件操作，等待 JS 主线程空闲的时候执行。具体执行过程为：
-主线程 + 微任务 + 宏任务 + 微任务...循环下去。
+还有一个 Queue，也称消息队列，异步操作会往里面添加一个又一个的事件操作，等待 JS 主线程空闲的时候，会取出队列的第一项处理，并在处理完成后弹出队列。具体执行过程为：
+主线程 + 微任务 + （是否渲染页面）+ 宏任务 + 微任务　+ （是否渲染页面）+...循环下去。
 
 JS 主线程未空闲时，其它操作会被阻塞，比如点击事件响应。且 JS 主线程与渲染线程是互斥的。
 
@@ -84,6 +82,31 @@ long(); //在这期间点击按钮
 ```
 > 另外，人工合成的事件的回调中throw error并不会中断当前线程。
 
+再次测试，依然不太明白到底什么时候进行UI渲染???。如下示例：
+``` javascript
+setTimeout(() => {
+  document.body.style.background = 'red'
+  console.log('main start')
+  function long() {
+    let i = 1e9 * 5
+    while(i-- > 0) {}
+  }
+  btn.addEventListener('click', () => {
+    console.log('btn click start');
+    long()
+    console.log('btn click end');
+    setTimeout(() => {
+      console.log('btn timeout click start');
+      long()
+      console.log('btn timeout click end');
+    }, 0)
+  })
+  long()
+  console.log('main end')
+}, 4000)
+```
+如果main start之后点击按钮，dom不会再main end之后变色，而是会在按钮事件执行完毕后变色，但是如果再按钮事件执行之中，再次点击按钮，dom依然是在按钮第一次结束后就变色。
+
 
 **宏任务 macro-task**（由宿主发起）
 
@@ -92,6 +115,8 @@ long(); //在这期间点击按钮
 - `I/O`
 - `setImmediate` (`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
 - `requestAnimationFrame`（浏览器）
+
+> setInterval，当任务队列里有此实例时，不会再向队列里添加事件。因为使用setTimeout模拟setInterval效果时，两者有本质的区别。前者间隔事件一定大于delay，而使用setTnterval不一定会。
 
 **微任务 microtask**（由 javascript 引擎发起）
 
