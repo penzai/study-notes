@@ -63,13 +63,17 @@ git reset hash值
 - `git branch --set-upstream-to 远程分支` 连接分支到远程分支
 
 ### pull
-
-尽量使用`git pull --rebase`，这样会使新的远程记录在你现有记录之前，从而避免丑陋的 mergexxxx。
-
+git fetch与git merge的组合
 ### merge
 
 - 为了处理一个问题，新建了 A 分支，有 3 条 commit。现在需要在 dev 分支上合并 A，使用 `git merge --squash`，可以将 A 分支所有的记录处理为待提交状态，你只需要填写本次 commit 信息（3 条 commit 不再存在于 dev 分支）。
+> 注意这里与git rebase -i的区别，使用merge + squash会更改作者为操作者而不是提交者，而rebase会保留commit的真实提交者。
 - 合并另一个分支的改动时，有时 git 会使用快进方式合并。为了保留合并的历史，使用 `git merge --no-ff`，让其强行关闭 fast-forward 方式。
+
+### rebase
+变基。使当前分支的基础变成最新的改动，这里与git pull的区别是，pull是简单的合并，会产生merge from xxx的commit，以及非线性的提交记录。而rebase不会。因为pull也有快捷操作`git pull --rebase`。
+
+另外也可以用于编辑还未push的commit，你可以整合commit、修改commit信息等操作，使用`git rebase -i HEAD~5`。
 
 ### stash
 
@@ -77,33 +81,6 @@ git reset hash值
 git stash
 git stash pop
 ```
-
-### rebase + merge
-
-```
-git checkout 你开发的分支
-git rebase master
-
-git checkout master
-git merge 你开发的分支
-```
-
-### 修改历史 commit
-
-1.运行命令弹出历史提交信息，
-
-```
-git rebase -i master~5
-```
-
-2.修改历史那一条的 pick 字段为 edit 字段，此时修改那一条历史变为最近一次提交，然后修改 3.回到如初
-
-```
-git rebase --continue
-```
-
-> 灵活运用 git stash 与 git stash pop 更方便对历史 commit 进行修改
-
 ### log
 
 - --oneline 压缩一行
