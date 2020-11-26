@@ -14,7 +14,20 @@ Watcher 即订阅类。实例拥有若干属性，比较重要的有 vm/getter/l
 
 Dep负责与对象打交道，拥有**收集depend**和**分发notify**两个核心方法。但都是对Watcher实例的操作。
 
-Watcher负责与真正的依赖打交道，例如虚拟DOM的改变，其它数据的改变等真实操作。在Watcher实例的生成过程中，就会触发依赖收集的过程，依赖挂载在Dep.target上。
+Watcher负责与真正的依赖打交道，例如虚拟DOM的改变，其它数据的改变等真实操作。
+- 构造函数会传入获取值的表达式`expOrFn`（顾名思义可知，这里也可以传入函数）和`cb`。
+- 核心方法
+  - get()，获取当前值
+  - update()，触发回调
+  - addDep()，让依赖dep收集自己
+
+
+#### 依赖收集过程
+1. xxx逻辑需要用到数据；
+2. 以此为回调函数建立watcher；
+3. 构造函数Watcher里触发get()方法；
+4. get()方法里触发已经设置好的机关，即defineReactive()里每个key的getter里的dep.depend()方法；
+5. 从Dep.target取到建好的watcher，然后再调用watcher.addDep()方法，收集完毕。
 
 ### 处理 data
 响应式一个对象，即使用new Observer(obj)，并产生一个实例挂在相应的obj上。构造函数里对数组和对象有不同的处理。
