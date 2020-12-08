@@ -493,3 +493,6 @@ float、clear、vertical-align 不能影响 item
 - 饱和度。越饱和越亮丽。`saturate(@theme-color, 10%)`、`desaturate(@theme-color, 10%)`
 - 对比色。比如背景与文字颜色。`contrast(@bg-color)`
 - 透明度。`fade(@theme-color, 10%)`，相当于设置`rgba(221,123,122,0.1)`
+
+## 滚动条设置
+设置是一个完整的设置，可以想象成浏览器内置的滚动条样式你不能不分修改，要改，就自己造一套滚动条样式。
