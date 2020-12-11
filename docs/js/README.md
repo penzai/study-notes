@@ -1319,7 +1319,10 @@ node 中的模块缓存对象：
 
 ### 区别
 
-commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖关系，预留好了要 export 的对象的内存，在具体执行时再进行填值。但是打包工具是把 esModule 打包成 commonjs 的模块。
+commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖关系（因此可以做tree-shaking），预留好了要 export 的对象的内存，在具体执行时再进行填值。但是打包工具是把 esModule 打包成 commonjs 的模块。
+
+### pkg的module、main字段
+通常一个包最稳的是提供一个用es5代码编写的commonjs规范文件，放在main字段，但是esModule规范有个好处可以做tree-shaking，因此增加了一个module字段来使用。
 
 ## 文件
 ### Blob 、 File 、 Data URL 、 ArrayBuffer

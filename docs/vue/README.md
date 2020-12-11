@@ -259,6 +259,29 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 - 重新渲染时，不需要为静态子树创建新节点，即克隆vnode。
 - patch方法里会调过。
 
+## vue实例方法实现原理
+### 数据类
+主要是弥补当一些检测不到的改变改变时，帮助触发回调。以及提供主动监听的功能。
+- vm.$watch
+- vm.$set
+- vm.$delete
+### 事件类
+在实例中保存了一个事件集合来缓存事件名以及事件回调。
+- vm.$on
+- vm.$off
+- vm.$once
+- vm.$emit
+
+### 生命周期类
+- vm.$forceUpate。主动触发组件级别的回调，即vm._watcher.update()。
+- vm.$destory。一个实例被销毁，需要处理以下内容：
+  - 断掉父与子关系
+  - 在所有收集了自己的dep中移除自己（watcher.tearDown()）
+  - 解绑指令
+  - 移除事件监听
+- vm.$nextTick。在一次主线程运行过程中，会触发各种watcher，它们都被安排在了一个队列中，这样同一个watcher运行多次，则最后只会通知组件一次。
+- vm.$mount
+
 ## 生命周期
 
 ### 创建阶段
