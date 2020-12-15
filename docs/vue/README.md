@@ -259,6 +259,12 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 - 重新渲染时，不需要为静态子树创建新节点，即克隆vnode。
 - patch方法里会调过。
 
+#### 组件与DOM概念
+- AST，字符串模板编译过程中的描述对象。与vue没多大关系。
+- VNode，vue里用来描述dom的对象，整个VNode构建起来的树，称为虚拟DOM。
+- h方法，即createElement，用来生成vnode的方法，使用方法大概为`h(组件，参数，children)`，组件参数支持HTML标签名、组件选项对象、一个返回前两种数据的async函数三种。
+- vue组件，最开始只是一个对象，这个对象通过h方法的传入再进行构造函数的生成，继而生成真实的组件实例。
+
 ## vue实例方法实现原理
 ### 数据类
 主要是弥补当一些检测不到的改变改变时，帮助触发回调。以及提供主动监听的功能。
