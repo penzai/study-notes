@@ -286,7 +286,15 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
   - 解绑指令
   - 移除事件监听
 - vm.$nextTick。在一次主线程运行过程中，会触发各种watcher，它们都被安排在了一个队列中，这样同一个watcher运行多次，则最后只会通知组件一次。
-- vm.$mount
+- vm.$mount。挂载到DOM上。优先级：render/template/el。
+### 全局API
+- Vue.extend。构建Vue的一个子类，我们常写的组件也是Vue的一个子类。
+- Vue.nextTick/Vue.set/Vue.delete。跟实例上方法功能一致。
+- Vue.directive/Vue.filter/Vue.component。方法本身的作用只用作**存储**和**取出**本身，执行是在其它地方。
+- Vue.use。存插件。
+- Vue.mixin。使默认的options添加传入的内容。
+- Vue.compile。编译字符串模板为渲染函数。
+- Vue.version。
 
 ## 生命周期
 
