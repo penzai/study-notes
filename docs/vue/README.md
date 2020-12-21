@@ -268,9 +268,9 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 ## vue实例方法实现原理
 ### 数据类
 主要是弥补当一些检测不到的改变改变时，帮助触发回调。以及提供主动监听的功能。
-- vm.$watch
-- vm.$set
-- vm.$delete
+- vm.$watch。新建一个watcher，创建过程中会自动收集依赖。
+- vm.$set。对于数组，使用splice触发；对于对象，在新增属性后，使用`ob.dep.notify()`触发;对于非响应式的数据，直接处理，不触发通知。
+- vm.$delete。删除后，使用`ob.dep.notify()`触发通知。对于非响应式的数据，直接处理，不触发通知。
 ### 事件类
 在实例中保存了一个事件集合来缓存事件名以及事件回调。
 - vm.$on
