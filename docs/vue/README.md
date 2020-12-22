@@ -268,7 +268,7 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 ## vue实例方法实现原理
 ### 数据类
 主要是弥补当一些检测不到的改变改变时，帮助触发回调。以及提供主动监听的功能。
-- vm.$watch。新建一个watcher，创建过程中会自动收集依赖。
+- vm.$watch。新建一个watcher，创建过程中会自动收集依赖。deep的实现只需要在收集阶段递归一次包含的值即可自动收集。
 - vm.$set。对于数组，使用splice触发；对于对象，在新增属性后，使用`ob.dep.notify()`触发;对于非响应式的数据，直接处理，不触发通知。
 - vm.$delete。删除后，使用`ob.dep.notify()`触发通知。对于非响应式的数据，直接处理，不触发通知。
 ### 事件类
@@ -297,29 +297,43 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 - Vue.version。
 
 ## 生命周期
+**初始化阶段**
+1. new Vue()
+2. 初始化Events和Lifecycle
 
-### 创建阶段
+-- `beforeCreate`
 
-- `beforeCreate` 钩子
-- injections ➡️prop ➡️methods ➡️data ➡️computed ➡️ watch ➡️ provide
-- `created`
-- 模板编译到 render 函数(vNode)
-  > 注：这个时候还未执行模板里的代码，只是编译成 render 函数。如果写了 render 函数，那么自动跳过这一步。
-- `beforeMount` 钩子
-- render 函数代码执行
-- `mounted` 钩子
+3. 初始化injections和reactivity，顺序：injections ➡️prop ➡️methods ➡️data ➡️computed ➡️ watch ➡️ provide
 
-### 更新阶段
+-- `created`
 
-- 依赖变更(或者执行`$forceUpdate`方法)
-- `beforeUpdate`
-- render 函数代码执行
-- `updated`
+**模板编译阶段**
 
-### 销毁阶段
+4. （模板编译为渲染函数，只在完整版才有这一过程）
 
-- `beforeDestroy`
-- `destroyed`
+**挂载阶段**
+
+-- `beforeMount`
+
+5. 运行render函数产生vNode，并挂载到真实DOM上
+
+-- `mounted`
+
+**更新阶段**
+
+-- `beforeUpdate`
+
+使用虚拟DOM重新渲染
+
+-- `updated`
+
+**卸载阶段**
+
+-- `beforeDestroy`
+
+卸载依赖追踪、子组件、事件监听器。同vm.$destroy()
+
+-- `destroyed`
 
 ### 父子组件的生命周期
 
