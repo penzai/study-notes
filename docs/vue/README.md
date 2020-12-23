@@ -279,8 +279,11 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
   - 在所有收集了自己的dep中移除自己（watcher.tearDown()）
   - 解绑指令
   - 移除事件监听
-- vm.$nextTick。在一次主线程运行过程中，会触发各种watcher，它们都被安排在了一个队列中，这样同一个watcher运行多次，则最后只会通知组件一次。
-- vm.$mount
+- ???vm.$nextTick。默认使一次js引擎的执行过程中的所有回调统一添加到微任务队列中（第一次用promise创建微任务,不支持就用setTimtout，后续往里面加回调函数）。也可以主动使用withMacroTask让其添加到任务队列中。
+
+  宏任务的实现依次测试使用setImmediate/MessageChannel/setTimeout。
+> DOM的更新回调也是使用此方法，因为一次可能触发多个watcher，等待所有watcher执行完毕，再进行DOM更新。因为如果要在nextTick中获取DOM内容，需要在数据改变之后定义（因为都是微任务）。
+- vm.$mount。vue实例的dom挂载优先级，render/template/el。
 
 ## 生命周期
 
@@ -450,3 +453,33 @@ modules: {
 
 - props 传递的数据，如果不是在原对象上面修改，那么直接紧接着使用`this.$refs.xxx.xxx()`方法里面访问到的还是旧值。需要使用`this.$nextTick()`;
 - props 传递为 null 时既不会触发 default 操作，也不会触发validator操作,同理在函数默认赋值时`function(a = 1){}`，传null也不会触发。
+- 如果一个组件里用了methods来渲染组件，那么此函数里不要更改组件的依赖数据。否则引起无限更新。
+``` vue
+<template>
+  <div>
+    <div :data="f2()"></div>
+    <div :data="f()">abc</div>
+  </div>
+</template>
+
+<script>
+// let c = 1;
+export default {
+  data() {
+    return {
+      d: []
+    };
+  },
+  methods: {
+    f2() {
+      this.d;
+    },
+    f() {
+      // this.d = 3; // 不触发无限更新
+      // this.d = c++; // 触发无限更新
+      // this.d.push(3); // 触发无限更新
+    }
+  }
+};
+</script>
+```
