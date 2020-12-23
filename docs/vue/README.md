@@ -259,12 +259,18 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 - 重新渲染时，不需要为静态子树创建新节点，即克隆vnode。
 - patch方法里会调过。
 
+#### 组件与DOM概念
+- AST，字符串模板编译过程中的描述对象。与vue没多大关系。
+- VNode，vue里用来描述dom的对象，整个VNode构建起来的树，称为虚拟DOM。
+- h方法，即createElement，用来生成vnode的方法，使用方法大概为`h(组件，参数，children)`，组件参数支持HTML标签名、组件选项对象、一个返回前两种数据的async函数三种。
+- vue组件，最开始只是一个对象，这个对象通过h方法的传入再进行构造函数的生成，继而生成真实的组件实例。
+
 ## vue实例方法实现原理
 ### 数据类
 主要是弥补当一些检测不到的改变改变时，帮助触发回调。以及提供主动监听的功能。
-- vm.$watch
-- vm.$set
-- vm.$delete
+- vm.$watch。新建一个watcher，创建过程中会自动收集依赖。deep的实现只需要在收集阶段递归一次包含的值即可自动收集。
+- vm.$set。对于数组，使用splice触发；对于对象，在新增属性后，使用`ob.dep.notify()`触发;对于非响应式的数据，直接处理，不触发通知。
+- vm.$delete。删除后，使用`ob.dep.notify()`触发通知。对于非响应式的数据，直接处理，不触发通知。
 ### 事件类
 在实例中保存了一个事件集合来缓存事件名以及事件回调。
 - vm.$on
@@ -279,36 +285,58 @@ while(newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
   - 在所有收集了自己的dep中移除自己（watcher.tearDown()）
   - 解绑指令
   - 移除事件监听
-- ???vm.$nextTick。默认使一次js引擎的执行过程中的所有回调统一添加到微任务队列中（第一次用promise创建微任务,不支持就用setTimtout，后续往里面加回调函数）。也可以主动使用withMacroTask让其添加到任务队列中。
+- vm.$nextTick。默认使一次js引擎的执行过程中的所有回调统一添加到微任务队列中（第一次用promise创建微任务,不支持就用setTimtout，后续往里面加回调函数）。也可以主动使用withMacroTask让其添加到任务队列中。
 
   宏任务的实现依次测试使用setImmediate/MessageChannel/setTimeout。
 > DOM的更新回调也是使用此方法，因为一次可能触发多个watcher，等待所有watcher执行完毕，再进行DOM更新。因为如果要在nextTick中获取DOM内容，需要在数据改变之后定义（因为都是微任务）。
-- vm.$mount。vue实例的dom挂载优先级，render/template/el。
+- vm.$mount。挂载到DOM上。优先级：render/template/el。
+### 全局API
+- Vue.extend。构建Vue的一个子类，我们常写的组件也是Vue的一个子类。
+- Vue.nextTick/Vue.set/Vue.delete。跟实例上方法功能一致。
+- Vue.directive/Vue.filter/Vue.component。方法本身的作用只用作**存储**和**取出**本身，执行是在其它地方。
+- Vue.use。存插件。
+- Vue.mixin。使默认的options添加传入的内容。
+- Vue.compile。编译字符串模板为渲染函数。
+- Vue.version。
 
 ## 生命周期
+**初始化阶段**
+1. new Vue()
+2. 初始化Events和Lifecycle
 
-### 创建阶段
+-- `beforeCreate`
 
-- `beforeCreate` 钩子
-- injections ➡️prop ➡️methods ➡️data ➡️computed ➡️ watch ➡️ provide
-- `created`
-- 模板编译到 render 函数(vNode)
-  > 注：这个时候还未执行模板里的代码，只是编译成 render 函数。如果写了 render 函数，那么自动跳过这一步。
-- `beforeMount` 钩子
-- render 函数代码执行
-- `mounted` 钩子
+3. 初始化injections和reactivity，顺序：injections ➡️prop ➡️methods ➡️data ➡️computed ➡️ watch ➡️ provide
 
-### 更新阶段
+-- `created`
 
-- 依赖变更(或者执行`$forceUpdate`方法)
-- `beforeUpdate`
-- render 函数代码执行
-- `updated`
+**模板编译阶段**
 
-### 销毁阶段
+4. （模板编译为渲染函数，只在完整版才有这一过程）
 
-- `beforeDestroy`
-- `destroyed`
+**挂载阶段**
+
+-- `beforeMount`
+
+5. 运行render函数产生vNode，并挂载到真实DOM上
+
+-- `mounted`
+
+**更新阶段**
+
+-- `beforeUpdate`
+
+使用虚拟DOM重新渲染
+
+-- `updated`
+
+**卸载阶段**
+
+-- `beforeDestroy`
+
+卸载依赖追踪、子组件、事件监听器。同vm.$destroy()
+
+-- `destroyed`
 
 ### 父子组件的生命周期
 
