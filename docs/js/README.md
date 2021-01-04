@@ -145,30 +145,22 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 - `NaN`与`NaN`，`===`返回 false，Object.is 返回 true
 
 #### 对象遍历
+古老的遍历方式，自然不能遍历出symbol属性。
+- for in。遍历自身和原型链上的可枚举属性。
+> 在继承关系中，手动设置的constructor会被遍历出来，引擎自己设置的不会被遍历出来。因此记得配置enumerable为false。
 
-##### for in
+以下是新的属性遍历方式，都有一个特点，那就是不再遍历原型链上的属性，这样更符合逻辑。
 
-含原型的可枚举属性。
+其中Object上分门别类了各种遍历。
+- Object.keys()、Object.values()、Object.entries()。自身的可枚举属性。
+- Object.getOwnPropertyNames()。自身的可枚举与不可枚举属性。
+- Object.getOwnPropertySymbols()。自身的 symbol 属性。
 
-##### Reflect.ownKeys()
+最后在内置对象Reflect上挂载了一个综合的方法，当然，依然不可遍历原型链的属性。
+- Reflect.ownKeys()。自身的可枚举、不可枚举、symbol 属性。
 
-自身的可枚举、不可枚举、symbol 属性。
-
-##### Object.keys()
-
-自身的可枚举属性。
-
-##### Object.getOwnPropertyNames()
-
-自身的可枚举与不可枚举属性。
-
-##### Object.getOwnPropertySymbols()
-
-自身的 symbol 属性。
-
-##### Object.values()与 Object.entries()
-
-与 Object.keys()成对，所以一样，自身的可枚举属性的属性值。
+#### 遍历顺序
+js引擎本身是散乱无序的，浏览器实现时加入了自己的顺序规则。
 
 - 首先遍历所有数值键，按照数值升序排列。
 - 其次遍历所有字符串键，按照加入时间升序排列。
@@ -581,7 +573,7 @@ function object(o) {
 
 ```javascript
 function createAnother(original) {
-  var clone = object(original);
+  var clone = Object.create(original);
   clone.sayHi = function() {
     alert("hi");
   };
@@ -594,21 +586,23 @@ function createAnother(original) {
 通过借用构造函数来继承属性，使用寄生式继承来继承超类的原型。
 
 ```javascript
-SubType.prototype = object(SuperType.prototype);
-SubType.prototype.constructor = SubType;
+SubType.prototype = Object.create(SuperType.prototype);
+Object.defineProperty(SubType.prototype, 'constructor', {
+  value: SubType
+});
 ```
 
 > 类的静态属性继承：`Object.setPrototypeOf(SubType, SuperType)`
 
 ### 原型
 
-原型，即[[prototype]]。目前最新的操作原型的方式如下，在早期我们只能使用 new 来操作原型（**\_proto**并不标准）：
+原型，即`[[prototype]]`。目前最新的操作原型的方式如下，在早期我们只能使用 new 一个要继承的实例来链接原型（__proto__在个浏览器中也没普及开来）。
 
 - Object.create，根据指定对象为原型创建新的对象。
 - Object.getPrototypeOf，获取原型
 - Object.setPrototypeOf，设置原型
 
-要产生一个变量 v，需要：
+要产生一个实例 v，需要：
 
 1. 能设置 v 的自有属性（要是能按一定逻辑设置就更好了）
 2. 能设置 v 的公有属性
@@ -616,26 +610,26 @@ SubType.prototype.constructor = SubType;
 js 用了以下东西来操作：
 
 1. 用一个函数 f 来设置自有属性，函数拥有逻辑，更贴切
-2. 一个对象 p，包含所有类 v 变量的公有属性
+2. 一个对象 p，包含所有类 v 实例的公有属性
 
 为了更加紧密、规范：
 
 1. 函数采用大写命名 F，别名构造函数
 2. 函数天生拥有一个属性`prototype`，来存储对象 p
 
-所以任何一个变量 v 就可以由一个构造函数 F 生成。
+所以任何一个实例 v 就可以由一个构造函数 F 生成。
 
 生成后的 v 怎么与构造函数关联呢。
 
 想当然的是 v 的一个属性指向构造函数 F，问题有两：
 
-- 该关联属性应该有所隐藏，不能算作 v 表现的东西
-- 找寻公有属性，需要多取一次值，需要 F.prototype，一次到没什么，当层级多了以后，这是一种不必要的浪费
+1. 该关联属性应该有所隐藏，不能算作 v 实际的东西，而且要能避免属性名冲突。
+2. 假如v与F已经建立了关系，那么要使用公有属性，需要找到F，然后调用 F.prototype.fn，不符合使用体验。
 
 js 采用了以下设置：
 
-1. 变量 v 拥有一个隐式原型`__proto__`
-2. `__proto__`直接指向公有属性 p，而不是构造函数 F，而出于又要能与构造函数 F 关联，所以把 F 存在了公有属性 p 的属性`constructor`中
+1. 变量 v 拥有一个隐式原型`[[prototype]]`，各个浏览器实现为`__proto__`属性来进行访问。
+2. `__proto__`直接指向公有属性 p，而不是构造函数 F，而出于又要能与构造函数 F 关联，所以把 F 存在了公有属性 p 的属性`constructor`中。
 
 至此，一切关联都理所当然。
 

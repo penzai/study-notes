@@ -350,9 +350,20 @@ while (newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 2. 初始化 Lifecycle、Events、Render
 > 这里的Lifecycle并不是指created/mounted这些，而是vm上一些属性的设置，比如$parent/$root等。
 
+> 初始化Events即初始化父组件传递给子组件的事件，在这里使用`.$on`绑定到子组件上，这样子组件才能触发，毕竟接下来的绑定state会有可能调用方法
+
 -- `beforeCreate`
 
-3. 初始化 Injections、State、Provide。顺序：injections ➡️prop ➡️methods ➡️data ➡️computed ➡️ watch ➡️ provide
+3. 初始化 Injections、State、Provide。顺序：injections ➡️props ➡️methods ➡️data ➡️computed ➡️ watch ➡️ provide
+> inject其实是自下而上的去实例的_provided属性中取值，然后设置到vm上（非响应式的设置）。
+
+> props的数据存在vm._props中，同时通过getter代理到vm上。且类型验证失败时**依然会赋值**，只是会有警告提示。
+
+> methods的内容会使用bind产生一个新的函数并设置到vm上。
+
+> data的key与props中的key冲突时，不会再设置。
+
+> computed的数据会存在vm._computedWatchers中，只不过value换成了对应的watcher；并且命名冲突时，不会设置；computed的响应与正常的不同，它的响应（数据变更时）并不会马上执行计算，而是等待别人来触发它，可能是一个其他的computed类watcher，也可能是组件渲染watcher，那么这里中间隔了一层，怎么衔接的呢。其实就在computed定义的get方法里，如果检测到全局的Dep.target，则会执行专门为计算属性制定的方法watcher.depend，来使所有computed watcher里的依赖都加上此时这个watcher（有点透传的意思）。
 
 -- `created`
 
