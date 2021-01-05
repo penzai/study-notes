@@ -35,29 +35,20 @@ vue 中的自定义事件以及 node 中的事件机制都是基于此模式。
   > 依赖不是在 get 方法里知道的（get 方法里只知道当前有没有依赖需要收集，而不是知道依赖具体是什么），是在每个具体的地方，例如模板解析、computed/watch 解析等地方，临时挂载到 Dep.target 上的操作。
 - 对于 DOM 的响应，主要利用事件等机制，监听到 DOM 的变化，然后修改数据。
 
-### Dep 与 Watcher
+### 收集依赖与触发依赖
+首先从数据本身触发，给与每个属性建立对应的收集器dep，用来存储依赖此数据的依赖watcher。响应式方法的主要工作就是让数据被获取时，说明目前有东西需要它的值，那么这个东西就应该被收集起来，这样自己数据变更时，就可以主动去告诉这些东西。
 
-Dep 即收集器，发布类。负责收集和分发，拥有属性 id/subs，depend 方法即调用 Watcher 实例的 addDep 方法去收集，notify 方法即调用 Watcher 实例的 update 方法
+> 这里是否收集依赖，是通过Dep.target是否有值来判断。
 
-Watcher 即订阅类。实例拥有若干属性，比较重要的有 vm/getter/lazy。
+回到代码实现，所有的操作都被转化成了watcher实例来表示，例如监听一个值，或者渲染一个组件等。然后指代一个数据，由收集器dep实例来代理。
 
-Dep 负责与对象打交道，拥有**收集 depend**和**分发 notify**两个核心方法。但都是对 Watcher 实例的操作。
+get方法中，当检测到Dep.target有值时，表示此时有一个watcher在使用这个数据，那么应该保存到dep中。过程为：dep.depend() -> watcher.addDep(dep) -> dep.addSub(watcher) -> dep保存到自己的容器中。绕一圈是因为wachter里也需要存储dep，来知道哪些收集器收集了自己，顺便判重。
 
-Watcher 负责与真正的依赖打交道，例如虚拟 DOM 的改变，其它数据的改变等真实操作。
+set方法中，也就是触发依赖的方式，即dep通知容器中的所有watcher，过程为：dep.notify() -> watcher.update() -> 注入更新队列 -> watcher.run() -> watcher.get()取值计算 -> watcher.cb()触发回调。
 
-- 构造函数会传入获取值的表达式`expOrFn`（顾名思义可知，这里也可以传入函数）和`cb`。
-- 核心方法
-  - get()，获取当前值
-  - update()，触发回调
-  - addDep()，让依赖 dep 收集自己
+watcher的expression属性代表观察的表达式（因为观察的可能是一个变量名也可能是一个函数）。
 
-#### 依赖收集过程
-
-1. xxx 逻辑需要用到数据；
-2. 以此为回调函数建立 watcher；
-3. 构造函数 Watcher 里触发 get()方法；
-4. get()方法里触发已经设置好的机关，即 defineReactive()里每个 key 的 getter 里的 dep.depend()方法；
-5. 从 Dep.target 取到建好的 watcher，然后再调用 watcher.addDep()方法，收集完毕。
+一个组件，对应一个render watcher，它把组件渲染的过程存在了watcher的expression属性之中。所以组件渲染函数并不是回调函数，这也是设计巧妙之处，利用表达式的计算即可让所用的响应式数据收集到自己。
 
 #### 依赖存放位置
 
@@ -363,7 +354,11 @@ while (newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 
 > data的key与props中的key冲突时，不会再设置。
 
-> computed的数据会存在vm._computedWatchers中，只不过value换成了对应的watcher；并且命名冲突时，不会设置；computed的响应与正常的不同，它的响应（数据变更时）并不会马上执行计算，而是等待别人来触发它，可能是一个其他的computed类watcher，也可能是组件渲染watcher，那么这里中间隔了一层，怎么衔接的呢。其实就在computed定义的get方法里，如果检测到全局的Dep.target，则会执行专门为计算属性制定的方法watcher.depend，来使所有computed watcher里的依赖都加上此时这个watcher（有点透传的意思）。
+> computed的数据会存在vm._computedWatchers中，只不过value换成了对应的watcher；并且命名冲突时，不会设置；这里要注意的是key只用来作为设置到实例vm上的代理属性名，而value才是watcher的expression。
+
+> computed的响应与正常的不同，依赖变更时并不会马上执行计算（因此Watcher专为此设计了lazy/dirty等属性），而是等待别人来触发它，可能是一个其他的computed watcher，也可能是render watcher（一个组件对应一个render watcher）。那么computed里的每个数据，与要使用这个computed的值，之间隔了一层，怎么衔接的呢。其实就在computed定义的get方法里，如果检测到全局的Dep.target，则会执行专门为计算属性制定的方法watcher.depend，来使所有computed watcher里的依赖都加上此时这个watcher（有点透传的意思）。这样computed watcher和新来的watcher都可以被同样的deps收集（前者在取值的时候就自然收集，后者因为是自己建立的get方法，因此需要自己做收集操作。）。
+
+> watcher就是正常的监听一个表达式，key是wacher的expression，value是watcher的回调函数。
 
 -- `created`
 
