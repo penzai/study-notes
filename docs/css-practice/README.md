@@ -337,83 +337,18 @@ body {
 ```
 
 ### 移动端 1px
+首先明确几个概念。
+- 物理像素。屏幕是由一个个的点构成的，那么这一行有多少个点，就是设备的物理像素。
+- 逻辑像素，设备独立像素，css像素，dips。给程序用的像素的最小单位，早期有多少物理像素就给你用多少，现在技术进步，1px的范围，可能有多个物理像素，这样显示同样的画面，就比单个的来得清晰。
+- 设备像素比，dpr。为`物理像素 / 设备独立像素`两值的比值，苹果视网膜屏幕产品dpr都大于2。
 
-简单版
+1px产生缘由，iphone6的物理像素是750，设计师肯定以这个标准设计，这样效果更好，那么750中的1px细线条，到了写程序时，就得写0.5，但是这个兼容性很不好用。由此产生了一系列对策。
 
-```css
-.item {
-  position: relative;
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 1px;
-    background-color: red;
-    transform: scaleY(0.5);
-  }
-}
-```
-
-精细版
-
-```css
-.min-device-pixel-ratio(@scale2, @scale3) {
-  @media screen and (min-device-pixel-ratio: 2),
-    (-webkit-min-device-pixel-ratio: 2) {
-    transform: @scale2;
-  }
-  @media screen and (min-device-pixel-ratio: 3),
-    (-webkit-min-device-pixel-ratio: 3) {
-    transform: @scale3;
-  }
-}
-
-.border-1px(@color: #DDD, @radius: 2px, @style: solid) {
-  &::before {
-    content: "";
-    pointer-events: none;
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    transform-origin: 0 0;
-    border: 1px @style @color;
-    border-radius: @radius;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    @media screen and (min-device-pixel-ratio: 2),
-      (-webkit-min-device-pixel-ratio: 2) {
-      width: 200%;
-      height: 200%;
-      border-radius: @radius * 2;
-      transform: scale(0.5);
-    }
-    @media screen and (min-device-pixel-ratio: 3),
-      (-webkit-min-device-pixel-ratio: 3) {
-      width: 300%;
-      height: 300%;
-      border-radius: @radius * 3;
-      transform: scale(0.33);
-    }
-  }
-}
-
-.border-top-1px(@color: #DDD, @style: solid) {
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    border-top: 1px @style @color;
-    transform-origin: 0 0;
-    .min-device-pixel-ratio(scaleY(0.5), scaleY(0.33));
-  }
-}
-```
+- 小数点，安卓不支持。
+- border-image。圆角颜色等修改不方便。
+- 设置viewport的scalable。全局影响太大。
+- box-shadow。利用渐变的效果，让1px的宽度，感知起来比1px小。
+- 伪元素 + scale(0.5)。占用伪元素，空元素如input不支持伪元素。
 
 ## 截断文本
 
