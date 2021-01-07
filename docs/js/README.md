@@ -1343,7 +1343,7 @@ commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖�
 - Base64 -> Blob，先利用atob函数还原base64数据区域的内容，得到一个字符串。然后依次遍历字符串，利用charCodeAt提取每一个字符的Unicode码并放在Uint8Array中，最后直接使用new构建Blob或者文件。
 - Blob/File -> Base64，使用FileReader的readAsDataURL接口
 - Blob -> ArrayBuffer，利用FileReader的`readAsArrayBuffer()`读取，在onload事件中的result即为结果。
-- ArrayBuffer -> Blob / File，直接`new Blob([u8Buf], { type: 'text/html' })`
+- ArrayBuffer -> Blob / File，直接`new Blob([uint8Array], { type: 'text/html' })`，注意uint8Array外层的方括号。
 ### URL.createObjectURL()
 该方法创建一个DOMString，表示指定的File或Blob对象，这个URL的生命周期和document绑定。
 

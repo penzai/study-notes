@@ -416,6 +416,21 @@ vue运行期间发生的所有错误都会统一交给handlerError函数处理�
 - 父组件会等待子组件挂载
 - 当子组件完成挂载后，父组件会主动执行一次 beforeUpdate/updated 钩子函数
 
+
+
+
+
+## 指令
+指令的本质是为了让你更集中的修改DOM相关的内容。而不是分散在其它地方。
+#### 内部指令
+- v-if/v-show指令，在render函数中用了三元运算符和遍历操作来做逻辑，以此实现生成不同的vnode。
+- v-show。按自定义指令格式注入一个指令。
+- v-on。传入到on属性之中，会有一个专门的函数updateDOMListeners来对比新旧vnode的事件，以此来绑定和解绑。
+#### 自定义指令
+
+提供bind/inserted/update/componentUpdated/unbind等钩子函数。
+
+指令的钩子函数借助于虚拟DOM的钩子函数来实现。init/create/active/insert/prepatch/update/postpatch/destroy/remove。
 ## 插槽
 
 - slot 合并
