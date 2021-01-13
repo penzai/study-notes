@@ -430,7 +430,7 @@ vue运行期间发生的所有错误都会统一交给handlerError函数处理�
 
 提供bind/inserted/update/componentUpdated/unbind等钩子函数。
 
-指令的钩子函数借助于虚拟DOM的钩子函数来实现。init/create/active/insert/prepatch/update/postpatch/destroy/remove。
+指令的钩子函数借助于虚拟DOM的钩子函数来实现。虚拟DOM在渲染时会触发以下钩子函数。init/create/active/insert/prepatch/update/postpatch/destroy/remove。
 ## 插槽
 
 - slot 合并
@@ -604,3 +604,7 @@ export default {
 };
 </script>
 ```
+- 同组件路由切换不刷新
+  - 在beforeRouteUpdate钩子函数里处理逻辑（推荐）
+  - 观察路由对象`$route`
+  - 为route-view组件添加key
