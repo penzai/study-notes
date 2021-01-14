@@ -47,7 +47,7 @@
 - Javascript 引擎线程。
 > GUI线程与Javascript引擎线程互斥！
 
-### 事件循环 event loop
+## 事件循环（event loop）
 
 事件循环是**浏览器的 JavaScript 运行时环境**的一部分，是为了让 JS 引擎更好的处理代码（异步并发）的一种模型或者叫做机制。
 
@@ -110,7 +110,7 @@ setTimeout(() => {
 如果main start之后点击按钮，dom不会再main end之后变色，而是会在按钮事件执行完毕后变色，但是如果再按钮事件执行之中，再次点击按钮，dom依然是在按钮第一次结束后就变色。
 
 
-**宏任务 macro-task**（由宿主发起）
+**宏任务/任务队列/task/macroTask**（由宿主发起）
 
 - `setTimeout`
 - `setInterval`
@@ -120,13 +120,13 @@ setTimeout(() => {
 
 > setInterval，当任务队列里有此实例时，不会再向队列里添加事件。因为使用setTimeout模拟setInterval效果时，两者有本质的区别。前者间隔事件一定大于delay，而使用setTnterval不一定会。
 
-**微任务 microtask**（由 javascript 引擎发起）
+**微任务 microTask**（由 javascript 引擎发起）
 
 - `Promise`的`then`、`catch`、`finally`
 - `process.nextTick`（`node`）
 - `MutationObserver`（浏览器）
 
-### `process.nextTick`
+#### `process.nextTick`
 
 应用例子：用于事件监听，防止触发一个操作时，事件还没绑定。
 
@@ -136,14 +136,18 @@ const server = net.createServer(() => {}).listen(8080);
 server.on("listening", () => {});
 ```
 
+## HTML
+标记语言是一种将文本和一些其他信息结合的计算机文字编码。在这基础之上加入超链接，即构成了 HTML。与 HTML 一起构建网页的还有 CSS 和 JavaScript，HTML 和 CSS 的标准主要由 W3C 组织维护。
 ## DOM
+DOM，全称document object model，文档对象模型。
 
-> 标记语言是一种将文本和一些其他信息结合的计算机文字编码。在这基础之上加入超链接，即构成了 HTML。与 HTML 一起构建网页的还有 CSS 和 JavaScript，HTML 和 CSS 的标准主要由 W3C 组织维护。
+浏览器遇到MIME类型为text/html的文件时，会当做html来解析。解析过程为，每当遇见一个标签就会使用内置的类（HTMLDivElement等）构建一个对象来表示这个标签。依次读完文件，那么各个标签彼此相连嵌套，就构成了DOM树结构。
 
-DOM，即文档对象模型。是处理可扩展标记语言（XML 和 HTML 等）的标准编程接口。
+而这个DOM对象，也包含一些方法（appendChild等）。所以DOM也是处理可扩展标记语言（XML 和 HTML 等）的标准编程接口。
 
-DOM 不仅能用 js 实现，比如 python 也一样能实现。
+> DOM 不仅能用 js 实现，比如 python 也一样能实现。
 
+### DOM API
 **`API = DOM + Javascript`**
 
 API 暴露给开发者使用，后面的结合由浏览器来实现。
@@ -152,13 +156,30 @@ API 暴露给开发者使用，后面的结合由浏览器来实现。
 
 为了更独立的使用 DOM，可以给 DOM 中的节点添加另外一颗类 DOM 树（取名叫 shadowDOM），此树与常规 DOM 树不同（以 shadow 的形式存在，但是内部就是 dom 树），且可以控制被外界访问还是不能访问（比如 video 标签的 shadowDOM 部分就不能被外界访问）。
 
-## HTPP2
+## CSSOM
+CSSOM，全称cascading style sheets object model，css对象模型。
 
-- 二进制传输
-- 多路复用，
-- header 压缩，双方还会 cache 一份 header 数据
-- 服务端推送
+所有需要显示的DOM元素（排除head，title等这些标签后的元素），都会根据选择器selector来计算最终样式，样式来自于各处（外部文件，style标签，内联，user-agent等）。因此CSSOM里的主要数据就是与css属性值。
 
+然后又因为css样式有继承关系（本来名字就叫层叠样式表），因此使用类似DOM tree形式的树形结构来表示。
+
+### CSSOM API
+CSSOM对开发者是隐藏的，但是由于在渲染树生成过程中，组合了DOM与CSSOM，因此可以通过DOM获取到DOM元素后，再使用相关的API操作css。
+
+更推荐使用新出的CSS Typed OM。
+``` javascript
+// 使用DOM操作
+el.style.opacity = 0.3;
+typeof el.style.opacity === 'string' // Ugh. A string!?
+
+// 使用CSS Typed OM操作
+el.attributeStyleMap.set('opacity', 0.3);
+typeof el.attributeStyleMap.get('opacity').value === 'number' // Yay, a number!
+```
+## Render Tree
+渲染树Render Tree也是一种树形结构，浏览器计算布局以及绘制到屏幕就是处理这棵树。
+
+渲染树是由DOM和CSSOM计算而成，比如会剔除那些`display:none`以及0尺寸的元素。
 ## 渲染
 
 - script 会阻塞渲染
