@@ -138,54 +138,7 @@ server.on("listening", () => {});
 
 ## HTML
 标记语言是一种将文本和一些其他信息结合的计算机文字编码。在这基础之上加入超链接，即构成了 HTML。与 HTML 一起构建网页的还有 CSS 和 JavaScript，HTML 和 CSS 的标准主要由 W3C 组织维护。
-## DOM
-DOM，全称document object model，文档对象模型。
 
-浏览器遇到MIME类型为text/html的文件时，会当做html来解析。解析过程为，每当遇见一个标签就会使用内置的类（HTMLDivElement等）构建一个对象来表示这个标签。依次读完文件，那么各个标签彼此相连嵌套，就构成了DOM树结构。
-
-而这个DOM对象，也包含一些方法（appendChild等）。所以DOM也是处理可扩展标记语言（XML 和 HTML 等）的标准编程接口。
-
-> DOM 不仅能用 js 实现，比如 python 也一样能实现。
-
-### DOM API
-**`API = DOM + Javascript`**
-
-API 暴露给开发者使用，后面的结合由浏览器来实现。
-
-### shadow DOM
-
-为了更独立的使用 DOM，可以给 DOM 中的节点添加另外一颗类 DOM 树（取名叫 shadowDOM），此树与常规 DOM 树不同（以 shadow 的形式存在，但是内部就是 dom 树），且可以控制被外界访问还是不能访问（比如 video 标签的 shadowDOM 部分就不能被外界访问）。
-
-## CSSOM
-CSSOM，全称cascading style sheets object model，css对象模型。
-
-所有需要显示的DOM元素（排除head，title等这些标签后的元素），都会根据选择器selector来计算最终样式，样式来自于各处（外部文件，style标签，内联，user-agent等）。因此CSSOM里的主要数据就是与css属性值。
-
-然后又因为css样式有继承关系（本来名字就叫层叠样式表），因此使用类似DOM tree形式的树形结构来表示。
-
-### CSSOM API
-CSSOM对开发者是隐藏的，但是由于在渲染树生成过程中，组合了DOM与CSSOM，因此可以通过DOM获取到DOM元素后，再使用相关的API操作css。
-
-更推荐使用新出的CSS Typed OM。
-``` javascript
-// 使用DOM操作
-el.style.opacity = 0.3;
-typeof el.style.opacity === 'string' // Ugh. A string!?
-
-// 使用CSS Typed OM操作
-el.attributeStyleMap.set('opacity', 0.3);
-typeof el.attributeStyleMap.get('opacity').value === 'number' // Yay, a number!
-```
-## Render Tree
-渲染树Render Tree也是一种树形结构，浏览器计算布局以及绘制到屏幕就是处理这棵树。
-
-渲染树是由DOM和CSSOM计算而成，比如会剔除那些`display:none`以及0尺寸的元素。
-## 渲染
-
-- script 会阻塞渲染
-- link 在没有 script 的情况下不会阻塞渲染，有 script 的情况下会阻塞
-- 两种标签均可设置异步避免阻塞，script 使用 defer/sync，link 使用`media="print"`。
-  > async 加载后立即执行，没有顺序可言。script 按顺序异步加载，所以比 async 慢。
 
 ## 事件模型
 
@@ -284,7 +237,7 @@ function getH(el) {
   <meta http-equiv="x-dns-prefetch-control" content="on" />
   <link rel="dns-prefetch" href="//example.com" />
   ```
-- 异步下载 js，`script`标签上使用`defer`与`async`。两者均会异步下载 js；区别在于 defer 会在 dom 解析完后执行 js，不阻塞 DOM 解析；而 async 会在下载完成后就立即执行，阻塞 DOM 解析；
+- 异步下载 js
 - 对资源使用 prelaod 和 prefetch。
 - CDN，通过在现有的 Internet 中增加一层新的 CACHE(缓存)层，将网站的内容发布到最接近用户的网络”边缘“的节点
 - HTTPDNS，使用 HTTP 协议替代 UDP 协议，绕过 LocalDNS，可以有效防止域名劫持
