@@ -1266,17 +1266,17 @@ JSON.stringify(val, replacer, space)，后面2个参数都只对对象有效。
 
 ## 模块化
 
-### AMD（require.js）
+### require.js
 
-依赖提前下载，然后乱序执行，等待所有模块执行完毕，执行回调函数，输出值的一份引用
+遵循AMD（asynchronous module definition）规范。依赖提前下载，然后乱序执行，等待所有模块执行完毕，执行回调函数，输出值的一份引用
 
-### CMD (Common Module Definition)（sea.js）
+### sea.js
 
-依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
+淘宝出品，类似于造轮子，遵循CMD (Common Module Definition)规范。依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
 
 ### commonjs
 
-一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到 module 中的 exports 对象里
+nodejs的自有模块系统。一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到 module 中的 exports 对象里
 
 node 中的模块缓存对象：
 
@@ -1298,7 +1298,7 @@ node 中的模块缓存对象：
 
 ### esModule
 
-使用`export default 值`或者`export 定义式`导出，后者使用定义式是因为打包工具需要把变量命挂在到 module.exports 的 getter 上（这样能获取到实时的值），而把前者放到 module.exports.default 里。
+浏览器端的模块规范。使用`export default 值`或者`export 定义式`导出，后者使用定义式是因为打包工具需要把变量命挂在到 module.exports 的 getter 上（这样能获取到实时的值），而把前者放到 module.exports.default 里。
 
 ### 区别
 
