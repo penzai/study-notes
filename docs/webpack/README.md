@@ -46,18 +46,18 @@ module.exports = RemoveCommentsPlugin
 
 ### devtool的可配置值
 eval代表了用eval函数来执行整个模块代码。并且source-map是每个模块一个，且使用dataURL方式嵌入进文件。
-- `eval`。只是单纯的指定了模块的名称。
-- `eval-cheap-source-map`。品质为transformed。
-- `eval-cheap-module-source-map`。品质为original lines。
-- `eval-source-map`。品质为original。
+- `eval`。只是单纯的指定了模块的名称。控制台报错为实际模块文件。
+- `eval-cheap-source-map`。品质为transformed。控制台报错为实际模块文件。
+- `eval-cheap-module-source-map`。品质为original lines。控制台报错为实际模块文件。
+- `eval-source-map`。品质为original。控制台报错为实际模块文件。
 
 > cheap代表了低开销，意为只使用行映射。
 
 不加eval，整个文件使用一个source-map。source-map是单独的一个文件。但也可以使用inline标签，使之嵌入到一个文件里。例如：inline-source-map。
-- `cheap-source-map`。品质为transformed。(报错点进去是找不到具体哪行???)
-- `cheap-module-source-map`。品质为original lines。(报错点进去是找不到具体哪行???)
-- `source-map`。品质为original。(报错点进去是找不到具体哪行???)
+- `cheap-source-map`。品质为transformed。(报错点进去是找不到具体哪行???)控制台报错为主js文件。
+- `cheap-module-source-map`。品质为original lines。(报错点进去是找不到具体哪行???)控制台报错为主js文件。
+- `source-map`。品质为original。(报错点进去是找不到具体哪行???)控制台报错为主js文件。
 
 其它的值：
-- `nosources-source-map`。它可以用来映射客户端上的堆栈跟踪，而无须暴露所有的源代码，但是仍然会暴露反编译后的文件名和结构，但它不会暴露原始代码。
-- `hidden-source-map`。打包有source-map，但是没有应用进去，常用于错误上报。
+- `nosources-source-map`。它可以用来映射客户端上的堆栈跟踪，而无须暴露所有的源代码，但是仍然会暴露反编译后的文件名和结构，但它不会暴露原始代码。控制台报错为主js文件。
+- `hidden-source-map`。打包有source-map，但是没有应用进去，常用于错误上报。控制台报错为打包文件。
