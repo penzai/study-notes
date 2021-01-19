@@ -61,3 +61,27 @@ eval代表了用eval函数来执行整个模块代码。并且source-map是每�
 其它的值：
 - `nosources-source-map`。它可以用来映射客户端上的堆栈跟踪，而无须暴露所有的源代码，但是仍然会暴露反编译后的文件名和结构，但它不会暴露原始代码。控制台报错为主js文件。
 - `hidden-source-map`。打包有source-map，但是没有应用进去，常用于错误上报。控制台报错为打包文件。
+
+## Tree Shaking
+开启后，webpack在最后阶段构建打包集合时，面对ES Modules类代码，只会导出用到了的导出结果，然后压缩代码阶段，就会把这些无用代码剔除掉。
+
+开启方法。
+``` javascript
+module.exports = {
+  optimization: {
+    usedExports: true
+  }
+}
+```
+
+## sideEffects
+主要针对引用到的组件库，需要配合package.json中的sideEffects字段使用。该字段即可声明为false，代表所有模块均无副作用，也可以设置为数组，声明哪些模块有副作用。
+
+开启方法。
+``` javascript
+module.exports = {
+  optimization: {
+    sideEffects: true
+  }
+}
+```
