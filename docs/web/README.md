@@ -547,8 +547,8 @@ const isIE = (version) => {
 ### 鼠标事件
 - mousemove，移动相关的事件(move/over/out/enter/leave)时，可以通过`e.relatedTarget`获取最近元素，不过浏览器会优化事件，因此这个鼠标移动的元素并不是连续的，移动太快会跳过中间的元素。
 - mouseup/mousedown，当元素没有在绑定元素之内时，放开鼠标并不会触发mouseup事件。
-- mouseover/mouseout，冒泡。
-- mouseenter/mouseleave，不冒泡，因此绑定元素之内的移动不会触发该事件。
+- mouseover/mouseout，冒泡。也就是说触发了子元素的mouseover，父元素也会被触发，表现的现象就是，元素A内部的子元素B移动也会触发元素的A的mouseover事件。
+- mouseenter/mouseleave，不冒泡，因此只要在元素A内部，不管怎么移动都不会触发mouseenter事件。
 
 e的相关属性：
 - `pageX`/`pageY`，相对于当前document而言（计算滚动部分）。

@@ -61,3 +61,15 @@ eval代表了用eval函数来执行整个模块代码。并且source-map是每�
 其它的值：
 - `nosources-source-map`。它可以用来映射客户端上的堆栈跟踪，而无须暴露所有的源代码，但是仍然会暴露反编译后的文件名和结构，但它不会暴露原始代码。控制台报错为主js文件。
 - `hidden-source-map`。打包有source-map，但是没有应用进去，常用于错误上报。控制台报错为打包文件。
+
+## HMR
+模块热替换，全称Hot Module Replacement。在devServer里直接设置`hot: true`开启。
+
+这样当模块改变时，就会自动调用提前设置好的变更回调，如果没有写回调函数，就执行live reloading，也就是自动刷新当前页面。
+
+变更回调函数入口为：
+``` javascript
+module.hot.accept('模块路径', () => {
+  console.log('模块更新了');
+})
+```
