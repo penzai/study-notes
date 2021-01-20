@@ -1268,11 +1268,11 @@ JSON.stringify(val, replacer, space)，后面2个参数都只对对象有效。
 
 ### require.js
 
-遵循AMD（asynchronous module definition）规范。依赖提前下载，然后乱序执行，等待所有模块执行完毕，执行回调函数，输出值的一份引用
+遵循AMD（asynchronous module definition）规范。注重依赖提前确定。过程为依赖提前下载 -> 然后乱序执行 -> 等待所有模块执行完毕 -> 执行回调函数 -> 输出值的一份引用。
 
 ### sea.js
 
-淘宝出品，类似于造轮子，遵循CMD (Common Module Definition)规范。依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
+淘宝出品，类似于造轮子，遵循CMD规范。注重按需加载依赖。依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
 
 ### commonjs
 
