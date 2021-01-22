@@ -3,10 +3,12 @@ webpack到底还是一个module bundler，它把项目所有使用的所有东�
 
 ## loader
 - 调用顺序从后向前。因此例如css-loader必须在style-loader后面才能正常加载。
-- loader最终返回的是一段js代码，这些代码就是这个模块（这个文件）的最终返回。因此主js的打包后代码，都是执行逻辑。其它模块的打包后代码，都是导出一个值。
+- loader最终返回的是一段js代码，这些代码就是这个模块（这个文件）的最终返回。
 
 ## 插件
-在webpack打包过程中，注入已设定好的钩子函数回调即可。
+webpack的插件基于自己的Tapable库实现，一个插件拥有apply方法，来让webpack注入逻辑，注入方式为设定具体的钩子函数回调。
+
+apply方法类似于vue插件的install方法。
 
 例如，一个去掉打包后js中`/**/`代码的plugin。
 
