@@ -569,3 +569,17 @@ e的相关属性：
   - gzip压缩
   - 图片优化大小）
 - 时间分片“长任务”
+
+### 杂项
+- 检测开发者工具打开
+``` javascript
+// 监听一个对象的一个属性，并在控制台打印这个对象
+// 每当开发者工具打开时就会读取这个属性
+const img = new Image();
+Object.defineProperty(img, "id", {
+  get() {
+    console.log("打开开发者工具");
+  }
+});
+console.log(img);
+```

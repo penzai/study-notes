@@ -53,6 +53,21 @@ String 类型是零个或多个 16 位无符号整数值（`UTF-16`编码方式�
 
 Unicode 码点范围为 U+0000~U+FFFF，共 65536 个，也叫基本字符区域（BMP）。
 
+JavaScript支持转义，因此可以使用`\u` + 码位来表示一个字符，例如：
+``` javascript
+console.log('\u4e2d'); // 中
+```
+
+#### unicode与实际值互转
+- String.prototype.charCodeAt()/String.prototype.codePointAt()
+- String.fromCharCode()/String.fromCodePoint()
+> 现在的很多新字符都超出了65536，因此需要用后者api来操作。
+
+#### 超出BMP的字符
+字符增多后，标准决定以16为字符为一组，一组65536个，一组为一个平面，一共17个平面，即0x00到0x10。
+
+例如一个emoji表情💊，码位为`128138`，转换为16进制为`1f48a`，在js中的转义则为`\u{1f48a}`。
+
 ### Number
 
 Javascript 中使用基于 IEEE754 标准的双精度浮点数来表示数字，标准规定一个数表示为`+-1.M * 2^e`，结构如下：
@@ -76,6 +91,10 @@ Number.MAX_SAFE_INTEGER = 2 ** 53 - 1;
 #### window.isNaN 与 Number.isNaN
 
 Number 是新来的，判断更贴合字面意思，就是判断此值是不是 NaN。而 window.isNaN 在判断前会进行数字转换一次，看此值到底能不能当成数字使用。
+
+#### 进制转换
+- parseInt('值', 要转换的进制)
+- xxx.toString(要转换的进制)
 
 ### Symbol
 
