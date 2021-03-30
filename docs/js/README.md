@@ -834,7 +834,7 @@ const cards = [
 ```
 
 ### async/await
-
+使用try/catch捕获await的错误，如果不这样，那么报错后面的代码逻辑将不会执行。另外，catch中抛出错误，代码也会停止。
 ```javascaript
 // 注意区分
 const a = yield 3; // a: undefined
