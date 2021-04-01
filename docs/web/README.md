@@ -439,27 +439,34 @@ TODO: 待实践验证
 - 302，临时重定向
 
 ## CORS（跨域资源共享）
-
-根据 method 与 request header 决定是 simple request 还是 not-so-simple request。
-
-### simple request
-
-- method: PUT、GET、POSAT
+### 判断是否是simple request
+根据**method**与**request header**进行判断。以下为simple request。
+- method: PUT、GET、POST
 - header: 基本字段，注意 content-type 只允许 application/x-www-form-urlencoded、multipart/form-data、text/plain，**也就是 json 参数是算 not-so-simple request**。
 
-处理方法为浏览器自动带上 origin 字段，服务器进行逻辑判断，给出 response。
+### simple request
+浏览器会自动带上 origin 字段，服务器进行逻辑判断，给出 response。
 
-如果允许，服务器在 response header 中设置`Access-Control-Allow-Origin: *`，或者为 origin 的值。
+- **允许**，服务器在 response header 中设置`Access-Control-Allow-Origin: *`，或者为 origin 的值。
 
-如果不允许，正常返回信息与头，浏览器判断没有相应的头，自动识别请求失败。
+- **不允许**，正常返回信息与头，浏览器判断没有相应的头，自动识别请求失败。
 
-如果还需要发送 Cookie，需要双方操作，浏览器需要在 ajax 中设置`withCredential = true`，服务器在 response header 中设置，`Access-Control-Allow-Credentials: true`。**另外`Access-Control-Allow-Origin`这时就不能返回\*了，必须为明确的地址。**
+#### 需要发送cookie的情况
+- 客户端。浏览器需要在 ajax 中设置`withCredential = true`。
+- 服务端。在 response header 中设置`Access-Control-Allow-Credentials: true`。**另外`Access-Control-Allow-Origin`这时就不能返回\*了，必须为明确的地址。**
 
 ### not-so-simple request
+同时满足1，2条件即可跨域成功：
+1. 会在请求之前发送一次 method 为`OPTIONS`的“预检”请求。
+  - 预检成功。响应头包含以下内容：
+    - 状态码204。
+    - `Access-Control-Allow-Origin`为请求源。
+    - `Access-Control-Allow-Headers`为额外首部。
+    - （经测试）如果是get/post以外的方法，那么还需设置`Access-Control-Allow-Methods`
+  - 预检失败。不满足上述条件。
+2. **预检成功后，实际请求也需要设置`Access-Control-Allow-Origin`为请求源**
 
-会在请求之前发送一次 method 为`OPTIONS`的“预检”请求。判断逻辑同 simple request。
-
-但是 request header 会有两个特殊字段：
+另外，此类request header 也会携带一些信息。
 
 - `Access-Control-Request-Method`，包含 cors 会用到的方法。
 - `Access-Control-Request-Headers`，一个以逗号分隔的字符串，包含 cors 会额外发送的头信息字段，**如果浏览器发送了这个字段，那么服务器也必须按返回相应的`Access-Control-Allow-Headers`字段，否则预检失败。**
