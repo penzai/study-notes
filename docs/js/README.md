@@ -1188,7 +1188,9 @@ const factorial = (v) => {
 ```
 
 ## 内存管理
+Javascript引擎里的内存空间主要分为栈内存和堆内存。栈内存存储执行上下文以及基本数据类型，而堆内存主要存储引用类型的数据。
 
+> Chrome Devtool里的Memory选项卡就用于对堆内存的监控。
 ### 垃圾回收GC（Garbage Collection）
 
 - 引用计数（reference counting）。缺点：无法解决循环引用。
@@ -1257,7 +1259,7 @@ setInterval(replaceThing, 1000);
 ```
 
 - DOM。dom 赋值给变量，dom 销毁后，变量依然保持引用，造成 dom 没有被真正销毁。
-- timers。一般是 setInterval 用完没有被及时 clear 以及 setTimeout 嵌套没有被正确终止。
+- timers。一般是 setInterval 用完没有被及时 clear 以及 setTimeout 嵌套没有被正确终止。定时器运行会消耗一定的内存，另外里面引用的变量也不会被回收。
 - EventListener。一般是某个重复事件中绑定其他 dom 事件，当事件重复执行时，造成了重复绑定，导致异常。
   > dom.addEventListener('click', fn, false)这种方式多次执行绑定不会增加新事件。
 
