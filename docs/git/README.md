@@ -90,6 +90,15 @@ git stash pop
 - --p -2 查看最新 2 条的细节变动
 - --stat -2 查看最新 2 条的文件变动
 
+### 初次上传本地项目到git
+```
+# 链接远程
+git remote add origin https://github.com/penzai/test-upload-git
+
+# 上传
+git push --set-upstream origin master
+```
+
 ### 工作流
 #### Git flow
 最早的工作流，以master为总线，develop分支做版本开发，开发结束后就合并到master分支。
