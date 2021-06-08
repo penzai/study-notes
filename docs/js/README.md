@@ -275,6 +275,42 @@ _p = new WeakMap();
 - 三元运算符`? :`
 - 赋值类运算符`=`
 
+## 隐式转换
+### 运算符隐式转换
+#### 减`-`乘`*`除`/`
+尽量都转number，不行就返回`NaN`
+- 转换规则，null -> 0，true -> 1，false -> 0，undefined -> NaN，数组 -> string -> number -> NaN（一步步尝试），对象 -> NaN，'' -> 0
+- NaN, Infinity都是number类型
+
+``` javascript
+1 - true // 0
+1 - null // 1
+1 * undefined // NaN
+2 * ['5'] // 10
+2 * ['5', '5'] // NaN
+3 / '' // Infinity
+3 / [] // Infinity
+```
+> Symbol会报错，毕竟这种隐式转换是以前的，Symbol是新出的原始类型。
+#### 加`+`
+优先级如下：
+
+1. 有字符串出现，全都转成string拼接
+2. number + 原始类型（其实也就只剩下null/true/false/undefined），正常数学运算
+3. 含有引用类型，转成string拼接
+
+#### 等于符`==`
+两条特例规则：
+- `NaN`与任何类型比较，返回false
+- `null`，`undefined`只有互相比较时才返回true，其余情况均返回false
+
+转换规则优先级 ：
+`boolean`=`引用类型` > `string` > `number`
+
+一步步按照优先级进行转换，最终都会向number靠齐，当然途中如果已经是同类型了，那么自然无需再进行转换，直接比较即可，其中：
+- `boolean`被转换成number
+- 引用类型会使用ToPrimitive规则（valueOf/toString方法）转换成原始类型，再进行优先级转换
+
 ## 执行上下文
 
 执行上下文在 ES3 中，包含三个部分。
