@@ -122,6 +122,8 @@ CSSOM 是在 DOM 上进行了扩展
 - `scrollWidth/scrollHeight`滚动区域的宽高
 - `scrollIntoView(args)`滚动到视口
 
+> 判断一个元素是否滚动到底。`el.scrollHeight - el.scrollTop === el.clientHeight`。
+
 ### 元素位置
 
 一个元素并没有宽高，只有它最外层的盒子才有宽高。
