@@ -301,6 +301,23 @@ MyPromise.deferred = function() {
 
 限制时间内只允许发生一次事件，例子：搜索框输入后自动请求。
 
+简单版：
+
+每次重置定时器。
+``` javascript
+function debounce(fn, delay) {
+  let timer
+  return function() {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      fn.apply(this, arguments)
+    }, delay)
+  }
+}
+```
+
+复杂版：
+
 > leading 为 true 时，如果在间隔时间内未发生第二次操作，则不会执行 trailing edge of the timeout 的事件。
 
 ```javascript
@@ -349,6 +366,8 @@ const debounce = (fn, wait, options) => {
 
 简单版：
 
+时间戳方案，不断检测时间差，满足延迟才调用。
+
 ```javascript
 function throttle1(fn, delay, immediate) {
   let lastTime = new Date();
@@ -362,7 +381,11 @@ function throttle1(fn, delay, immediate) {
     }
   };
 }
+```
 
+定时器方案，当定时器有值时忽略执行过程。
+
+``` javascript
 function throttle2(func, wait) {
   var timer;
   return function(...args) {
