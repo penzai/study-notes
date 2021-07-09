@@ -117,3 +117,11 @@ git push --set-upstream origin master
 > 编者注：其实版本release后依然可以根据此分支来进行bug修复再pr，不知道为什么阮一峰老师这篇文章要这么说。这种方式，我觉得其实更适合于双方陌生人的情况，毕竟有个review的过程。
 #### Gitlab flow
 依然以master作为总线，但是强调“上游”的规则，意思就是其他分支和版本都是由master生成出来。
+
+### 大小写敏感问题
+默认git大小写不敏感，使用`git config --global core.ignorecase false`设置敏感。
+
+对于已存在的文件，有的会在远端生成两份文件，此时可以使用以下两种方式处理。
+
+- git mv -f [你想要删掉的文件] [你想要留下的文件]
+- 在目录下统一使用`git rm -r --cached .`删除追踪，然后修改为正确的文件，再进行提交
