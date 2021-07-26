@@ -70,6 +70,17 @@ let x1 = x // x: null
 ### type narrowing
 方式：类型守卫、控制流语句（if/switch/三目运算符）
 
+## interface
+- 使用索引定义时，其它属性需要为索引的子集
+``` javascript
+interface Dic {
+  [key: number]: string,
+  age: 3,
+  1: 3 // Property '1' of type '3' is not assignable to numeric index type 'string'.ts(2412)
+}
+```
+- 重复定义会叠加，而不是像变量一样被覆盖
+
 ## 函数
 ### this
 类型设置为this只能在class以及interface中使用。
