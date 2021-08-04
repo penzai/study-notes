@@ -61,6 +61,8 @@ git reset hash值
 - `git push orgin :远程分支名字` 删除远端分支
 - `git push origin 本地分支:远程分支` 推送本地分支到远程分支
 - `git branch --set-upstream-to 远程分支` 连接分支到远程分支
+- `git branch --upset-upstream` 取消与远端的关联
+- `git branch -m oldName newName`
 
 ### pull
 git fetch与git merge的组合
