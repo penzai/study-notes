@@ -325,6 +325,8 @@ _p = new WeakMap();
 - variable environment：变量环境，当声明变量时使用。
 - this value：this 值。
 
+> for循环中如果你使用了let而不是var，let的变量除了作用域是在for区块中，而且会为每次循环执行建立新的词法环境(LexicalEnvironment)，拷贝所有的变量名称与值到下个循环执行。
+
 在 ES2018 中，执行上下文又变成了这个样子，this 值被归入 lexical environment，但是增加了不少内容。
 
 - lexical environment：词法环境，当获取变量或者 this 值时使用。
