@@ -4,10 +4,18 @@
 - 基础类型 string/number 而不是 String/Number。
 
 ## 类型
+### 分类
+#### string、number、boolean、symbol、bigint
 
-### 数组、string、number、boolean、symbol
+#### null
 
-### 元组（tuple）
+#### undefined
+
+undefined 类型可以赋值给 void 类型。
+
+> ???我们不建议随意使用非空断言（下面要讲的“类型断言”中会详细介绍非空断言）来排除值可能为 null 或 undefined 的情况，因为这样很不安全。而比非空断言更安全、类型守卫更方便的做法是使用单问号（Optional Chain）、双问号（空值合并），我们可以使用它们来保障代码的安全性，如下代码所示： ###数组。例如：`string[]`、`number[]`、`Array<number>`。
+
+#### 元组（tuple）
 
 数组合并了相同类型的对象，而元组合并了不同类型的对象。
 
@@ -15,17 +23,13 @@
 let pz: [string, number] = ["penzai", 26];
 ```
 
-### any
+#### any
 
-任意类型，一种绕过静态检测的方式，应当尽量减少使用。
+任意类型，一种绕过静态检测的方式，应当尽量减少使用。任意类型 <=> any 类型。
 
-任意类型 <=> any 类型。
+#### unknown
 
-### unknown
-
-用来描述类型不确定的变量。
-
-任意类型 => unknown 类型，但是不能 unknown 类型只能赋值给 unknown 或者 any 类型。
+用来描述类型不确定的变量。任意类型 => unknown 类型，但是 unknown 类型只能赋值给 unknown 或者 any 类型。
 
 使用 unknown 类型后，需要缩小类型（Type Narrowing）才能继续使用其操作。
 
@@ -36,15 +40,11 @@ if (typeof result === "number") {
 }
 ```
 
-### void、undefined、null
+#### void
 
-void 一般只用来表示没有返回值的函数返回结果类型。而 void 变量一般没什么用处，且它只能再次赋值给 unknown 和 any 类型。
+一般只用来表示没有返回值的函数返回结果类型。而 void 变量一般没什么用处，且它只能再次赋值给 unknown 和 any 类型。
 
-undefined 类型可以赋值给 void 类型。
-
-???我们不建议随意使用非空断言（下面要讲的“类型断言”中会详细介绍非空断言）来排除值可能为 null 或 undefined 的情况，因为这样很不安全。而比非空断言更安全、类型守卫更方便的做法是使用单问号（Optional Chain）、双问号（空值合并），我们可以使用它们来保障代码的安全性，如下代码所示：
-
-### never
+#### never
 
 表示永远不会发生的类型。比如一个死循环的函数返回值类型。
 
@@ -52,54 +52,75 @@ never 是所有类型的子类型，它可以给所有类型赋值。
 
 可以用来创造接口类型中的只读属性。
 
-### object
+#### object
+
+
+### 类型断言（type assertion）
+告诉typescript按照设定的类型进行处理，可以理解为写代码的人帮助typescript判断类型了。
 
 ### 字面量类型
-字符串字面量类型、数字字面量类型、布尔值字面量类型。属于各自集合类型的子类型，是为了更精确的定义类型需要。
+
+即字符串字面量类型、数字字面量类型、布尔值字面量类型。属于各自集合类型的子类型，是为了更精确的定义类型需要。
 
 ### 类型推断
-在各种上下文中，ts能进行一定的类型推断。例如：变量为字面量类型、函数设置了默认值的参数、函数返回值。
 
-> 注意const与let为字面量值时的类型推断不同之处。另外，null与undefined在let时会被推断为any类型（这样我们可以赋予任何其他类型的值给具有 null 或 undefined 初始值的变量 x 和 y。），但是使用后又会被推断为具体的null/undefined。
-``` javascript
-let x = null // x: any
-let x1 = x // x: null
+在各种上下文中，ts 能进行一定的类型推断。
+#### 变量为字面量类型
+
+注意 const 与 let 为字面量值时的类型推断不同之处。另外，null 与 undefined 在 let 时会被推断为 any 类型（这样我们可以赋予任何其他类型的值给具有 null 或 undefined 初始值的变量 x 和 y。），但是使用后又会被推断为具体的 null/undefined。
+
+```javascript
+let v1 = 'hello'; // v1: string
+const v2 = 'hello'; //v2: 'hello'
+
+let x = null; // x: any
+let x1 = x; // x: null
 ```
-
-### type widening
-### type narrowing
-方式：类型守卫、控制流语句（if/switch/三目运算符）
-
+#### 函数设置了默认值的参数
+字面量进行拓宽，但是null和undefined还是不变，不会推断成any。
+#### 函数返回值
+#### type narrowing情况
+类型守卫、控制流语句（if/switch/三目运算符）
 ## interface
+
 - 使用索引定义时，其它属性需要为索引的子集
-``` javascript
+
+```javascript
 interface Dic {
-  [key: number]: string,
-  age: 3,
-  1: 3 // Property '1' of type '3' is not assignable to numeric index type 'string'.ts(2412)
+  [key: number]: string;
+  age: 3;
+  1: 3; // Property '1' of type '3' is not assignable to numeric index type 'string'.ts(2412)
 }
 ```
+
 - 重复定义会叠加，而不是像变量一样被覆盖
 
 ## 函数
+
 ### this
-类型设置为this只能在class以及interface中使用。
+
+类型设置为 this 只能在 class 以及 interface 中使用。
 
 ### 重载
+
 由上到下依次匹配，因此注意精确的重载项放在前面。
 
 ### 类型谓词
+
 ???我们通过“参数名 + is + 类型”的格式明确表明了参数的类型，进而引起类型缩小，所以类型谓词函数的一个重要的应用场景是实现自定义类型守卫
 
 ## 类
+
 ### 修饰符
+
 - public，默认
 - private，只在自身类中可用
 - protected，仅在自身及子类中可用
 - readonly
 
 ### 抽象类
-abstract属性与方法只定义类型，不实现，子类必须实现。
+
+abstract 属性与方法只定义类型，不实现，子类必须实现。
 
 ## 断言
 
@@ -121,4 +142,30 @@ as const
 
 !操作符（与 any 一样，尽量少用），使用类型守卫来代替非空断言。
 
-##
+## 泛型
+泛型指类型参数化，即将原来的某种具体类型进行参数化。与定义函数参数类似，给泛型定义若干个类型参数，在调用时再传入具体的类型参数，就得到了我们想要类型关系。
+
+泛型的目的在于有效约束类型成员之间的关系。比如在函数参数、函数返回值、类接口成员和方法。
+
+### 泛型类型参数
+用在函数的参数里。
+### 泛型类
+用在类中。
+### 泛型类型
+用在类型设置中。
+???这种写法
+``` typescript
+interface IReflectFuncton {
+  <P>(param: P): P
+}
+```
+#### 分配条件类型
+在条件类型判断的情况下（比如extends），如果入参是联合类型，则会被拆解成一个个独立的（原子）类型（成员）进行类型运算。
+``` typescript
+type StringOrNumberArray<E> = E extends string | number ? E[] : E;
+type BooleanOrString = string | boolean;
+type WhatIsThis = StringOrNumberArray<BooleanOrString>; // boolean | string[]
+type BooleanOrStringGot = BooleanOrString extends string | number ? BooleanOrString[] : BooleanOrString; // 未使用泛型，因此是string | boolean
+```
+### 泛型约束
+把泛型入参限定在一个相对更明确的集合内。
