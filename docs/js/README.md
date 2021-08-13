@@ -1366,6 +1366,9 @@ commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖�
 ### pkg的module、main字段
 通常一个包最稳的是提供一个用es5代码编写的commonjs规范文件，放在main字段，但是esModule规范有个好处可以做tree-shaking，因此增加了一个module字段来使用。
 
+### 浏览器支持情况
+部分浏览器已原生支持module，需要设置`type="module"`。规范使用`.mjs`来代表模块文件，与普通js文件以区分，不过`.js`兼容性更好。
+
 ## 文件
 ### Blob 、 File 、 Data URL 、 ArrayBuffer
 - Data URL，即以`data:`协议开头的URL，故名思议，就是地址本身代表了内容。目前遇见的有：
@@ -1390,6 +1393,7 @@ commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖�
 - Blob/File -> Base64，使用FileReader的readAsDataURL接口
 - Blob -> ArrayBuffer，利用FileReader的`readAsArrayBuffer()`读取，在onload事件中的result即为结果。
 - ArrayBuffer -> Blob / File，直接`new Blob([uint8Array], { type: 'text/html' })`，注意uint8Array外层的方括号。
+- ArrayBuffer -> 字符串，可以使用TextDecoder的decode实例方法把类型化数组转成字符串。
 ### URL.createObjectURL()
 该方法创建一个DOMString，表示指定的File或Blob对象，这个URL的生命周期和document绑定。
 

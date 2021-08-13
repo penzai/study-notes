@@ -491,7 +491,7 @@ modules: {
 - hash 模式。利用 hash 地址改变来模拟地址变化。配合 hashchange 事件做渲染。
   > hash 值不会发送给服务端。
 - history 模式，利用 pushState 和 repalceState 两个 API 来操作 URL 的改变，再配合 popstate 事件做渲染。因为发送给服务器的地址会改变，所以需要服务器进行一定的配合。
-  > 当历史记录条目更改时，将触发 popstate 事件。pushState/repalceState 不会触发 popstate 事件。
+  > 当历史记录条目更改时，将触发 popstate 事件。pushState/repalceState 不会触发 popstate 事件。而是在浏览器相关动作发生改变时才会触发，例如回退与前进（无论是手动点击回退按钮还是js调用`histroy.back()`）。
 
 ### 注意事项
 
