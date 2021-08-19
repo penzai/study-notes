@@ -144,3 +144,35 @@ as const
 
 !操作符（与 any 一样，尽量少用），使用类型守卫来代替非空断言。
 
+
+## 枚举类型
+### 字面量枚举成员
+对于成员为缺省值（自动从0开始）、数字字面量、字符串字面量的枚举类型，称之为字面量枚举。
+
+字面量枚举成员，即代表了值，又代表了类型。而非字面量只代表了值。
+``` typescript
+enum Day {
+  MONDAY = 7,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY,
+  SUNDAY
+}
+
+enum MyDay {
+  SUNDAY,
+  MONDAY = Day.MONDAY
+}
+
+const v2 = Day.SATURDAY // v2: Day.SATURDAY
+
+const v1 = MyDay.MONDAY // v1: MyDay
+const v3 = MyDay.SUNDAY // v3: MyDay
+```
+
+### 常量枚举
+转移后引用处代码会被替换为枚举值，因此只支持字面量设置。一般用来提高代码的可读性。
+
+### 外部枚举

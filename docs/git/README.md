@@ -49,6 +49,8 @@ git commit --amend
 # 让工作控件回到某个commit，--hard表示强制，并且会清空所有改动！！！未受版本控制的文件除外。
 git reset hash值
 ```
+### remotes
+- `git remotes add origin xxxx`使本地文件夹链接到远程仓库
 
 ### branch
 
