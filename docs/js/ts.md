@@ -15,6 +15,8 @@
 
 undefined 类型可以赋值给 void 类型。
 
+严格模式下。null、undefined 表现出与 void 类似的兼容性，即不能赋值给除 any 和 unknown 之外的其他类型，反过来其他类型都不可以赋值给 null 或 undefined。
+
 > ???我们不建议随意使用非空断言（下面要讲的“类型断言”中会详细介绍非空断言）来排除值可能为 null 或 undefined 的情况，因为这样很不安全。而比非空断言更安全、类型守卫更方便的做法是使用单问号（Optional Chain）、双问号（空值合并），我们可以使用它们来保障代码的安全性，如下代码所示： ###数组。例如：`string[]`、`number[]`、`Array<number>`。
 
 #### 元组（tuple）
@@ -27,30 +29,17 @@ let pz: [string, number] = ["penzai", 26];
 
 #### any
 
-任意类型，一种绕过静态检测的方式，应当尽量减少使用。任意类型 <=> any 类型。
+表示任意类型，特性为可以在任意类型与any直接互相赋值，会造成极大的不稳定困扰。
 
-#### unknown
+任意类型 => any类型，any类型 => 除了never以外的类型。
 
-用来描述类型不确定的变量。任意类型 => unknown 类型，但是 unknown 类型只能赋值给 unknown 或者 any 类型。
-
-使用 unknown 类型后，需要缩小类型（Type Narrowing）才能继续使用其操作。
-
-```javascript
-let result: unknown;
-if (typeof result === "number") {
-  result.toFixed(); // 此处 hover result 提示类型是 number，不会提示错误
-}
-```
-
-#### void
-
-一般只用来表示没有返回值的函数返回结果类型。而 void 变量一般没什么用处，且它只能再次赋值给 unknown 和 any 类型。
+尽量减少使用。
 
 #### never
 
-表示永远不会发生的类型。比如一个死循环的函数返回值类型。
+表示永远不会发生的类型。比如一个死循环的函数返回值类型、一个抛出错误的函数返回值类型。
 
-never 是所有类型的子类型，它可以给所有类型赋值。
+任意类型都不能赋值给never，never类型 => 任意类型。
 
 可以用来创造接口类型中的只读属性。
 
@@ -71,6 +60,33 @@ const unionType: UnionType = {
   name: "tony",
 };
 ```
+#### unknown
+
+用来描述类型不确定的变量。特性设计为一旦使用此类型，就不能赋值给其它类型，必须保持unknown类型，或者赋值给any类型。
+
+任意类型 => unknown 类型，但是 unknown 类型只能赋值给 unknown 或者 any 类型。
+
+遇见不确定的类型推荐unknown替代any使用。有2个好处：
+- unknown类型不可更改为其它类型，这里any暂时不考虑
+- 使用准确的类型推断后，可以当作其它类型使用
+
+
+
+使用 unknown 类型后，需要缩小类型（Type Narrowing）才能继续使用其操作。
+
+```javascript
+let result: unknown;
+if (typeof result === "number") {
+  result.toFixed(); // 此处 hover result 提示类型是 number，不会提示错误
+}
+```
+
+#### void
+
+一般只用来表示没有返回值的函数返回结果类型。而 void 变量一般没什么用处。
+且它只能再次赋值给 unknown 和 any 类型。
+
+any/never/undefined类型 => void类型，void => any/unknown类型。
 
 #### object
 
@@ -114,10 +130,80 @@ let x1 = x; // x: null
 
 #### 函数返回值
 
+#### 函数类型兼容性
+- 返回值。协变。
+- 参数类型。逆变。
+- 参数个数。个数少的兼容个数多的。
+- 可选参数兼容剩余参数、不可选参数。
+
 #### type narrowing 情况
 
 类型守卫、控制流语句（if/switch/三目运算符）
 
+### 工具类型
+- Partial、Required、Readonly
+``` typescript
+type Partial<T> = {
+  [P in keyof T]?: T[P]
+}
+
+type Required<T> = {
+  [P in keyof T]-?: T[P]
+}
+
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P]
+}
+```
+- Pick、Omit。返回的是提取/去除属性值后的数据。
+``` typescript
+type Pick<T, K extends keyof T> = {
+  [P in K]: T[P]
+}
+
+type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>
+
+```
+> keyof any指代可以作为对象键的类型，即`string | number | symbol`。但是js本身还是会在对象数据结构里把number类型key转为string。
+- Exclude、Extract。返回的是提取/去除后的属性值。
+``` typescript
+type Exclude<T, U> = T extends U ? never : T
+
+type Extract<T, U> = T extends U ? T : never;
+```
+??? extends关键字
+- NonNullable
+``` typescript
+type NonNullable<T> = T extends null | undefined ? never : T
+```
+- Record
+``` typescript
+type Record<K extends keyof any,  T> = {
+  [P in K]: T
+}
+```
+- ConstructorParameters。返回的是元组类型tuple。
+``` typescript
+type ConstructorParameters<T extends new (...args: any) => any> = T extends new (...args: infer P) => any ? P : never
+```
+- Parameters、ReturnType、ThisParameterType
+``` typescript
+type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
+
+type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
+
+type ThisParameterType<T> = T extends (this: infer U, ...args: any[]) => any ? U : unknown;
+
+```
+- ThisType???。ThisType 工具类型只是提供了一个空的泛型接口，仅可以在对象字面量上下文中被 TypeScript 识别。
+``` typescript
+interface ThisType<T> {}
+```
+- OmitThisParameter。用来去除函数类型中的 this 类型
+``` typescript
+type OmitThisParameter<T> = unknown extends ThisParameterType<T> ? T : T extends (...args: infer A) => infer R ? (...args: A) => R ? T;
+```
+- 字符串类型Uppercase、Lowercase、Capitalize、Uncapitalize
 ## interface
 
 - 使用索引定义时，其它属性需要为索引的子集
@@ -256,3 +342,42 @@ type BooleanOrStringGot = BooleanOrString extends string | number
 ### 泛型约束
 
 把泛型入参限定在一个相对更明确的集合内。
+
+## 类型守卫
+常用类型守卫：switch、===、typeof、instanceof、in、自定义类型守卫。
+``` typescript
+type Dog = {
+  wang: string
+}
+type Cat = {}
+
+const isDog = function(animal: Dog | Cat): animal is Dog {
+  return 'wang' in animal
+}
+
+const getName = (animal: Dog | Cat) => {
+  if(isDog(animal)) {
+    return animal.wang
+  }
+}
+```
+
+在面对泛型时，in 和 instanceOf、类型谓词在泛型类型缩小上是有区别的。
+``` typescript
+const getName = <T extends Dog | Cat>(animal: T) => {
+  if ('wang' in animal) {
+    return animal.wang; // ts(2339)
+  }
+  return animal.miao; // ts(2339)
+};
+
+const getName2 = <T extends Dog | Cat>(animal: T) => {
+  if (isDog(animal)) { // instanceOf 亦可
+    return animal.wang; // ok
+  }
+  return animal.miao; // ts(2339)
+};
+```
+
+## 类型断言
+as
