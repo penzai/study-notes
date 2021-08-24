@@ -51,7 +51,8 @@ git reset hash值
 ```
 ### remotes
 - `git remotes add origin xxxx`使本地文件夹链接到远程仓库
-
+- `git remotes -v`查看本地服务器链接的地址
+- `git remotes set-url 服务器 新的服务器地址`重新设置服务器地址
 ### branch
 
 - `git branch -a` 查看远程分支
