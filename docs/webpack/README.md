@@ -159,8 +159,16 @@ webpack中两者都可以互相混用，也就是互相引入导出。
 
 > es模块的导入导出，又叫`harmony import/harmony export`。
 
+## 配置解析
+### entry
+- 为数组时即把多个文件打包到一个js里，虽然它们2个可能没有实际依赖关系。
+- 为对象时，一个名字对应一个js。路径支持模块写法。
+### output
+- filename里嵌入`[name]`字段进行名字拼接。
+- chunkFilename可以设置那些异步加载的模块名字。
+
 ## 优化方向
-- sourceMap
+- sourceMap，开发环境设置为cheap-module-eval-source-map。不关心列信息使用cheap，需要查看转换前的源码使用module，eval不产生文件打包速度块。
 - sideEffects
 - tree shaking
 - concatenateModules
@@ -168,7 +176,16 @@ webpack中两者都可以互相混用，也就是互相引入导出。
 - ？分包策略
 - 动态引入
 
+### 公共
+- 缩小文件搜索范围
 ### 开发
 讲究构建速度
 ### 生产
 讲究缩小包体积，提高请求的效率
+- webpack-parallel-uglify-plugin，多线程压缩js代码。
+- happypack进行loader处理上的多线程加速
+- DllPlugin 预编译第三方包
+
+
+### 实例
+- "additional asset processing"，去除js压缩插件，开发时
