@@ -1325,17 +1325,12 @@ JSON.stringify(val, replacer, space)，后面2个参数都只对对象有效。
 
 ## 模块化
 
-### require.js
+### AMD
 
-遵循AMD（asynchronous module definition）规范。注重依赖提前确定。过程为依赖提前下载 -> 然后乱序执行 -> 等待所有模块执行完毕 -> 执行回调函数 -> 输出值的一份引用。
+代表require.js。遵循AMD（asynchronous module definition）规范。注重依赖提前确定。过程为依赖提前下载 -> 然后乱序执行 -> 等待所有模块执行完毕 -> 执行回调函数 -> 输出值的一份引用。
 
-### sea.js
-
-淘宝出品，类似于造轮子，遵循CMD规范。注重按需加载依赖。依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
-
-### commonjs
-
-nodejs的自有模块系统。一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到 module 中的 exports 对象里
+### CommonJS、CJS
+代表node。nodejs的自有模块系统。一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到 module 中的 exports 对象里
 
 node 中的模块缓存对象：
 
@@ -1354,11 +1349,16 @@ node 中的模块缓存对象：
   }
 }
 ```
+#### CMD
+代表sea.js。之所以放这里，是以为淘宝出品，类似于造轮子，类似于cjs。注重按需加载依赖。依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
 
-### esModule
+
+### EsModule、esm
 
 浏览器端的模块规范。使用`export default 值`或者`export 定义式`导出，后者使用定义式是因为打包工具需要把变量命挂在到 module.exports 的 getter 上（这样能获取到实时的值），而把前者放到 module.exports.default 里。
 
+### UMD
+通用模块定义。其实就是检查了各个模块支持情况，按照优先级来导出，AMD -> CJS -> 浏览器全局变量，因此在多个地方可以放心使用，因此“通用”。
 ### 区别
 
 commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖关系（因此可以做tree-shaking），预留好了要 export 的对象的内存，在具体执行时再进行填值。但是打包工具是把 esModule 打包成 commonjs 的模块。

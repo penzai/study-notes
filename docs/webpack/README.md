@@ -167,25 +167,58 @@ webpack中两者都可以互相混用，也就是互相引入导出。
 - filename里嵌入`[name]`字段进行名字拼接。
 - chunkFilename可以设置那些异步加载的模块名字。
 
-## 优化方向
-- sourceMap，开发环境设置为cheap-module-eval-source-map。不关心列信息使用cheap，需要查看转换前的源码使用module，eval不产生文件打包速度块。
-- sideEffects
-- tree shaking
-- concatenateModules
-- 多入口
-- ？分包策略
-- 动态引入
+## 优化
 
+### 工具
+包内容:
+1. 使用`webpack --profile --json > stats.json`导出包情况；
+2. 使用`webpack-bundle-analyzer`库进行可视化分析查看，`webpack-bundle-analyzer stats.json`
+
+构建速度，
 ### 公共
-- 缩小文件搜索范围
-### 开发
-讲究构建速度
-### 生产
-讲究缩小包体积，提高请求的效率
-- webpack-parallel-uglify-plugin，多线程压缩js代码。
-- happypack进行loader处理上的多线程加速
-- DllPlugin 预编译第三方包
-
-
+更快
+- 缩小文件搜索范围。
+  - 引入文件实际地址搜索的缩小。resolve.modules/resolve.alias
+  - babel-loader编译哪些文件的范围缩小。exclude/include
+- 提高构建速度
+  - babel-loader开启缓存，cacheDirectory。
+  - happypack进行loader处理上的多线程加速
+  - （常用于开发环境）source-map设置为cheap-module-eval-source-map。不关心列信息使用cheap，需要查看转换前的源码使用module，eval不产生文件打包速度块。
+  - （常用于生产环境）webpack-parallel-uglify-plugin，多线程压缩js代码。
+  - （常用于生产环境）DllPlugin 预编译第三方包
+    - webpack.config.dll.js里配置
+    ``` js
+    output: {
+      // 这里一般输出到静态目录，方便工具自动复制
+      path: path.resolve(__dirname, 'public/lib'), 
+      // 具体的文件
+      filename: '[name]_[chunkhash:4].dll.js', 
+      // 库名字
+      library: 'lib_[name]' 
+    },
+    plugins: [
+      new webpack.DllPlugin({
+        // 必须与“库名字”一致
+        name: 'lib_[name]',
+        //由于该插件并没有提供filename的设置，因此使用path
+        path: path.resolve(__dirname, 'public/manifest/[name].manifest.json') 
+      })
+    ]
+    ```
+    - 主配置文件里使用
+    ``` js
+    plugins: [
+      // 这里只表示了一个，如果dll为多个，是需要配置多个plugin
+      new webpack.DllReferencePlugin({
+        manifest: path.resolve(__dirname, 'public/manifest/真实名字.manifest.json')
+      })
+    ]
+    ```
+更小
+- 减少体积
+  - 开启concatenateModules特性，尽可能打包到一个文件里。
+  - 开启tree shaking。sideEffects与usedExports属性设置。
+- 逻辑上
+  - 合理分包，大包使用动态引入。
 ### 实例
 - "additional asset processing"，去除js压缩插件，开发时
