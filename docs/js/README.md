@@ -496,7 +496,9 @@ if/switch/for/while/continue/break/return/throw/try
 
 ### 定义
 
-class 为构造函数的语法糖。
+类（Class）为JavaScript原型的语法糖。
+- 原型的构造函数，这里直接使用`class`关键字声明。
+- 原型的继承，之前使用手动设置prototype，这里使用`extends`关键字。
 
 在 react 中经常会用到=符号设置属性，转化为 es5 的过程稍有区别，=符号设置的实例属性是直接挂载在生成的实例属性上，而构造函数里的属性则是挂载在类的 prototype 对象上。类的属性设置区别不大。
 
@@ -589,19 +591,19 @@ _defineProperty(Cat, "sfn", function() {
 
 最好的继承的特点：
 
-- 能给超类构造函数传参
-- 拥有共享方法
+- 能给父类构造函数传参
+- 函数复用，即父类子类原型上的方法要能在新的对象上复用
 - constructor 能正确指向
 
 #### 原型链继承
-
+使用new继承，导致了超类的实例属性变成了子类的原型属性。
 ```javascript
 function SubType() {}
 SubType.prototype = new SuperType();
 ```
 
 #### 借用构造函数继承（constructor stealing）
-
+使用call/apply，导致了不能复用父类的方法。
 ```javascript
 function SubType() {
   SuperType.call(this);
@@ -616,6 +618,8 @@ function SubType() {
 
 即 es5 的 Object.create()方法。需要一个基础对象，来创建另一个类似的对象。
 
+这种继承实质上是对类继承的一种补充，属于**对象之间的继承**，而无需去创建抽象类。
+
 ```javascript
 function object(o) {
   function F() {}
@@ -626,7 +630,7 @@ function object(o) {
 
 #### 寄生式继承（parasitic inheritance）
 
-创建一个仅用于封装继承过程的函数，该函数在内部以某种方式来增强对象。
+与原型式继承一样，只是说把设置方法的过程单独提了出来，但本质上“方法”还是没有得到复用，挂在了实例上。
 
 ```javascript
 function createAnother(original) {
@@ -640,10 +644,10 @@ function createAnother(original) {
 
 #### 寄生组合式继承
 
-通过借用构造函数来继承属性，使用寄生式继承来继承超类的原型。
+属于类之间的继承，在原型对象的继承上使用上面讨论的结果，即寄生式。在实例属性的继承上，使用“借用构造函数继承”方式。
 
 ```javascript
-SubType.prototype = Object.create(SuperType.prototype);
+SubType.prototype = object(SuperType.prototype);
 Object.defineProperty(SubType.prototype, 'constructor', {
   value: SubType
 });
