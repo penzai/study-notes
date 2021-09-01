@@ -4,21 +4,16 @@ module.exports = {
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
+      { 
+        text: 'JavaScript',
+        items: [
+          { text: '基础', link: '/js/README.md' },
+          { text: 'TypeScript', link: '/js/ts' },
+          { text: 'React', link: '/js/react' }
+        ]
+      }
     ],
-    sidebar: [
-      '/js/',
-      '/css/',
-      '/css-practice/',
-      '/dac/',
-      '/web/',
-      '/git/',
-      '/linux/',
-      '/nginx/',
-      '/node/',
-      '/react/',
-      '/vue/',
-      '/write/',
-    ]
+    sidebar: 'auto'
   },
   configureWebpack: {
     resolve: {
