@@ -8,6 +8,7 @@
 ### 分类
 
 #### string、number、boolean、symbol、bigint
+原始类型兼容相应的对象类型，反之则不然。
 
 #### null
 
@@ -90,7 +91,12 @@ if (typeof result === "number") {
 
 any/never/undefined类型 => void类型，void => any/unknown类型。
 
-#### object
+#### object、Object
+object代表字面量的对象。
+
+大Object代表有toString、hasOwnProperty方法的类型，原始类型、非原始类型都可以赋值给Object，毕竟万物之源。
+
+???{}、大 Object 是比小 object 更宽泛的类型（least specific），{} 和大 Object 可以互相代替，用来表示原始类型（null、undefined 除外）和非原始类型；而小 object 则表示非原始类型。
 
 ### 类型断言（type assertion）
 
@@ -394,3 +400,4 @@ as
 
 ## 工具类
 - `in`、`keyof`只能在类型别名定义中使用。
+- 配置中合理使用严格模式，降低心智负担。strictFunctionTypes、strictNullChecks。
