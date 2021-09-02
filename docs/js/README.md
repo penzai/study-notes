@@ -108,26 +108,24 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 - data properties 数据属性
 - internal properties 内部属性，不可见且无名，例如：[[Prototype]]、[[Extensible]]、[[DefineOwnProperty]]、[[Put]]（赋值运算符=所调用的方法）
 
-#### `Object.defineProperty`
+#### `Object.defineProperty(o, p, descriptor)`
 
 定义对象 o 的属性 p，并返回对象 o。
 
-##### 内容
-
-其中 descriptor 分为如下：
+##### descriptor
 
 - 公共描述符
   - `configurable`(false)能否配置以及被删除（具体影响见下文）
   - `enumerable`(false) 能否枚举
 - 择其一
-  - data scriptors
+  - data descriptor
     - `value`(undefined)
     - `writable`(false) 该值是否能够被更改（只设置此值只能限制赋值运算符更改，想完全限制需要结合 configurable 属性）
-  - accessor descriptors
+  - accessor descriptor
     - `get`(undefined)
     - `set`(undefined)
 
-##### `configurable`详解
+##### `configurable`
 
 配置为 false 时，即：
 
@@ -137,7 +135,7 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
    2. writable 为 true 时，配置 writable
 3. 不能数据描述符与访问器描述符之间互转
 
-> 所谓不能重新配置，并不是不能再次调用，只要这次调用的参数值与 configurable 为 false 时设置的一样，依然可以调用。实际上就是一个徒劳的举动。
+> 所谓不能重新配置，并不是不能再次调用，只要这次调用的参数值与 configurable 为 false 时当前的descriptor的属性不冲突，依然可以调用。实际上就是一个徒劳的举动。
 
 2.2 的来历：
 

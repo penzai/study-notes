@@ -338,7 +338,16 @@ type BooleanOrStringGot = BooleanOrString extends string | number
   ? BooleanOrString[]
   : BooleanOrString; // 未使用泛型，因此是string | boolean
 ```
+> 注意never的特殊性，never在extends关键字左侧被视为原子类型时，整个类型返回never，否则按照正常逻辑调用。
+``` ts
+type T3 = never extends number ? number[] : never extends string ? string[] : never; // number[];
 
+type WhatIs1<T> = T extends number ? number[] : T extends string ? string[] : never;
+type T1 = WhatIs1<never>; // never
+
+type WhatIs2<T> = [T] extends [number] ? number[] : [T] extends [string] ? string[] : never;
+type T2 = WhatIs2<never>; // number[]
+```
 ### 泛型约束
 
 把泛型入参限定在一个相对更明确的集合内。
