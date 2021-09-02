@@ -35,6 +35,8 @@ let pz: [string, number] = ["penzai", 26];
 
 尽量减少使用。
 
+any与除了never以外的类型交叉得到的都是any。
+
 #### never
 
 表示永远不会发生的类型。比如一个死循环的函数返回值类型、一个抛出错误的函数返回值类型。
@@ -171,7 +173,6 @@ type Exclude<T, U> = T extends U ? never : T
 
 type Extract<T, U> = T extends U ? T : never;
 ```
-??? extends关键字
 - NonNullable
 ``` typescript
 type NonNullable<T> = T extends null | undefined ? never : T
@@ -390,3 +391,6 @@ const getName2 = <T extends Dog | Cat>(animal: T) => {
 
 ## 类型断言
 as
+
+## 工具类
+- `in`、`keyof`只能在类型别名定义中使用。
