@@ -439,8 +439,13 @@ TODO: 待实践验证
 
 ## HTTP 状态码
 
-- 301，永久重定向。浏览器会更新缓存，下次直接到新的页面；SEO 会转移相应旧站的流量排名到新站，但是内容一定要高度一致，不然视为黑帽 SEO。
-- 302，临时重定向
+### 3xx
+本来301/302的规定是不允许更改method和body，但是各个浏览器实现不一致，因此标准新增加了307/308。
+- 301 Moved Permanently ，永久重定向。浏览器会更新缓存，下次直接到新的页面；SEO 会转移相应旧站的流量排名到新站，但是内容一定要高度一致，不然视为黑帽 SEO；
+- 302 Found (Moved Temporarily)，临时重定向。
+- 303 See Other，临时重定向，明确告诉你重定向后的请求为get。
+- 307 Temporary Redirect，临时重定向，不允许更改method和body。
+- 308 Permanent Redirect，永久重定向，不允许更改method和body。
 
 ## CORS（跨域资源共享）
 ### 判断是否是simple request
