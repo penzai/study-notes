@@ -49,6 +49,10 @@ js代码 -> (Parser) -> AST -> (Interpreter) -> ByteCode -> (Compiler) -> Machin
 
 ### String
 
+string原始类型数据，是不可变的。
+
+> `typeof null === 'object'`的梗。在 JS 的最初版本中使用的是 32 位系统，为了性能考虑使用低位存储变量的类型信息，000 开头代表是对象，然而 null 表示为全零，所以将它错误的判断为 object 。虽然现在的内部类型判断代码已经改变了，但是对于这个 Bug 却是一直流传下来。
+
 String 类型是零个或多个 16 位无符号整数值（`UTF-16`编码方式）的所有有序序列的集合，最大长度为 2^53-1 个整数值。
 
 Unicode 码点范围为 U+0000~U+FFFF，共 65536 个，也叫基本字符区域（BMP）。
@@ -95,6 +99,7 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 #### 进制转换
 - parseInt('值', 要转换的进制)
 - xxx.toString(要转换的进制)
+- Array转为数字时，空数组 -> 0，`[1]` -> 1，多个的为NaN
 
 ### Symbol
 
@@ -348,6 +353,14 @@ console.log(b1 instanceof Object, b2 instanceof Object); //false true
 ```
 
 ### 作用域
+
+#### 作用域提升
+函数和var变量的作用域会提升，且函数更优先一级。
+``` js
+console.log(a) // f a() {}
+function a() {}
+var a = 3
+```
 
 es6 中，很多块中都会使 let 和 const 变量产生作用域。
 
@@ -1163,7 +1176,11 @@ arr.map((v, i, array) => {
 ## 数据转换为规则
 
 ### ToPrimitive
-
+转换逻辑：
+如果已经是原始类型了，那就不需要转换了
+如果需要转字符串类型就调用 x.toString()，转换为基础类型的话就返回转换的值。不是字符串类型的话就先调用 valueOf，结果不是基础类型的话再调用 toString
+调用 x.valueOf()，如果转换为基础类型，就返回转换的值
+如果都没有返回原始类型，就会报错
 #### string
 
 调用 toString 方法：
@@ -1401,3 +1418,10 @@ commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖�
 
 ## Reflect
 Reflect是一个内置对象，它提供了拦截和操作对象的api，类似于Math。
+
+## ES6+各版本新特性
+- ES2016。Array.prorotype.includes()
+- ES2017。async/await、Object.values()/entries()
+- ES2018。Promise.finally()
+- ES2019。Array.prototype.flat()
+- ES2020。可选链接、空值操作??、按需导入、BigInt、globalThis、Promise.allSettled
