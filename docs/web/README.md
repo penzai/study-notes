@@ -47,6 +47,9 @@
 - Javascript 引擎线程。
 > GUI线程与Javascript引擎线程互斥！
 
+浏览器每一帧会做的事：
+![](../js/browser-frame.png)
+
 ## 事件循环（event loop）
 
 事件循环是**浏览器的 JavaScript 运行时环境**的一部分，是为了让 JS 引擎更好的处理代码（异步并发）的一种模型或者叫做机制。
@@ -117,6 +120,7 @@ setTimeout(() => {
 - `I/O`
 - `setImmediate` (`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
 - `requestAnimationFrame`（浏览器）
+- `MessageChannel`
 
 > setInterval，当任务队列里有此实例时，不会再向队列里添加事件。因为使用setTimeout模拟setInterval效果时，两者有本质的区别。前者间隔事件一定大于delay，而使用setTnterval不一定会。
 
@@ -277,7 +281,7 @@ pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control�
 TCP 是可靠连接，主要靠序号（sequence number）和确认号（acknowledgement number）来保证信息的完整、有序和无差错。
 
 TCP 首部如下：
-![](~images/web/tcp_header.jpg)
+![](../images/web/tcp_header.jpg)
 
 握手中有两个常用的动作：
 
@@ -435,8 +439,13 @@ TODO: 待实践验证
 
 ## HTTP 状态码
 
-- 301，永久重定向。浏览器会更新缓存，下次直接到新的页面；SEO 会转移相应旧站的流量排名到新站，但是内容一定要高度一致，不然视为黑帽 SEO。
-- 302，临时重定向
+### 3xx
+本来301/302的规定是不允许更改method和body，但是各个浏览器实现不一致，因此标准新增加了307/308。
+- 301 Moved Permanently ，永久重定向。浏览器会更新缓存，下次直接到新的页面；SEO 会转移相应旧站的流量排名到新站，但是内容一定要高度一致，不然视为黑帽 SEO；
+- 302 Found (Moved Temporarily)，临时重定向。
+- 303 See Other，临时重定向，明确告诉你重定向后的请求为get。
+- 307 Temporary Redirect，临时重定向，不允许更改method和body。
+- 308 Permanent Redirect，永久重定向，不允许更改method和body。
 
 ## CORS（跨域资源共享）
 ### 判断是否是simple request

@@ -180,12 +180,10 @@ webpack中两者都可以互相混用，也就是互相引入导出。
 - 缩小文件搜索范围。
   - 引入文件实际地址搜索的缩小。resolve.modules/resolve.alias
   - babel-loader编译哪些文件的范围缩小。exclude/include
-- 提高构建速度
-  - babel-loader开启缓存，cacheDirectory。
-  - happypack进行loader处理上的多线程加速
-  - （常用于开发环境）source-map设置为cheap-module-eval-source-map。不关心列信息使用cheap，需要查看转换前的源码使用module，eval不产生文件打包速度块。
-  - （常用于生产环境）webpack-parallel-uglify-plugin，多线程压缩js代码。
-  - （常用于生产环境）DllPlugin 预编译第三方包
+  - 设置symlinks为false
+- 提高构建速度。**缓存/多线程入手**。
+  - babel-loader开启缓存，cacheDirectory。**被webpack5中自带cache功能替代。**
+  - （常用于生产环境）DllPlugin 预编译第三方包。**被webpack5中自带cache功能替代。**
     - webpack.config.dll.js里配置
     ``` js
     output: {
@@ -214,6 +212,9 @@ webpack中两者都可以互相混用，也就是互相引入导出。
       })
     ]
     ```
+  - happypack进行loader处理上的多线程加速。**被thread-loader替代。**
+  - （常用于生产环境）webpack-parallel-uglify-plugin，多线程压缩js代码。**被TerserWebpackPlugin替代**。
+  - （常用于开发环境）source-map设置为cheap-module-eval-source-map。不关心列信息使用cheap，需要查看转换前的源码使用module，eval不产生文件打包速度块。
 更小
 - 减少体积
   - 开启concatenateModules特性，尽可能打包到一个文件里。

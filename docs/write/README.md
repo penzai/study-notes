@@ -138,13 +138,40 @@ const MyCurry = (fn, arr = []) => (...args) =>
 注意一下几点：
 
 - 链式调用情况。
-  - 针对`p.then(fn1); p.then(fn2);`类，在resolve方法的遍历里面处理。
-  - 针对`p.then(fn1).then(fn2);`类，需要在then方法中返回一个新的实例p2，下一个then方法挂在p1上，后面依次类推；
-> 对于fn1方法的封装执行，手写Promise只能使用setimeout来模拟异步，这样会造成fn1,fn2并不是一起放在微队列的（中间隔了一次宏任务setimeout），而实际js引擎内部则会把其放在一个微队列中。
-- 每一次回调检测状态(状态发生变更，要立即执行对应的操作)。
-- 处理同步情况（必须让resolve发生在then之后）。
+  - 针对`p.then(fn1); p.then(fn2);`类，在resolve方法里，遍历`onFulfilledCallbacks`处理。
+  - 针对`p.then(fn1).then(fn2);`类，需要在then方法中返回一个新的实例p2，p2执行内容为往callback数组里插值，再链接p1（遍历callback时）p2（resolve实际结果出去）。
+- 处理同步情况（必须让resolve发生在then之后）。对于每个p的第一个then方法需要在一个队列里执行，手写Promise只能使用setimeout来模拟异步，这样会造成fn1,fn2并不是一起放在微队列的（中间隔了一次宏任务setimeout），而实际js引擎内部则会把其放在一个微队列中。
+- 每一次callback调用时检测状态(状态发生变更，要立即执行对应的操作)。
 
+简单版
+``` js
+class MyPromise {
+  constructor(run) {
+    this.fullfiledList = []
+    const resolve = (res) => {
+      setTimeout(() => {
+        this.fullfiledList.forEach(cb => cb(res))
+      })
+    }
+    run(resolve)
+  }
 
+  then(cb) {
+    return new MyPromise(resolve => {
+      this.fullfiledList.push((res) => {
+        const ret = cb(res)
+        if(ret instanceof MyPromise) {
+          ret.then(resolve)
+        } else {
+          resolve(ret)
+        }
+      })
+    })
+  }
+}
+```
+
+标准版
 ```javascript
 function MyPromise(fn) {
   const _this = this;
@@ -294,6 +321,12 @@ MyPromise.deferred = function() {
   return dfd;
 };
 ```
+### Promise.race()/Promise.all()
+在一个新的Promise pNew 里，执行两个Promise，谁有结果就优先调用pNew的resolve/reject。而all的实现就是等待所有都有结果了再调用。
+### 取消请求
+利用Promise.race()特性，执行两个Promise，一个为真实请求，一个为待定请求，待定请求把reject暴露出来，想要取消时就调用。
+### 限制最大并行请求数
+一次性发出limit个请求，重写每个发起的请求，在finally方法中调用下一个。
 
 ## 防抖（debounce）和节流（throttle）
 

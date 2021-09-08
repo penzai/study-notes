@@ -315,11 +315,10 @@ while (newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
   - 在所有收集了自己的 dep 中移除自己（watcher.tearDown()）
   - 解绑指令
   - 移除事件监听
-- vm.\$nextTick。默认使一次 js 引擎的执行过程中的所有回调统一添加到微任务队列中（第一次用 promise 创建微任务,不支持就用 setTimtout，后续往里面加回调函数）。也可以主动使用 withMacroTask 让其添加到任务队列中。
+- vm.\$nextTick。把回调函数加入微任务队列中（第一次用 promise 创建微任务,不支持就用 setTimtout，后续只需要往callbacks里面加回就行）。
+  也可以主动使用 withMacroTask 让其添加到任务队列中。宏任务的实现依次测试使用 setImmediate/MessageChannel/setTimeout。
 
-  宏任务的实现依次测试使用 setImmediate/MessageChannel/setTimeout。
-
-  > DOM 的更新回调也是使用此方法，因为一次可能触发多个 watcher，等待所有 watcher 执行完毕，再进行 DOM 更新。因为如果要在 nextTick 中获取 DOM 内容，需要在数据改变之后定义（因为都是微任务）。
+  > **DOM 的更新回调也是使用此方法**，因为一次可能触发多个 watcher，等待所有 watcher 执行完毕，再进行 DOM 更新。因为如果要在 nextTick 中获取 DOM 内容，需要在数据改变之后定义（因为都是微任务）。
 
 - vm.\$mount。挂载到 DOM 上。优先级：render/template/el。
 
