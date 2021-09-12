@@ -308,11 +308,13 @@ _p = new WeakMap();
 - `null`，`undefined`只有互相比较时才返回true，其余情况均返回false
 
 转换规则优先级 ：
-`boolean`=`引用类型` > `string` > `number`
+`boolean` > `引用类型` > `string` > `number`
 
 一步步按照优先级进行转换，最终都会向number靠齐，当然途中如果已经是同类型了，那么自然无需再进行转换，直接比较即可，其中：
 - `boolean`被转换成number
 - 引用类型会使用ToPrimitive规则（valueOf/toString方法）转换成原始类型，再进行优先级转换
+
+> 对于数组，`[]`转为数字`0`，`[1]`转为数字`1`，`[1,2]`转为数字`NaN`。
 
 ## 执行上下文
 
