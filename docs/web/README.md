@@ -452,6 +452,7 @@ TODO: 待实践验证
 根据**method**与**request header**进行判断。以下为simple request。
 - method: PUT、GET、POST
 - header: 基本字段，注意 content-type 只允许 application/x-www-form-urlencoded、multipart/form-data、text/plain，**也就是 json 参数是算 not-so-simple request**。
+> json格式请求想要通过，一个设置options，一个添加Access-Control-Allow-Headers="content-type"。
 
 ### simple request
 浏览器会自动带上 origin 字段，服务器进行逻辑判断，给出 response。
