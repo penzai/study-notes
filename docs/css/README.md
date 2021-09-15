@@ -135,9 +135,9 @@ CSSOM 是在 DOM 上进行了扩展
 
 属性：
 
-- `clientWidth/clientHeight`：`padding` + `content`
-- `clientTop/clientLeft`：`border`
-- `offsetWidth/offsetHeight`：`padding` + `content` + `border`
+- `clientWidth/clientHeight`：`padding` + `content`，可以理解为扒了一层皮（border）后剩下的宽高。
+- `clientTop/clientLeft`：`border`。
+- `offsetWidth/offsetHeight`：`border` + `padding` + `content`，顾名思义上的width，一个盒子的宽高
 - `offsetTop/offsetLeft`: 元素左上角距离最近定位元素的距离，注意与 getBoundingClientRect 方法返回结果中 y 属性的区别
 
 ### 全局信息
@@ -309,7 +309,7 @@ justify 值只影响文字。
 - id 选择器：100
 - 行内样式：1000
 
-> 同权重的时候，按书写样式的先后顺序，而不是 class 的使用顺序。
+> 同权重的时候，按书写样式的先后顺序，而不是 class 的使用顺序。想想CSSOM tree的解析。
 
 ## `box-shadow`
 
