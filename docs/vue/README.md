@@ -571,7 +571,7 @@ modules: {
 ## 踩坑
 
 - props 传递的数据，如果不是在原对象上面修改，那么直接紧接着使用`this.$refs.xxx.xxx()`方法里面访问到的还是旧值。需要使用`this.$nextTick()`;（子组件还没渲染）
-- props 传递为 null 时既不会触发 default 操作，也不会触发 validator 操作,同理在函数默认赋值时`function(a = 1){}`，传 null 也不会触发。
+- props 传递为 null 时既不会触发 default 操作，也不会触发 validator 操作,同理在函数默认赋值时`function(a = 1){}`，传 null 也不会触发。（vue中prop为null时不会进行default/validator以及type的验证）
 - 如果一个组件里用了 methods 来渲染组件，那么此函数里不要更改组件的依赖数据。否则引起无限更新。
 
 ```vue
@@ -607,3 +607,57 @@ export default {
   - 在beforeRouteUpdate钩子函数里处理逻辑（推荐）
   - 观察路由对象`$route`
   - 为route-view组件添加key
+
+- v-model并不是简单的语法糖，内部会给响应的值设置为响应式
+`App.vue`
+``` vue
+<template>
+  <div>
+    <!-- obj的d属性并不是响应式的，因此hello组件里是没值的 -->
+    <!-- <Hello :value="obj.d" @input="v => (obj.d = v)" /> -->
+
+    <!-- obj的d属性变成了响应式的，因此hello组件里是有值的 -->
+    <Hello v-model="obj.d" />
+  </div>
+</template>
+
+<script>
+import Hello from "./hello";
+
+export default {
+  components: {
+    Hello
+  },
+
+  data() {
+    return {
+      obj: {}
+    };
+  }
+};
+</script>
+```
+`Hello.vue`
+``` vue
+<template>
+  <div>
+    <p>hello {{ value }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    value: {
+      type: null
+    }
+  },
+
+  mounted() {
+    setTimeout(() => {
+      this.$emit("input", "456");
+    }, 500);
+  }
+};
+</script>
+```

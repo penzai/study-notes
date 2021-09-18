@@ -1,31 +1,39 @@
 # Javascript
+
 ## 起源
-网页浏览器诞生后，迫切需要一种语言来整合网页内容以及操作其它的事情。于是网景公司Netscape让布兰登Brendan Eich设计了这个语言（1995.5），最初取名Mocha，然后是LiveScript，最后才命名JavaScript。
 
-不久后，微软也在ie3上推出了类似的JScript，由于两公司竞争激烈，没有任何标准可言。于是网景向ECMA International（一家国际性会员制度的信息和电信标准制定组织）提交了语言标准（1996.11）。
+网页浏览器诞生后，迫切需要一种语言来整合网页内容以及操作其它的事情。于是网景公司 Netscape 让布兰登 Brendan Eich 设计了这个语言（1995.5），最初取名 Mocha，然后是 LiveScript，最后才命名 JavaScript。
 
-随后，ECMA根据提交的标准制定了ECMAScript的标准，这份规范就是ECMA-262。于是JavaScript就成为了ECMAScript的实现之一，同期还出现了ActionScript。
+不久后，微软也在 ie3 上推出了类似的 JScript，由于两公司竞争激烈，没有任何标准可言。于是网景向 ECMA International（一家国际性会员制度的信息和电信标准制定组织）提交了语言标准（1996.11）。
 
-当前现在ECMAScript的标准早已不止262了。现在由TC39组织来继续负责ECMAScript的标准制定。
+随后，ECMA 根据提交的标准制定了 ECMAScript 的标准，这份规范就是 ECMA-262。于是 JavaScript 就成为了 ECMAScript 的实现之一，同期还出现了 ActionScript。
+
+当前现在 ECMAScript 的标准早已不止 262 了。现在由 TC39 组织来继续负责 ECMAScript 的标准制定。
 
 ### Engine
-指JavaScript引擎，比如V8、SpiderMonkey等。负责解释代码并执行。
+
+指 JavaScript 引擎，比如 V8、SpiderMonkey 等。负责解释代码并执行。
 
 大概过程：
-1. byte stream decoder解码代码为一个个的token，传给Parser，然后构造出AST；
-2. Interpreter遍历AST，生成字节码；
-3. Profiler监视代码并对其进行优化；
-4. Compiler将字节码编译为机器可以读取的低级语言；
 
-js代码 -> (Parser) -> AST -> (Interpreter) -> ByteCode -> (Compiler) -> MachineCode
+1. byte stream decoder 解码代码为一个个的 token，传给 Parser，然后构造出 AST；
+2. Interpreter 遍历 AST，生成字节码；
+3. Profiler 监视代码并对其进行优化；
+4. Compiler 将字节码编译为机器可以读取的低级语言；
+
+js 代码 -> (Parser) -> AST -> (Interpreter) -> ByteCode -> (Compiler) -> MachineCode
+
 ### Runtime
-指Engine的具体运行环境，比如浏览器、NodeJS等。
+
+指 Engine 的具体运行环境，比如浏览器、NodeJS 等。
 
 它们提供了一些额外的接口模块，且按**事件驱动**的方式调度任务（EventLoop）。
-### 单线程
-因为js面对的应用大部分是I/O密集型应用，例如文件读写操作硬盘、网络请求操作网卡，所以使用单线程较为方便（cpu大部分很闲，事情交给不同的线程在处理）。
 
-如果是CPU密集型应用，那么使用功能多线程就较为更好；
+### 单线程
+
+因为 js 面对的应用大部分是 I/O 密集型应用，例如文件读写操作硬盘、网络请求操作网卡，所以使用单线程较为方便（cpu 大部分很闲，事情交给不同的线程在处理）。
+
+如果是 CPU 密集型应用，那么使用功能多线程就较为更好；
 
 ## 数据类型
 
@@ -49,7 +57,7 @@ js代码 -> (Parser) -> AST -> (Interpreter) -> ByteCode -> (Compiler) -> Machin
 
 ### String
 
-string原始类型数据，是不可变的。
+string 原始类型数据，是不可变的。
 
 > `typeof null === 'object'`的梗。在 JS 的最初版本中使用的是 32 位系统，为了性能考虑使用低位存储变量的类型信息，000 开头代表是对象，然而 null 表示为全零，所以将它错误的判断为 object 。虽然现在的内部类型判断代码已经改变了，但是对于这个 Bug 却是一直流传下来。
 
@@ -57,20 +65,23 @@ String 类型是零个或多个 16 位无符号整数值（`UTF-16`编码方式�
 
 Unicode 码点范围为 U+0000~U+FFFF，共 65536 个，也叫基本字符区域（BMP）。
 
-JavaScript支持转义，因此可以使用`\u` + 码位来表示一个字符，例如：
-``` javascript
-console.log('\u4e2d'); // 中
+JavaScript 支持转义，因此可以使用`\u` + 码位来表示一个字符，例如：
+
+```javascript
+console.log("\u4e2d"); // 中
 ```
 
-#### unicode与实际值互转
+#### unicode 与实际值互转
+
 - String.prototype.charCodeAt()/String.prototype.codePointAt()
 - String.fromCharCode()/String.fromCodePoint()
-> 现在的很多新字符都超出了65536，因此需要用后者api来操作。
+  > 现在的很多新字符都超出了 65536，因此需要用后者 api 来操作。
 
-#### 超出BMP的字符
-字符增多后，标准决定以16为字符为一组，一组65536个，一组为一个平面，一共17个平面，即0x00到0x10。
+#### 超出 BMP 的字符
 
-例如一个emoji表情💊，码位为`128138`，转换为16进制为`1f48a`，在js中的转义则为`\u{1f48a}`。
+字符增多后，标准决定以 16 为字符为一组，一组 65536 个，一组为一个平面，一共 17 个平面，即 0x00 到 0x10。
+
+例如一个 emoji 表情 💊，码位为`128138`，转换为 16 进制为`1f48a`，在 js 中的转义则为`\u{1f48a}`。
 
 ### Number
 
@@ -85,7 +96,7 @@ Javascript 中使用基于 IEEE754 标准的双精度浮点数来表示数字，
 > 0.1 + 0.2 运算不标准的原因就在于有的数（比如 0.1）用该方法表达时是无穷的，必须进行截断，所以不精确。而此运算，有 2 次的摄入，造成了精度丢失很大。比较大小正确的方式是检查等式左右两边差的绝对值是否小于最小精度：
 > `Math.abs(0.1 + 0.2 - 0.3) <= Number.EPSILON`
 
-> 浮点数意为小数点位置不固定的小数表示方法，双精度（双倍精度64位）是基于单精度（32位）而言。
+> 浮点数意为小数点位置不固定的小数表示方法，双精度（双倍精度 64 位）是基于单精度（32 位）而言。
 
 最大最小值分别为：
 
@@ -99,9 +110,10 @@ Number.MAX_SAFE_INTEGER = 2 ** 53 - 1;
 Number 是新来的，判断更贴合字面意思，就是判断此值是不是 NaN。而 window.isNaN 在判断前会进行数字转换一次，看此值到底能不能当成数字使用。
 
 #### 进制转换
+
 - parseInt('值', 要转换的进制)
 - xxx.toString(要转换的进制)
-- Array转为数字时，空数组 -> 0，`[1]` -> 1，多个的为NaN
+- Array 转为数字时，空数组 -> 0，`[1]` -> 1，多个的为 NaN
 
 ### Symbol
 
@@ -142,7 +154,7 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
    2. writable 为 true 时，配置 writable
 3. 不能数据描述符与访问器描述符之间互转
 
-> 所谓不能重新配置，并不是不能再次调用，只要这次调用的参数值与 configurable 为 false 时当前的descriptor的属性不冲突，依然可以调用。实际上就是一个徒劳的举动。
+> 所谓不能重新配置，并不是不能再次调用，只要这次调用的参数值与 configurable 为 false 时当前的 descriptor 的属性不冲突，依然可以调用。实际上就是一个徒劳的举动。
 
 2.2 的来历：
 
@@ -169,22 +181,27 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 - `NaN`与`NaN`，`===`返回 false，Object.is 返回 true
 
 #### 对象遍历
-古老的遍历方式，自然不能遍历出symbol属性。
+
+古老的遍历方式，自然不能遍历出 symbol 属性。
+
 - for in。遍历自身和原型链上的可枚举属性。
-> 在继承关系中，手动设置的constructor会被遍历出来，引擎自己设置的不会被遍历出来。因此记得配置enumerable为false。
+  > 在继承关系中，手动设置的 constructor 会被遍历出来，引擎自己设置的不会被遍历出来。因此记得配置 enumerable 为 false。
 
 以下是新的属性遍历方式，都有一个特点，那就是不再遍历原型链上的属性，这样更符合逻辑。
 
-其中Object上分门别类了各种遍历。
+其中 Object 上分门别类了各种遍历。
+
 - Object.keys()、Object.values()、Object.entries()。自身的可枚举属性。
 - Object.getOwnPropertyNames()。自身的可枚举与不可枚举属性。
 - Object.getOwnPropertySymbols()。自身的 symbol 属性。
 
-最后在内置对象Reflect上挂载了一个综合的方法，当然，依然不可遍历原型链的属性。
+最后在内置对象 Reflect 上挂载了一个综合的方法，当然，依然不可遍历原型链的属性。
+
 - Reflect.ownKeys()。自身的可枚举、不可枚举、symbol 属性。
 
 #### 遍历顺序
-js引擎本身是散乱无序的，浏览器实现时加入了自己的顺序规则。
+
+js 引擎本身是散乱无序的，浏览器实现时加入了自己的顺序规则。
 
 - 首先遍历所有数值键，按照数值升序排列。
 - 其次遍历所有字符串键，按照加入时间升序排列。
@@ -220,21 +237,25 @@ console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 
 - obj.hasOwnProperty(key) 判断 obj 实例有没有 key 属性
 
-
 ### Map
+
 保存键值对。
+
 - 能够记住键的原始插入顺序
 - 任何值都可以作为键值
-- 是iterable的，可以直接被迭代
+- 是 iterable 的，可以直接被迭代
 - 在频繁增删键值对的场景下表现更好
 
 ### WeakMap
-与map的区别：
-- 只能使用引用类型作为key
-- key保存的是弱引用，会直接被gc回收，因此不能遍历WeakMap的key
 
-在shim中被用于类的私有变量`#`的实现。
-``` javascript
+与 map 的区别：
+
+- 只能使用引用类型作为 key
+- key 保存的是弱引用，会直接被 gc 回收，因此不能遍历 WeakMap 的 key
+
+在 shim 中被用于类的私有变量`#`的实现。
+
+```javascript
 class Foo {
   constructor(p) {
     this.#p = p
@@ -263,58 +284,69 @@ class Foo {
 _p = new WeakMap();
 ```
 
-> 在ts中，#私有变量与private的区别在于，private只是ts内定的，其实转换后代码无变化，在继承中相同的private变量会被覆盖，而#私有变量跟**当前类**跟**实例**挂钩，不会被覆盖，始终是取的当前类中的变量。
+> 在 ts 中，#私有变量与 private 的区别在于，private 只是 ts 内定的，其实转换后代码无变化，在继承中相同的 private 变量会被覆盖，而#私有变量跟**当前类**跟**实例**挂钩，不会被覆盖，始终是取的当前类中的变量。
 
 ## 运算符优先级
+
 这里只列出易混顺序
 
 - 成员访问类：
   - `.`访问
   - `[]`访问
-  - `new F()`**new运算带参数列表**
+  - `new F()`**new 运算带参数列表**
   - `F()`函数调用
   - `?.` 可选链
-- `new F`**new运算无参数列表**
+- `new F`**new 运算无参数列表**
 - `&&`
 - `||`
 - 三元运算符`? :`
 - 赋值类运算符`=`
 
 ## 隐式转换
-### 运算符隐式转换
-#### 减`-`乘`*`除`/`
-尽量都转number，不行就返回`NaN`
-- 转换规则，null -> 0，true -> 1，false -> 0，undefined -> NaN，数组 -> string -> number -> NaN（一步步尝试），对象 -> NaN，'' -> 0
-- NaN, Infinity都是number类型
 
-``` javascript
-1 - true // 0
-1 - null // 1
-1 * undefined // NaN
-2 * ['5'] // 10
-2 * ['5', '5'] // NaN
-3 / '' // Infinity
-3 / [] // Infinity
+### 运算符隐式转换
+
+#### 减`-`乘`*`除`/`
+
+尽量都转 number，不行就返回`NaN`
+
+- 转换规则，null -> 0，true -> 1，false -> 0，undefined -> NaN，数组 -> string -> number -> NaN（一步步尝试），对象 -> NaN，'' -> 0
+- NaN, Infinity 都是 number 类型
+
+```javascript
+1 - true; // 0
+1 - null; // 1
+1 * undefined; // NaN
+2 * ["5"]; // 10
+2 * ["5", "5"]; // NaN
+3 / ""; // Infinity
+3 / []; // Infinity
 ```
-> Symbol会报错，毕竟这种隐式转换是以前的，Symbol是新出的原始类型。
+
+> Symbol 会报错，毕竟这种隐式转换是以前的，Symbol 是新出的原始类型。
+
 #### 加`+`
+
 优先级如下：
 
-1. 有字符串出现，全都转成string拼接
-2. number + 原始类型（其实也就只剩下null/true/false/undefined），正常数学运算
-3. 含有引用类型，转成string拼接
+1. 有字符串出现，全都转成 string 拼接
+2. number + 原始类型（其实也就只剩下 null/true/false/undefined），正常数学运算
+3. 含有引用类型，转成 string 拼接
 
 #### 等于符`==`
+
 两条特例规则：
-- `NaN`与任何类型比较，返回false
-- `null`，`undefined`只有互相比较时才返回true，其余情况均返回false
+
+- `NaN`与任何类型比较，返回 false
+- `null`，`undefined`只有互相比较时才返回 true，其余情况均返回 false
 
 转换规则优先级 ：
 `boolean` > `引用类型` > `string` > `number`
 
-一步步按照优先级进行转换，最终都会向number靠齐，当然途中如果已经是同类型了，那么自然无需再进行转换，直接比较即可，其中：
-- `boolean`被转换成number
-- 引用类型会使用ToPrimitive规则（valueOf/toString方法）转换成原始类型，再进行优先级转换
+一步步按照优先级进行转换，最终都会向 number 靠齐，当然途中如果已经是同类型了，那么自然无需再进行转换，直接比较即可，其中：
+
+- `boolean`被转换成 number
+- 引用类型会使用 ToPrimitive 规则（valueOf/toString 方法）转换成原始类型，再进行优先级转换
 
 > 对于数组，`[]`转为数字`0`，`[1]`转为数字`1`，`[1,2]`转为数字`NaN`。
 
@@ -332,7 +364,7 @@ _p = new WeakMap();
 - variable environment：变量环境，当声明变量时使用。
 - this value：this 值。
 
-> for循环中如果你使用了let而不是var，let的变量除了作用域是在for区块中，而且会为每次循环执行建立新的词法环境(LexicalEnvironment)，拷贝所有的变量名称与值到下个循环执行。
+> for 循环中如果你使用了 let 而不是 var，let 的变量除了作用域是在 for 区块中，而且会为每次循环执行建立新的词法环境(LexicalEnvironment)，拷贝所有的变量名称与值到下个循环执行。
 
 在 ES2018 中，执行上下文又变成了这个样子，this 值被归入 lexical environment，但是增加了不少内容。
 
@@ -356,25 +388,35 @@ console.log(typeof b1, typeof b2); //undefined object
 console.log(b1 instanceof Object, b2 instanceof Object); //false true
 ```
 
-### 作用域
+### 作用域提升
 
-#### 作用域提升
-函数和var变量的作用域会提升，且函数更优先一级。
-``` js
-console.log(a) // f a() {}
+浏览器的的实现保留了以前的旧的规则（为了兼容性老代码），又加入了新的规则。
+
+这里引入两个概念，旧世界作用域：**函数作用域**和**全局作用域**（仔细一想其实就一个）。新世界作用域：旧世界上加一个**块级作用域**。
+
+#### var 变量
+
+定义会提升到旧世界作用域顶部，但优先级没有函数高。
+
+待到实际定义处才进行赋值。
+
+示例 1：
+
+```js
+console.log(a); // f a() {}
+
+var a = 3;
+
 function a() {}
-var a = 3
 ```
 
-es6 中，很多块中都会使 let 和 const 变量产生作用域。
+示例 2：
 
-var 声明的作用域是最近的函数体，所以会产生变量穿透，甚至产生变量声明的和赋值的不是同一个变量的奇怪现象，例如：
-
-```javascript
+```js
 var b;
 void (function() {
   var env = { b: 1 };
-  b = 2;
+  b = 2; // 这里实际上是对var b = 3提升上来的b进行赋值
   console.log("In function b:", b); // 2
   with (env) {
     var b = 3;
@@ -384,6 +426,148 @@ void (function() {
 console.log("Global b:", b); // undefined
 ```
 
+#### let/const
+
+没有变量提升。不能重复也不能提前使用（连`typeof`也不能使用）。在当前作用域内会进行“一家独大”，就算你在全局上拥有这个变量，也不能提前使用。也叫暂时性死区。
+
+```js
+var a = 4;
+{
+  typeof a; // Uncaught ReferenceError: Cannot access 'a' before initialization
+  console.log(a); // Uncaught ReferenceError: Cannot access 'a' before initialization
+  let a = 3;
+}
+```
+
+注意常在函数默认参数设置中的死区：
+
+```js
+// p2还未定义就使用了
+// Uncaught ReferenceError: Cannot access 'p2' before initialization
+const fn1 = (p1 = p2, p2 = 3) => {};
+fn1();
+
+const fn2 = (p1 = 3, p2 = p1) => {};
+fn2();
+```
+
+for 循环中，声明块与执行块是不同的作用域，通过以下示例可得出结论。
+
+```js
+for (let i = 0; i < 3; i++) {
+  let i = "abc";
+  console.log(i);
+}
+// abc 未报不能再次声明错误
+// abc
+// abc
+```
+
+#### 函数声明
+
+稍显复杂，大概规则：
+
+- 规则1：函数声明的定义，就是指具名函数变量的定义会提升到最近的旧世界作用域。
+- 规则2：函数声明的实体，即赋值操作，会在最近的新世界作用域中赋值。
+
+示例 1：
+
+```js
+if (true) {
+  function f() {}
+}
+
+console.log(f); //？
+```
+即:
+```js
+var f
+if (true) {
+  f = function () {}
+}
+
+console.log(f); //ƒ f() {}
+```
+
+示例 2：
+
+```js
+function f() {
+  console.log("f1");
+}
+
+(function() {
+  if (true) {
+    function f() {
+      console.log("f2");
+    }
+  }
+  f(); // ？
+})();
+
+f(); // ？
+```
+即：
+```js
+var f = function () {
+  console.log("f1");
+}
+
+(function() {
+  var f
+  if (true) {
+    f = function () {
+      console.log("f2");
+    }
+  }
+  f(); // "f2"
+})();
+
+f(); // "f1"
+```
+
+示例 3：
+
+```js
+console.log(fn); // ?
+fn(); // ?
+{
+  fn(); // ?
+  function fn() {
+    console.log("hello");
+  }
+  fn(); // ?
+}
+fn(); // ?
+```
+即：
+```js
+var fn // 规则1
+console.log(fn); //undefined
+fn(); // 报错 fn is not fucntion
+{
+  fn = function () {
+    console.log("hello");
+  } // 规则2
+  fn(); //hello
+  fn(); //hello
+}
+fn(); //hello
+```
+
+???示例 4：
+
+```js
+{
+  function foo() {}
+  foo = 1;
+  function foo() {}
+  foo = 2;
+}
+console.log(foo); // 1
+```
+
+示例：
 "具有名称的函数表达式"会在外层词法环境和它自己执行产生的词法环境之间产生一个词法环境，再把自己的名称和值当作变量塞进去。
 
 ```javascript
@@ -511,9 +695,10 @@ if/switch/for/while/continue/break/return/throw/try
 
 ### 定义
 
-类（Class）为JavaScript原型的语法糖。
+类（Class）为 JavaScript 原型的语法糖。
+
 - 原型的构造函数，这里直接使用`class`关键字声明。
-- 原型的继承，之前使用手动设置prototype，这里使用`extends`关键字。
+- 原型的继承，之前使用手动设置 prototype，这里使用`extends`关键字。
 
 在 react 中经常会用到=符号设置属性，转化为 es5 的过程稍有区别，=符号设置的实例属性是直接挂载在生成的实例属性上，而构造函数里的属性则是挂载在类的 prototype 对象上。类的属性设置区别不大。
 
@@ -611,14 +796,18 @@ _defineProperty(Cat, "sfn", function() {
 - constructor 能正确指向
 
 #### 原型链继承
-使用new继承，导致了超类的实例属性变成了子类的原型属性。
+
+使用 new 继承，导致了超类的实例属性变成了子类的原型属性。
+
 ```javascript
 function SubType() {}
 SubType.prototype = new SuperType();
 ```
 
 #### 借用构造函数继承（constructor stealing）
-使用call/apply，导致了不能复用父类的方法。
+
+使用 call/apply，导致了不能复用父类的方法。
+
 ```javascript
 function SubType() {
   SuperType.call(this);
@@ -663,8 +852,8 @@ function createAnother(original) {
 
 ```javascript
 SubType.prototype = object(SuperType.prototype);
-Object.defineProperty(SubType.prototype, 'constructor', {
-  value: SubType
+Object.defineProperty(SubType.prototype, "constructor", {
+  value: SubType,
 });
 ```
 
@@ -672,7 +861,7 @@ Object.defineProperty(SubType.prototype, 'constructor', {
 
 ### 原型
 
-原型，即`[[prototype]]`。目前最新的操作原型的方式如下，在早期我们只能使用 new 一个要继承的实例来链接原型（__proto__在个浏览器中也没普及开来）。
+原型，即`[[prototype]]`。目前最新的操作原型的方式如下，在早期我们只能使用 new 一个要继承的实例来链接原型（**proto**在个浏览器中也没普及开来）。
 
 - Object.create，根据指定对象为原型创建新的对象。
 - Object.getPrototypeOf，获取原型
@@ -700,7 +889,7 @@ js 用了以下东西来操作：
 想当然的是 v 的一个属性指向构造函数 F，问题有两：
 
 1. 该关联属性应该有所隐藏，不能算作 v 实际的东西，而且要能避免属性名冲突。
-2. 假如v与F已经建立了关系，那么要使用公有属性，需要找到F，然后调用 F.prototype.fn，不符合使用体验。
+2. 假如 v 与 F 已经建立了关系，那么要使用公有属性，需要找到 F，然后调用 F.prototype.fn，不符合使用体验。
 
 js 采用了以下设置：
 
@@ -891,7 +1080,9 @@ const cards = [
 ```
 
 ### async/await
-使用try/catch捕获await的错误，如果不这样，那么报错后面的代码逻辑将不会执行。另外，catch中抛出错误，代码也会停止。
+
+使用 try/catch 捕获 await 的错误，如果不这样，那么报错后面的代码逻辑将不会执行。另外，catch 中抛出错误，代码也会停止。
+
 ```javascaript
 // 注意区分
 const a = yield 3; // a: undefined
@@ -972,9 +1163,9 @@ p 本身并不是匹配结果，它只是匹配的条件。例如你要匹配的
 
 ### 计算匹配结果
 
-- `match`字符串的方法，在没g的情况下跟exec类似，但是正则表达式带g，那么就只返回匹配结果的数组，**不含括号捕获值**。
+- `match`字符串的方法，在没 g 的情况下跟 exec 类似，但是正则表达式带 g，那么就只返回匹配结果的数组，**不含括号捕获值**。
 - `exec`正则表达式的方法，返回数组，**只返回第一次的匹配，后续为括号捕获值**
-- `test`返回Boolean值
+- `test`返回 Boolean 值
 
 ## `ajax`
 
@@ -1180,11 +1371,13 @@ arr.map((v, i, array) => {
 ## 数据转换为规则
 
 ### ToPrimitive
+
 转换逻辑：
 如果已经是原始类型了，那就不需要转换了
 如果需要转字符串类型就调用 x.toString()，转换为基础类型的话就返回转换的值。不是字符串类型的话就先调用 valueOf，结果不是基础类型的话再调用 toString
 调用 x.valueOf()，如果转换为基础类型，就返回转换的值
 如果都没有返回原始类型，就会报错
+
 #### string
 
 调用 toString 方法：
@@ -1193,6 +1386,8 @@ arr.map((v, i, array) => {
 - 非原始值，调用 valueOf 方法
   - 原始值，强转 string 后的原始值
   - 非原始值，抛出异常`TypeError: Cannot convert object to primitive value`
+
+> **在 + 运算符时，表现为先使用 valueOf()**。Date 对象直接调用 toString 完成转换，其他对象通过 valueOf 转化，如果转换不成功则调用 toString。
 
 #### number
 
@@ -1249,10 +1444,12 @@ const factorial = (v) => {
 ```
 
 ## 内存管理
-Javascript引擎里的内存空间主要分为栈内存和堆内存。栈内存存储执行上下文以及基本数据类型，而堆内存主要存储引用类型的数据。
 
-> Chrome Devtool里的Memory选项卡就用于对堆内存的监控。
-### 垃圾回收GC（Garbage Collection）
+Javascript 引擎里的内存空间主要分为栈内存和堆内存。栈内存存储执行上下文以及基本数据类型，而堆内存主要存储引用类型的数据。
+
+> Chrome Devtool 里的 Memory 选项卡就用于对堆内存的监控。
+
+### 垃圾回收 GC（Garbage Collection）
 
 - 引用计数（reference counting）。缺点：无法解决循环引用。
 - 标记-清除（mark and sweep algorithm）
@@ -1260,8 +1457,11 @@ Javascript引擎里的内存空间主要分为栈内存和堆内存。栈内存�
 堆中分为新生代和老生代两个区域。
 
 #### 老生代
+
 存放持久对象，由主垃圾回收器管理。
+
 #### 新生代
+
 存放临时对象，由副垃圾回收器管理。
 
 ### 常见内存泄漏
@@ -1332,16 +1532,20 @@ setInterval(replaceThing, 1000);
 - arguments 不可用。据阮一峰文章解释，这样就可以优化尾递归，因为非严格模式拥有 arguments.callee，需指向本身，造成了作用域栈不能被优化。（测试未通过）
 
 ## JSON.stringify
-JSON.stringify(val, replacer, space)，后面2个参数都只对对象有效。
+
+JSON.stringify(val, replacer, space)，后面 2 个参数都只对对象有效。
+
 ### replacer
+
 输出策略。
+
 - Array。只转换数组内的 key 值。
-- Function。传给你key和value，然后自己做逻辑操作，返回想要的value，如果返回为undefined，则相当于排除掉这个key的输出。
-> 注意，第一次的传入此函数的key和value分别为空字符`''`和对象本身`obj`。后面才开始是每个key。
+- Function。传给你 key 和 value，然后自己做逻辑操作，返回想要的 value，如果返回为 undefined，则相当于排除掉这个 key 的输出。
+  > 注意，第一次的传入此函数的 key 和 value 分别为空字符`''`和对象本身`obj`。后面才开始是每个 key。
 
 ### space
 
-只针对对象有作用，用于美化对象的输出。无论是空格还是字符，个数上限都是10。
+只针对对象有作用，用于美化对象的输出。无论是空格还是字符，个数上限都是 10。
 
 - Number。0 就是默认，比 0 小无效。每一行前面加相应数目的空格。
 - String。每一行前面加相应的字符。
@@ -1350,10 +1554,11 @@ JSON.stringify(val, replacer, space)，后面2个参数都只对对象有效。
 
 ### AMD
 
-代表require.js。遵循AMD（asynchronous module definition）规范。注重依赖提前确定。过程为依赖提前下载 -> 然后乱序执行 -> 等待所有模块执行完毕 -> 执行回调函数 -> 输出值的一份引用。
+代表 require.js。遵循 AMD（asynchronous module definition）规范。注重依赖提前确定。过程为依赖提前下载 -> 然后乱序执行 -> 等待所有模块执行完毕 -> 执行回调函数 -> 输出值的一份引用。
 
 ### CommonJS、CJS
-代表node。nodejs的自有模块系统。一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到 module 中的 exports 对象里
+
+代表 node。nodejs 的自有模块系统。一个文件即一个模块即一个模块对象，使用`module.exports = 值`或者`exports = 值`导出。打包后，输出到 module 中的 exports 对象里
 
 node 中的模块缓存对象：
 
@@ -1372,58 +1577,72 @@ node 中的模块缓存对象：
   }
 }
 ```
-#### CMD
-代表sea.js。之所以放这里，是以为淘宝出品，类似于造轮子，类似于cjs。注重按需加载依赖。依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
 
+#### CMD
+
+代表 sea.js。之所以放这里，是以为淘宝出品，类似于造轮子，类似于 cjs。注重按需加载依赖。依赖提前下载，然后运行到使用 require 关键词的地方再执行，输出值的一份引用
 
 ### EsModule、esm
 
 浏览器端的模块规范。使用`export default 值`或者`export 定义式`导出，后者使用定义式是因为打包工具需要把变量命挂在到 module.exports 的 getter 上（这样能获取到实时的值），而把前者放到 module.exports.default 里。
 
 ### UMD
+
 通用模块定义。其实就是检查了各个模块支持情况，按照优先级来导出，AMD -> CJS -> 浏览器全局变量，因此在多个地方可以放心使用，因此“通用”。
+
 ### 区别
 
-commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖关系（因此可以做tree-shaking），预留好了要 export 的对象的内存，在具体执行时再进行填值。但是打包工具是把 esModule 打包成 commonjs 的模块。
+commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖关系（因此可以做 tree-shaking），预留好了要 export 的对象的内存，在具体执行时再进行填值。但是打包工具是把 esModule 打包成 commonjs 的模块。
 
-### pkg的module、main字段
-通常一个包最稳的是提供一个用es5代码编写的commonjs规范文件，放在main字段，但是esModule规范有个好处可以做tree-shaking，因此增加了一个module字段来使用。
+### pkg 的 module、main 字段
+
+通常一个包最稳的是提供一个用 es5 代码编写的 commonjs 规范文件，放在 main 字段，但是 esModule 规范有个好处可以做 tree-shaking，因此增加了一个 module 字段来使用。
 
 ### 浏览器支持情况
-部分浏览器已原生支持module，需要设置`type="module"`。规范使用`.mjs`来代表模块文件，与普通js文件以区分，不过`.js`兼容性更好。
+
+部分浏览器已原生支持 module，需要设置`type="module"`。规范使用`.mjs`来代表模块文件，与普通 js 文件以区分，不过`.js`兼容性更好。
 
 ## 文件
+
 ### Blob 、 File 、 Data URL 、 ArrayBuffer
-- Data URL，即以`data:`协议开头的URL，故名思议，就是地址本身代表了内容。目前遇见的有：
-  - base64编码内容后的的小文件，其地址为：`data:${MIME类型，例如: text/html,image/jpeg,text/plain等};base64,${编码后内容}`
-  - 标签形式的内容，比如一张svg图片。其地址为：`data:image/svg+xml,${转义后的svg标签}`
+
+- Data URL，即以`data:`协议开头的 URL，故名思议，就是地址本身代表了内容。目前遇见的有：
+
+  - base64 编码内容后的的小文件，其地址为：`data:${MIME类型，例如: text/html,image/jpeg,text/plain等};base64,${编码后内容}`
+  - 标签形式的内容，比如一张 svg 图片。其地址为：`data:image/svg+xml,${转义后的svg标签}`
 
 - Blob，表示一个只读原始的数据的类文件对象。
-- File，继承自Blob，并提供了一些额外的元数据，例如：name、lastModified等。
-- ArrayBuffer，ArrayBuffer对象用来表示通用的、固定长度的原始二进制数据缓冲区。我们可以通过new ArrayBuffer(length)来获得一片连续的内存空间，它不能直接读写，但可根据需要将其传递到TypedArray视图或 DataView 对象来解释原始缓冲区。实际上视图只是给你提供了一个某种类型的读写接口，让你可以操作ArrayBuffer里的数据。TypedArray需指定一个数组类型来保证数组成员都是同一个数据类型，而DataView数组成员可以是不同的数据类型。
+- File，继承自 Blob，并提供了一些额外的元数据，例如：name、lastModified 等。
+- ArrayBuffer，ArrayBuffer 对象用来表示通用的、固定长度的原始二进制数据缓冲区。我们可以通过 new ArrayBuffer(length)来获得一片连续的内存空间，它不能直接读写，但可根据需要将其传递到 TypedArray 视图或 DataView 对象来解释原始缓冲区。实际上视图只是给你提供了一个某种类型的读写接口，让你可以操作 ArrayBuffer 里的数据。TypedArray 需指定一个数组类型来保证数组成员都是同一个数据类型，而 DataView 数组成员可以是不同的数据类型。
 - TypedArray，类型化数组是若干个类数组视图的统称，一个类数组视图对象描述了一个底层的二进制数据缓冲区（binay data buffer）。
-  - Int8Array：8位有符号整数，长度1个字节。
-  - Uint8Array：8位无符号整数，长度1个字节。
-  - Uint8ClampedArray：8位无符号整数，长度1个字节，溢出处理不同。
-  - Int16Array：16位有符号整数，长度2个字节。
-  - Uint16Array：16位无符号整数，长度2个字节。
-  - Int32Array：32位有符号整数，长度4个字节。
-  - Uint32Array：32位无符号整数，长度4个字节。
-  - Float32Array：32位浮点数，长度4个字节。
-  - Float64Array：64位浮点数，长度8个字节。
+  - Int8Array：8 位有符号整数，长度 1 个字节。
+  - Uint8Array：8 位无符号整数，长度 1 个字节。
+  - Uint8ClampedArray：8 位无符号整数，长度 1 个字节，溢出处理不同。
+  - Int16Array：16 位有符号整数，长度 2 个字节。
+  - Uint16Array：16 位无符号整数，长度 2 个字节。
+  - Int32Array：32 位有符号整数，长度 4 个字节。
+  - Uint32Array：32 位无符号整数，长度 4 个字节。
+  - Float32Array：32 位浮点数，长度 4 个字节。
+  - Float64Array：64 位浮点数，长度 8 个字节。
+
 ### 互相转换
-- Base64 -> Blob，先利用atob函数还原base64数据区域的内容，得到一个字符串。然后依次遍历字符串，利用charCodeAt提取每一个字符的Unicode码并放在Uint8Array中，最后直接使用new构建Blob或者文件。
-- Blob/File -> Base64，使用FileReader的readAsDataURL接口
-- Blob -> ArrayBuffer，利用FileReader的`readAsArrayBuffer()`读取，在onload事件中的result即为结果。
-- ArrayBuffer -> Blob / File，直接`new Blob([uint8Array], { type: 'text/html' })`，注意uint8Array外层的方括号。
-- ArrayBuffer -> 字符串，可以使用TextDecoder的decode实例方法把类型化数组转成字符串。
+
+- Base64 -> Blob，先利用 atob 函数还原 base64 数据区域的内容，得到一个字符串。然后依次遍历字符串，利用 charCodeAt 提取每一个字符的 Unicode 码并放在 Uint8Array 中，最后直接使用 new 构建 Blob 或者文件。
+- Blob/File -> Base64，使用 FileReader 的 readAsDataURL 接口
+- Blob -> ArrayBuffer，利用 FileReader 的`readAsArrayBuffer()`读取，在 onload 事件中的 result 即为结果。
+- ArrayBuffer -> Blob / File，直接`new Blob([uint8Array], { type: 'text/html' })`，注意 uint8Array 外层的方括号。
+- ArrayBuffer -> 字符串，可以使用 TextDecoder 的 decode 实例方法把类型化数组转成字符串。
+
 ### URL.createObjectURL()
-该方法创建一个DOMString，表示指定的File或Blob对象，这个URL的生命周期和document绑定。
+
+该方法创建一个 DOMString，表示指定的 File 或 Blob 对象，这个 URL 的生命周期和 document 绑定。
 
 ## Reflect
-Reflect是一个内置对象，它提供了拦截和操作对象的api，类似于Math。
+
+Reflect 是一个内置对象，它提供了拦截和操作对象的 api，类似于 Math。
 
 ## ES6+各版本新特性
+
 - ES2016。Array.prorotype.includes()
 - ES2017。async/await、Object.values()/entries()
 - ES2018。Promise.finally()
