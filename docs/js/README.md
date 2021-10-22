@@ -110,10 +110,11 @@ Number.MAX_SAFE_INTEGER = 2 ** 53 - 1;
 Number 是新来的，判断更贴合字面意思，就是判断此值是不是 NaN。而 window.isNaN 在判断前会进行数字转换一次，看此值到底能不能当成数字使用。
 
 #### 进制转换
-
-- parseInt('值', 要转换的进制)
-- xxx.toString(要转换的进制)
+`0b`开头二进制，`0x`开头16进制。
+- 10进制转n进制，`Number.prototype.toString([radix])`
+- n进制转10进制，`window.parseInt(string, radix)`
 - Array 转为数字时，空数组 -> 0，`[1]` -> 1，多个的为 NaN
+- false -> 0，`''` -> 0
 
 ### Symbol
 
@@ -1627,15 +1628,44 @@ commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖�
 
 ### 互相转换
 
-- Base64 -> Blob，先利用 atob 函数还原 base64 数据区域的内容，得到一个字符串。然后依次遍历字符串，利用 charCodeAt 提取每一个字符的 Unicode 码并放在 Uint8Array 中，最后直接使用 new 构建 Blob 或者文件。
-- Blob/File -> Base64，使用 FileReader 的 readAsDataURL 接口
-- Blob -> ArrayBuffer，利用 FileReader 的`readAsArrayBuffer()`读取，在 onload 事件中的 result 即为结果。
-- ArrayBuffer -> Blob / File，直接`new Blob([uint8Array], { type: 'text/html' })`，注意 uint8Array 外层的方括号。
-- ArrayBuffer -> 字符串，可以使用 TextDecoder 的 decode 实例方法把类型化数组转成字符串。
+#### Base64 -> Blob
+先利用 atob 函数还原 base64 数据区域的内容，得到一个字符串。然后依次遍历字符串，利用 charCodeAt 提取每一个字符的 Unicode 码并放在 Uint8Array 中，最后直接使用 `new Blob([u8arr])`构造文件对象。
+``` js
+function dataUrl2blob(dataUrl) {
+  const base64String = /base64,(.*)/.exec(dataUrl)[1];
+  const u8arr = new Uint8Array(base64String.length);
+  window
+    .atob(base64String)
+    .split("")
+    .forEach((s, index) => {
+      u8arr[index] = s.charCodeAt(0);
+    });
+  return new Blob([u8arr], { type: "image/png" });
+}
+```
+### Blob/File -> Base64
+使用 FileReader 的 readAsDataURL 接口
+``` js
+function file2base64(file) {
+  return new Promise(resolve => {
+    const fs = new FileReader();
+    fs.onload = function() {
+      resolve(this.result);
+    };
+    fs.readAsDataURL(file);
+  });
+}
+```
+### Blob -> ArrayBuffer
+利用 FileReader 的`readAsArrayBuffer()`读取，在 onload 事件中的 result 即为结果。
+### ArrayBuffer -> Blob / File
+直接`new Blob([u8arr], { type: 'text/html' })`
+> ！注意 uint8Array 外层的方括号。
+### ArrayBuffer -> 字符串
+可以使用 TextDecoder 的 decode 实例方法把类型化数组转成字符串。
 
-### URL.createObjectURL()
-
-该方法创建一个 DOMString，表示指定的 File 或 Blob 对象，这个 URL 的生命周期和 document 绑定。
+### blob -> url
+URL.createObjectURL()该方法创建一个 DOMString，表示指定的 File 或 Blob 对象，这个 URL 的生命周期和 document 绑定。
 
 ## Reflect
 
