@@ -115,11 +115,9 @@ setTimeout(() => {
 
 **宏任务/任务队列/task/macroTask**（由宿主发起）
 
-- `setTimeout`
-- `setInterval`
+- `setTimeout`、`setInterval`
 - `I/O`
-- `setImmediate` (`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
-- `requestAnimationFrame`（浏览器）
+- `requestAnimationFrame`
 - `MessageChannel`
 
 > setInterval，当任务队列里有此实例时，不会再向队列里添加事件。因为使用setTimeout模拟setInterval效果时，两者有本质的区别。前者间隔事件一定大于delay，而使用setTnterval不一定会。
@@ -127,7 +125,6 @@ setTimeout(() => {
 **微任务 microTask**（由 javascript 引擎发起）
 
 - `Promise`的`then`、`catch`、`finally`
-- `process.nextTick`（`node`）
 - `MutationObserver`（浏览器）
 
 #### `process.nextTick`
