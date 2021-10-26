@@ -257,6 +257,8 @@ while (newStartIdx <= newEndIdx && oldStartIdx <= oldEndIdx) {
 
 代码中最终不含模板代码，都被编译成了 render 函数，该函数就是要达到每次调用都能生成最新的 vnode 出来。
 
+> 如果同时设置两者，优先级template > render。
+
 ### 渲染函数 render
 
 1. 将模板解析为 AST（解析器）

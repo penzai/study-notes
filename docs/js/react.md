@@ -1,3 +1,6 @@
+
+## 函数式编程
+C/Java等都是命令式编程，而声明式编程更符合人类的逻辑思考，本质是一种lambda演算。
 ## HOOK
 ### useState
 ???React 会确保 setState 函数的标识是稳定的，并且不会在组件重新渲染时发生变化。这就是为什么可以安全地从 useEffect 或 useCallback 的依赖列表中省略 setState。
