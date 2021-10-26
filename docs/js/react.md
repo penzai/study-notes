@@ -31,6 +31,138 @@ React16之前diff算法是通过递归来实现，这次摒弃掉了递归，采
 浏览器每一帧需要做的事情：
 ![](./browser-frame.png)
 
+### requestIdleCallback
+react自行实现了此方法。
+``` js
+// 计算出当前帧 结束时间点
+var deadlineTime;
+
+// 保存任务
+var callback;
+
+// 建立通信
+var channel = new MessageChannel();
+
+var port1 = channel.port1;
+
+var port2 = channel.port2;
+
+// 接收并执行宏任务
+port2.onmessage = () => {
+  // 判断当前帧是否还有空闲，即返回的是剩下的时间
+  const timeRemaining = () => deadlineTime - performance.now();
+
+  const _timeRemain = timeRemaining();
+
+  // 有空闲时间 且 有回调任务
+  if (_timeRemain > 0 && callback) {
+    const deadline = {
+      timeRemaining, // 计算剩余时间
+      didTimeout: _timeRemain < 0, // 当前帧是否完成
+    };
+
+    // 执行回调
+    callback(deadline);
+  }
+};
+
+window.requestIdleCallback = function (cb) {
+  requestAnimationFrame((rafTime) => {
+    // 结束时间点 = 开始时间点 + 一帧用时16.667ms
+    deadlineTime = rafTime + 16.667;
+
+    // 保存任务
+    callback = cb;
+
+    // 发送个宏任务
+    port1.postMessage(null);
+  });
+};
+
+```
+
+### requestHostCallback
+``` js
+let scheduledHostCallback = null;
+
+let isMessageLoopRunning = false;
+
+const channel = new MessageChannel();
+
+// port2 发送
+const port = channel.port2;
+
+// port1 接收
+channel.port1.onmessage = performWorkUntilDeadline;
+
+const performWorkUntilDeadline = () => {
+  // 有执行任务
+  if (scheduledHostCallback !== null) {
+    const currentTime = getCurrentTime();
+
+    // Yield after `yieldInterval` ms, regardless of where we are in the vsync
+    // cycle. This means there's always time remaining at the beginning of
+    // the message event.
+    // 计算一帧的过期时间点
+    deadline = currentTime + yieldInterval;
+
+    const hasTimeRemaining = true;
+
+    try {
+      // 执行完该回调后, 判断后续是否还有其他任务
+      const hasMoreWork = scheduledHostCallback(
+        hasTimeRemaining,
+
+        currentTime
+      );
+
+      if (!hasMoreWork) {
+        isMessageLoopRunning = false;
+
+        scheduledHostCallback = null;
+      } else {
+        // If there's more work, schedule the next message event at the end
+        // of the preceding one.
+        // 还有其他任务, 推进进入下一个宏任务队列中
+
+        port.postMessage(null);
+      }
+    } catch (error) {
+      // If a scheduler task throws, exit the current browser task so the
+      // error can be observed.
+      port.postMessage(null);
+
+      throw error;
+    }
+  } else {
+    isMessageLoopRunning = false;
+  }
+
+  // Yielding to the browser will give it a chance to paint, so we can
+  // reset this.
+
+  needsPaint = false;
+};
+
+// requestHostCallback 一帧中执行任务
+requestHostCallback = function (callback) {
+  // 回调注册
+  scheduledHostCallback = callback;
+
+  if (!isMessageLoopRunning) {
+    isMessageLoopRunning = true;
+
+    // 进入宏任务队列
+    port.postMessage(null);
+  }
+};
+
+cancelHostCallback = function () {
+  scheduledHostCallback = null;
+};
+
+```
+
 - workInProgress tree代表了当前正在执行更新的Fiber树，currentFiber tree代表上次构建渲染的树，每一次更新完成，workInProgree就会复制给currentFiber。
 - 该算法把整个diff过程分成了若干小任务，在浏览器空闲时间才会去做（这里用到了requestIdleCallback回调里的IdleDeadline参数的timeRemaining方法是否小于1进行判断当前是否还有剩余时间）。
 - 小任务通过链表结构互相关联。

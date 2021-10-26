@@ -115,11 +115,9 @@ setTimeout(() => {
 
 **宏任务/任务队列/task/macroTask**（由宿主发起）
 
-- `setTimeout`
-- `setInterval`
+- `setTimeout`、`setInterval`
 - `I/O`
-- `setImmediate` (`node`, 在`v.9.11.1`环境下测试，慢于 `setTimeout(fn, 0)`)
-- `requestAnimationFrame`（浏览器）
+- `requestAnimationFrame`
 - `MessageChannel`
 
 > setInterval，当任务队列里有此实例时，不会再向队列里添加事件。因为使用setTimeout模拟setInterval效果时，两者有本质的区别。前者间隔事件一定大于delay，而使用setTnterval不一定会。
@@ -127,7 +125,6 @@ setTimeout(() => {
 **微任务 microTask**（由 javascript 引擎发起）
 
 - `Promise`的`then`、`catch`、`finally`
-- `process.nextTick`（`node`）
 - `MutationObserver`（浏览器）
 
 #### `process.nextTick`
@@ -251,15 +248,28 @@ function getH(el) {
 
 #### 强缓存
 
-服务端通过 cache-control(1.1)(max-age=毫秒)和 expires(1.0)(Date 类型值)设置，命中则不发起请求，直接调用磁盘缓存。优先级 cache-control > expires。
+服务端通过 `cache-control`(1.1)(max-age=毫秒)和 `expires`(1.0)(Date 类型值)设置，命中则不发起请求，直接调用磁盘缓存。优先级 cache-control > expires。
+
+**cache-control(1.1)**
+
+请求首部和返回首部都可以使用，有以下值：
+- `no-store`，不缓存直接重新下载完整资源（也就是请求中不会携带协商缓存的相关验证字段）。
+- `no-cache`，不进行强缓存，但会进行协商缓存验证。
+- ???`public`，"public" 指令表示该响应可以被任何中间人（译者注：比如中间代理、CDN等）缓存。若指定了"public"，则一些通常不被中间人缓存的页面（译者注：因为默认是private）（比如 带有HTTP验证信息（帐号密码）的页面 或 某些特定状态码的页面），将会被其缓存。
+- `private`，中间不缓存，只能应用于浏览器缓存。
+- `max-age=<seconds>`
+
+**Pragma(1.0)**
+
+只有一个唯一值 no-cache。用于向后兼容基于HTTP/1.0的客户端。标准规定用于请求首部，告诉服务器我要一份新内容。但是部分客户端又对响应首部的这个字段支持，注意，靠这个字段代替cache-control是不可靠的！
 
 #### 协商缓存
 
-服务端通过 last-modified/if-modified-since(Date 类型值)组合或者 etag/if-none-match(资源码)组合来判断，前者是服务端设置，后者是客户端请求携带。优先级 ETag > Last-Modified。
+服务端通过`etag/if-none-match`(1.1)(资源码)和 `last-modified/if-modified-since`(1.0)(Date 类型值)组合来判断，前者是服务端设置，后者是客户端请求携带。优先级 ETag > Last-Modified。
 
 #### 其他缓存
 
-pragma(1.0)，只有一个唯一值 no-cache。优先级 pragma > cache-control。
+
 
 #### 用户行为
 
