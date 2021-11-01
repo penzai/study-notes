@@ -387,6 +387,7 @@ float、clear、vertical-align 不能影响 item
 - `order`（默认 0）
 - `flex` [flex-grow, flex-shrink, flex-basis]（默认 `0 1 auto`, 缺省值分别是 **1，1，0%**）。flex 常用值有`none`(0 0 auto)，auto（1 1 auto），1（1 1 0%，最常用，也就是缺省值）
   > 为什么用`flex：1`，而不是`flex-grow:1`,因为 flex-basis 默认值 auto，所以你想平均分配空间（而不是剩余空间）的时候必须把其置为 0，也就是`flex：1`的完整设置项。
+  > flex-shrink的默认值1，也就表示item在允许的情况是会自动缩小的，就算你的初始宽度（width/flex-basis）设得很大，一样该缩小的时候就缩小。
 - `align-self` (单独的 align-items 设置)
 
 ### 应用
