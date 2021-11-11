@@ -1,6 +1,90 @@
 
 ## 函数式编程
 C/Java等都是命令式编程，而声明式编程更符合人类的逻辑思考，本质是一种lambda演算。
+
+## JSX
+使用类xml来描述虚拟DOM结构的模板语法。可以使用在javascript代码中，会在静态编译后转换为实际的js代码，因为叫JSX。
+
+虚拟DOM一般使用JSON对象来描述，而JSX又直观的描述了此JSON对象。
+``` js
+// JSX
+<div title={'this is title'}>
+  <span>{'hello'}</span>
+</div>
+
+// 静态编译后的js代码
+React.createElement(
+  'div',
+  {
+    title: 'this is title'
+  },
+  React.createElement(
+    'span',
+    null,
+    'hello'
+  )
+  // 还有children的话，依次注入
+)
+
+// 虚拟DOM的JSON对象
+{
+  type: 'div',
+  props: {
+    // 一些参数
+    title: 'this is title',
+    children: [
+      {
+        type: 'span',
+        props: {
+          children: 'hello'
+        }
+      }
+    ]
+  }
+}
+
+// 真实DOM
+<div title="this is title">
+  <span>hello</span>
+</div>
+```
+
+### 语法小点
+- 标签中可以使用多行注释
+``` js
+<div
+  /*
+    多行注释
+  */
+  title="hello" />
+```
+- 对于一些不支持的内容，比如渲染[if IE]条件注释代码，可以使用dangerouslySetInnerHTML。
+- 渲染DOCTYPE标签，使用字符串拼接方法。
+  - jsx里的所有标签都必须是闭合的，例如img/input等在html中自闭合的标签，在jsx中必须闭合！
+- 两个特殊的属性。
+  - class -> className
+  - for -> htmlFor
+- 对于html标签，不在范围内的属性，jsx虽然会编译到对象中，但react是不会渲染的。
+- ???转移字符（书上为防止xss不会显示，实测会显示）。
+- 模板语法{}，不会渲染boolean值以及对象数据。
+
+## state
+setState是一个异步操作，一个生命周期的所有设置会合并到一个操作。
+## props
+props数据流必须遵从自顶向下的单向数据流，且子组件不能修改父组件props。
+
+props中默认带有children属性值。
+
+## 生命周期
+### 旧版
+![](./react-lifecycle-old.jpg)
+- `componentWillMount`，在该方法中setState不会发生重新渲染。
+- `componentDidMount`，???在 componentDidMount() 里直接调用 setState()。它将触发额外渲染，但此渲染会发生在浏览器更新屏幕之前。
+
+### 新版（v16.3）
+![](./react-lifecycle-new.jpg)
+
+
 ## HOOK
 ### useState
 ???React 会确保 setState 函数的标识是稳定的，并且不会在组件重新渲染时发生变化。这就是为什么可以安全地从 useEffect 或 useCallback 的依赖列表中省略 setState。
