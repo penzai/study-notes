@@ -80,9 +80,14 @@ props中默认带有children属性值。
 ![](./react-lifecycle-old.jpg)
 - `componentWillMount`，在该方法中setState不会发生重新渲染。
 - `componentDidMount`，???在 componentDidMount() 里直接调用 setState()。它将触发额外渲染，但此渲染会发生在浏览器更新屏幕之前。
-
+- `shouldComponentUpdate`，无状态组件没有此方法，因此无状态组件作为子组件时每次都会重新渲染，可使用Recompose库的pure方法。
+``` js
+const OptimizedComponent = pure(ExpensiveComponent)
+```
 ### 新版（v16.3）
 ![](./react-lifecycle-new.jpg)
+
+
 
 
 ## HOOK
