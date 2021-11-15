@@ -26,6 +26,9 @@
 - `CAS` (Central Authentication Service) 中央认证服务
 - `CORS` (cross-origin resource-sharing) 跨域资源共享标准
 
+## 编码
+诸如中文、希腊字母等特殊字符在http报文传输过程中，不同端有自己的编码方式，为了统一。浏览器提供了encodeURI/encodeURIComponent来进行编码。
+
 ## 浏览器
 
 - 进程：CPU 进行资源分配的最小单位
