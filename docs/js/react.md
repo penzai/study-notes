@@ -49,6 +49,11 @@ React.createElement(
 </div>
 ```
 
+### 纯函数与class组件
+- 纯函数组件相当于调用方法直接返回虚拟DOM。
+- class组件则会生成一个实例对象，this/ReactDOM.render()返回值等都是指这个实例，它拥有自己的生命周期，以及一些逻辑方法，想要得到虚拟DOM时，就调用render()方法。
+- 纯函数组件没有实例，也就是ReactDOM.render一个纯函数组件会返回null。对一个纯函数组件使用ref时，只会得到undefined。 
+
 ### 语法小点
 - 标签中可以使用多行注释
 ``` js
