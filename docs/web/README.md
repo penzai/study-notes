@@ -419,8 +419,15 @@ TODO: 待实践验证
 
 预防：
 
-- 设置 cookie 的 sameSite 属性
-- 接口验证来源
+- 设置 cookie 的 sameSite 属性。
+- 接口验证referer，不过有的端会采取不发送referer属性值。
+- http请求头加入token属性。
+
+#### sameSite属性
+`set-cookie: sameSite=lax`。三个值：
+- strict，完全禁止第三方发送
+- lax，部分发送，a标签/form的get请求表单/prerender（img标签不在范围之内）
+- none，设置此属性必须设置secure属性（cookie通过https发送）
 
 ### SQL 注入
 
