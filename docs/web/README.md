@@ -593,6 +593,9 @@ e的相关属性：
 - `screenX`/`screenY`，相对于屏幕而言。
 - `offsetX`/`offsetY`，相当于元素的padding edge而言。譬如offsetX为0的位置在padding-left最左边缘也就是border-left的最右边缘处。
 
+## Storage
+### sessionStorage
+对于使用a标签blank方式打开同源链接时的tab，是新创建了一个session对象，而使用window.open打开同源链接时，会继承session。
 ## 性能
 ### 优化理念
 - 尽快接触到资源
