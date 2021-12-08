@@ -80,6 +80,11 @@ props数据流必须遵从自顶向下的单向数据流，且子组件不能修
 
 props中默认带有children属性值。
 
+## 表单
+- defaultValue、defaultChecked可设置默认值，也就是表明此组件不受控了。
+- 使用onChange事件进行反向赋值
+- text/textarea使用value，radio/checkbox使用checked表选中value表选择具体值，select使用value表选中谁（原生是在option上设置selected属性）。
+
 ## 生命周期
 ### 旧版
 ![](./react-lifecycle-old.jpg)
