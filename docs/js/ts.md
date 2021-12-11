@@ -1,7 +1,12 @@
 ## Tips
 
 - 转译后的 typescript 与 javascript 无本质的区别，类型注解之类的只会在开发阶段进行报错。
-- 基础类型 string/number 而不是 String/Number。
+- 基础类型是 string/number 而不是 String/Number。
+
+## 编译设置
+- 默认转换为es3，需要手动设置compilerOptions.target为es2015
+- noImplicitAny，不能有隐式推断为any的类型
+- strictNullChecks，在使用null和undefined之前，必须检测它。
 
 ## 类型
 
@@ -102,7 +107,7 @@ object代表字面量的对象。
 
 告诉 typescript 按照设定的类型进行处理，可以理解为写代码的人帮助 typescript 判断类型了。
 
-### 字面量类型
+### 字面量类型（literal types）
 
 即字符串字面量类型、数字字面量类型、布尔值字面量类型。属于各自集合类型的子类型，是为了更精确的定义类型需要。
 
@@ -147,6 +152,24 @@ let x1 = x; // x: null
 #### type narrowing 情况
 
 类型守卫、控制流语句（if/switch/三目运算符）
+
+### 类型断言
+
+类型断言（类似仅作用在类型层面的强制类型转换）告诉 TypeScript 按照我们的方式做类型检查。比如让下面的代码合理运行：
+
+```javascript
+const arrayNumber: number[] = [1, 2, 3, 4];
+const greaterThan2: number = arrayNumber.find(num => num > 2) as number;
+// const greaterThan2: number = <number>arrayNumber.find(num => num > 2);
+```
+
+#### 常量断言
+
+as const
+
+#### 非空断言
+
+!操作符（与 any 一样，尽量少用），使用类型守卫来代替非空断言。因为相当于你自己保证了这个值不可能是null或者undefined，可是又拿什么来保证呢。
 
 ### 工具类型
 - Partial、Required、Readonly
@@ -212,7 +235,7 @@ type OmitThisParameter<T> = unknown extends ThisParameterType<T> ? T : T extends
 ```
 - 字符串类型Uppercase、Lowercase、Capitalize、Uncapitalize
 ## interface
-
+命名对象类型的另一种方式，方便扩展。
 - 使用索引定义时，其它属性需要为索引的子集
 
 ```javascript
@@ -224,6 +247,10 @@ interface Dic {
 ```
 
 - 重复定义会叠加，而不是像变量一样被覆盖
+- 在 TypeScript 4.2 以前，类型别名的名字可能会出现在报错信息中，有时会替代等价的匿名类型（也许并不是期望的）。接口的名字则会始终出现在错误信息中。
+- 类型别名也许不会实现声明合并，但是接口可以
+- 接口可能只会被用于声明对象的形状，不能重命名原始类型
+- 接口通过名字使用的时候，他们的名字会总是出现在错误信息中，如果直接使用，则会出现原始结构
 
 ## 函数
 
@@ -252,25 +279,6 @@ interface Dic {
 
 abstract 属性与方法只定义类型，不实现，子类必须实现。
 
-## 断言
-
-### 类型断言
-
-类型断言（类似仅作用在类型层面的强制类型转换）告诉 TypeScript 按照我们的方式做类型检查。比如让下面的代码合理运行：
-
-```javascript
-const arrayNumber: number[] = [1, 2, 3, 4];
-const greaterThan2: number = arrayNumber.find(num => num > 2) as number;
-// const greaterThan2: number = <number>arrayNumber.find(num => num > 2);
-```
-
-### 常量断言
-
-as const
-
-### 非空断言
-
-!操作符（与 any 一样，尽量少用），使用类型守卫来代替非空断言。
 
 ## 枚举类型
 

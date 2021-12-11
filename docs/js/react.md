@@ -85,6 +85,9 @@ props中默认带有children属性值。
 - 使用onChange事件进行反向赋值
 - text/textarea使用value，radio/checkbox使用checked表选中value表选择具体值，select使用value表选中谁（原生是在option上设置selected属性）。
 
+## 样式
+可以通过className和style进行样式设置。style为对象格式，className使用不方便可以考虑使用classnames库。
+
 ## 生命周期
 ### 旧版
 ![](./react-lifecycle-old.jpg)

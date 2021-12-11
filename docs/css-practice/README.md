@@ -503,3 +503,8 @@ img.error::after {
 </style>
 <img src="zxx.png" alt="CSS新世界封面" onerror="this.classList.add('error');">
 ```
+
+## flex布局9宫格
+缺少一块，又想维持原来的布局
+- 手动添加元素凑满
+- 使用伪元素::after并设置flex：1来填满剩下的
