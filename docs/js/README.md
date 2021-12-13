@@ -1601,6 +1601,8 @@ node 中的模块缓存对象：
 
 浏览器端的模块规范。使用`export default 值`或者`export 定义式`导出，后者使用定义式是因为打包工具需要把变量命挂在到 module.exports 的 getter 上（这样能获取到实时的值），而把前者放到 module.exports.default 里。
 
+JavaScript 规范声明任何没有 export 或者顶层 await 的 JavaScript 文件都应该被认为是一个脚本，而非一个模块。
+
 ### UMD
 
 通用模块定义。其实就是检查了各个模块支持情况，按照优先级来导出，AMD -> CJS -> 浏览器全局变量，因此在多个地方可以放心使用，因此“通用”。

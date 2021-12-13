@@ -123,7 +123,7 @@ setTimeout(() => {
 - `requestAnimationFrame`
 - `MessageChannel`
 
-> setInterval，当任务队列里有此实例时，不会再向队列里添加事件。因为使用setTimeout模拟setInterval效果时，两者有本质的区别。前者间隔事件一定大于delay，而使用setTnterval不一定会。
+> setInterval，当任务队列里有此实例时，不会再向队列里添加事件。因此使用setTimeout模拟setInterval效果时，两者有本质的区别。前者间隔事件一定大于delay，而使用setTnterval不一定会。
 
 **微任务 microTask**（由 javascript 引擎发起）
 

@@ -10,14 +10,12 @@
 
 ## 类型
 
-### 分类
-
-#### string、number、boolean、symbol、bigint
+### string、number、boolean、symbol、bigint
 原始类型兼容相应的对象类型，反之则不然。
 
-#### null
+### null
 
-#### undefined
+### undefined
 
 undefined 类型可以赋值给 void 类型。
 
@@ -25,15 +23,9 @@ undefined 类型可以赋值给 void 类型。
 
 > ???我们不建议随意使用非空断言（下面要讲的“类型断言”中会详细介绍非空断言）来排除值可能为 null 或 undefined 的情况，因为这样很不安全。而比非空断言更安全、类型守卫更方便的做法是使用单问号（Optional Chain）、双问号（空值合并），我们可以使用它们来保障代码的安全性，如下代码所示： ###数组。例如：`string[]`、`number[]`、`Array<number>`。
 
-#### 元组（tuple）
 
-数组合并了相同类型的对象，而元组合并了不同类型的对象。
 
-```javascript
-let pz: [string, number] = ["penzai", 26];
-```
-
-#### any
+### any
 
 表示任意类型，特性为可以在任意类型与any直接互相赋值，会造成极大的不稳定困扰。
 
@@ -43,11 +35,11 @@ let pz: [string, number] = ["penzai", 26];
 
 any与除了never以外的类型交叉得到的都是any。
 
-#### never
+### never
 
 表示永远不会发生的类型。比如一个死循环的函数返回值类型、一个抛出错误的函数返回值类型。
 
-任意类型都不能赋值给never，never类型 => 任意类型。
+任意类型都不能赋值给never，never类型 => 任意类型。在type arrowing中可进行穷尽检查（在条件语句的最后一个分支，将值赋值给never，如果条件语句没有处理完所有情况，那么此时会报错）。
 
 可以用来创造接口类型中的只读属性。
 
@@ -68,7 +60,7 @@ const unionType: UnionType = {
   name: "tony",
 };
 ```
-#### unknown
+### unknown
 
 用来描述类型不确定的变量。特性设计为一旦使用此类型，就不能赋值给其它类型，必须保持unknown类型，或者赋值给any类型。
 
@@ -89,27 +81,45 @@ if (typeof result === "number") {
 }
 ```
 
-#### void
+### void
 
 一般只用来表示没有返回值的函数返回结果类型。而 void 变量一般没什么用处。
 且它只能再次赋值给 unknown 和 any 类型。
 
 any/never/undefined类型 => void类型，void => any/unknown类型。
 
-#### object、Object
+如果定义了一个函数描述为返回值void，那么实际使用时，也是可以返回值的。但是函数字面量定义返回一个 void 类型时，是不能有返回值的。
+``` ts
+type voidFunc = () => void
+
+const fs: voidFunc = () => {
+  return true
+}
+
+// error
+function f2(): void {
+  return true;
+}
+```
+
+### object、Object
 object代表字面量的对象。
 
 大Object代表有toString、hasOwnProperty方法的类型，原始类型、非原始类型都可以赋值给Object，毕竟万物之源。
 
 ???{}、大 Object 是比小 object 更宽泛的类型（least specific），{} 和大 Object 可以互相代替，用来表示原始类型（null、undefined 除外）和非原始类型；而小 object 则表示非原始类型。
+- 对象类型有属性冲突时，交叉类型和使用extends的区别，前者会取集合，后者会报错。
 
-### 类型断言（type assertion）
+#### index signatures
+TypeScript 可以同时支持 string 和 number 类型，但数字索引的返回类型一定要是字符索引返回类型的子类型。
 
-告诉 typescript 按照设定的类型进行处理，可以理解为写代码的人帮助 typescript 判断类型了。
+### 元组（tuple）
 
-### 字面量类型（literal types）
+数组合并了相同类型的对象，而元组合并了不同类型的对象。
 
-即字符串字面量类型、数字字面量类型、布尔值字面量类型。属于各自集合类型的子类型，是为了更精确的定义类型需要。
+```javascript
+let pz: [string, number] = ["penzai", 26];
+```
 
 ### 联合类型`|`、交叉类型`&`
 
@@ -121,39 +131,11 @@ object代表字面量的对象。
 type Color = "red" | (string & {});
 ```
 
-### 类型推断
+### 字面量类型（literal types）
 
-在各种上下文中，ts 能进行一定的类型推断。
+即字符串字面量类型、数字字面量类型、布尔值字面量类型。属于各自集合类型的子类型，是为了更精确的定义类型需要。
 
-#### 变量为字面量类型
-
-注意 const 与 let 为字面量值时的类型推断不同之处。另外，null 与 undefined 在 let 时会被推断为 any 类型（这样我们可以赋予任何其他类型的值给具有 null 或 undefined 初始值的变量 x 和 y。），但是使用后又会被推断为具体的 null/undefined。
-
-```javascript
-let v1 = "hello"; // v1: string
-const v2 = "hello"; //v2: 'hello'
-
-let x = null; // x: any
-let x1 = x; // x: null
-```
-
-#### 函数设置了默认值的参数
-
-字面量进行拓宽，但是 null 和 undefined 还是不变，不会推断成 any。
-
-#### 函数返回值
-
-#### 函数类型兼容性
-- 返回值。协变。
-- 参数类型。逆变。
-- 参数个数。个数少的兼容个数多的。
-- 可选参数兼容剩余参数、不可选参数。
-
-#### type narrowing 情况
-
-类型守卫、控制流语句（if/switch/三目运算符）
-
-### 类型断言
+## 类型断言
 
 类型断言（类似仅作用在类型层面的强制类型转换）告诉 TypeScript 按照我们的方式做类型检查。比如让下面的代码合理运行：
 
@@ -171,7 +153,49 @@ as const
 
 !操作符（与 any 一样，尽量少用），使用类型守卫来代替非空断言。因为相当于你自己保证了这个值不可能是null或者undefined，可是又拿什么来保证呢。
 
+
+
+
+## 类型推断
+
+在各种上下文中，ts 能进行一定的类型推断。
+
+### 变量为字面量类型
+
+注意 const 与 let 为字面量值时的类型推断不同之处。另外，null 与 undefined 在 let 时会被推断为 any 类型（这样我们可以赋予任何其他类型的值给具有 null 或 undefined 初始值的变量 x 和 y。），但是使用后又会被推断为具体的 null/undefined。
+
+```javascript
+let v1 = "hello"; // v1: string
+const v2 = "hello"; //v2: 'hello'
+
+let x = null; // x: any
+let x1 = x; // x: null
+```
+
+### 函数设置了默认值的参数
+
+字面量进行拓宽，但是 null 和 undefined 还是不变，不会推断成 any。
+
+### 函数返回值
+
+### 函数类型兼容性
+- 返回值。协变。
+- 参数类型。逆变。
+- 参数个数。个数少的兼容个数多的。
+- 可选参数兼容剩余参数、不可选参数。
+
+### type narrowing
+
+类型守卫、控制流语句（if/switch/三目运算符）
+#### type predicates
+形如`parameterName is Type`
+
+???我们通过“参数名 + is + 类型”的格式明确表明了参数的类型，进而引起类型缩小，所以类型谓词函数的一个重要的应用场景是实现自定义类型守卫
+
+
 ### 工具类型
+- keyof
+- typeof
 - Partial、Required、Readonly
 ``` typescript
 type Partial<T> = {
@@ -254,17 +278,28 @@ interface Dic {
 
 ## 函数
 
+### call signatures、construct signatures
+- 对于需要定义函数的属性时，描述函数本身时则使用call signatures
+- 对于使用new操作符调用时，函数本身使用construct signatures
+``` ts
+type fn = {
+  p1: string,
+  (a: string): void，
+  new (a: number): void
+}
+```
+
 ### this
 
 类型设置为 this 只能在 class 以及 interface 中使用。
 
 ### 重载
 
-由上到下依次匹配，因此注意精确的重载项放在前面。
+- 由上到下依次匹配，因此注意精确的重载项放在前面。
+- 应由多个Overload Signatures配合一个Implementation Signature来完成对函数重载功能的实现。
 
-### 类型谓词
-
-???我们通过“参数名 + is + 类型”的格式明确表明了参数的类型，进而引起类型缩小，所以类型谓词函数的一个重要的应用场景是实现自定义类型守卫
+#### 建议
+- 尽可能的使用联合类型替代重载
 
 ## 类
 
@@ -272,13 +307,15 @@ interface Dic {
 
 - public，默认
 - private，只在自身类中可用
-- protected，仅在自身及子类中可用
+- protected，仅在自身及子类实例访问
 - readonly
 
 ### 抽象类
 
 abstract 属性与方法只定义类型，不实现，子类必须实现。
 
+### 继承
+继承内置类型（Error、Array、Map）时，记得调整原型链。
 
 ## 枚举类型
 
@@ -316,7 +353,7 @@ const v3 = MyDay.SUNDAY; // v3: MyDay
 
 ### 外部枚举
 
-## 泛型
+## 泛型（generics）
 
 泛型指类型参数化，即将原来的某种具体类型进行参数化。与定义函数参数类似，给泛型定义若干个类型参数，在调用时再传入具体的类型参数，就得到了我们想要类型关系。
 
@@ -328,7 +365,7 @@ const v3 = MyDay.SUNDAY; // v3: MyDay
 
 ### 泛型类
 
-用在类中。
+用在类中。一个类它的类型有两部分：静态部分和实例部分。泛型类仅仅对实例部分生效，所以当我们使用类的时候，注意静态成员并不能使用类型参数。
 
 ### 泛型类型
 
@@ -341,9 +378,11 @@ interface IReflectFuncton {
 }
 ```
 
+当要描述一个包含泛型的类型时，理解什么时候把类型参数放在调用签名里，什么时候把它放在接口里是很有用的。
+
 #### 分配条件类型
 
-在条件类型判断的情况下（比如 extends），如果入参是联合类型，则会被拆解成一个个独立的（原子）类型（成员）进行类型运算。
+在条件类型判断的情况下（比如 extends），如果入参是联合类型，则会被拆解成一个个独立的（原子）类型（成员）进行类型运算。如果不想触发此条件，那么使用方括号进行包裹。
 
 ```typescript
 type StringOrNumberArray<E> = E extends string | number ? E[] : E;
@@ -365,7 +404,38 @@ type T2 = WhatIs2<never>; // number[]
 ```
 ### 泛型约束
 
-把泛型入参限定在一个相对更明确的集合内。
+把泛型入参限定在一个相对更明确的集合内，使用extends。
+
+### 一些建议
+- 如果可能的话，直接使用类型参数而不是约束它（extends）。
+``` ts
+// good
+function firstElement1<Type>(arr: Type[]) {
+  return arr[0];
+}
+ 
+// bad
+function firstElement2<Type extends any[]>(arr: Type) {
+  return arr[0];
+}
+```
+- 尽可能用更少的类型参数。
+``` ts
+// good
+function filter1<Type>(arr: Type[], func: (arg: Type) => boolean): Type[] {
+  return arr.filter(func);
+}
+ 
+// bad
+function filter2<Type, Func extends (arg: Type) => boolean>(
+  arr: Type[],
+  func: Func
+): Type[] {
+  return arr.filter(func);
+}
+```
+- 如果一个类型参数仅仅出现在一个地方，强烈建议你重新考虑是否真的需要它。
+- 当你写一个回调函数的类型时,不要写一个可选参数, 除非你真的打算调用函数的时候不传入实参。
 
 ## 类型守卫
 常用类型守卫：switch、===、typeof、instanceof、in、自定义类型守卫。
@@ -402,9 +472,6 @@ const getName2 = <T extends Dog | Cat>(animal: T) => {
   return animal.miao; // ts(2339)
 };
 ```
-
-## 类型断言
-as
 
 ## 工具类
 - `in`、`keyof`只能在类型别名定义中使用。
