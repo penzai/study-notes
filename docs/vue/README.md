@@ -501,6 +501,19 @@ modules: {
 - 同时设置`redirect`和`{ children: { path: '' }}`时，将无视前者。
   > 先匹配后计算
 
+### 守卫
+#### 全局
+- beforeEach
+- beforeResolve，在路由各种守卫走完后，confirmed之前最后一步触发
+- afterEach
+#### 路由
+- beforeEnter
+#### 组件
+只有写在路由配置的那个组件里才有效果。
+- beforeRouteEnter，不能访问this，但是可以给next方法传递回调函数
+- beforeRouteUpdate
+- beforeRouteLeave
+
 ## echarts
 
 1. 使用 this.\$refs.xxx 获取 dom，而不使用 document.getElementById('xxx)

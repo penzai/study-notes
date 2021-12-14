@@ -148,11 +148,11 @@ server.on("listening", () => {});
 
 ## 事件模型
 
-### DOM 事件模型
+### DOM 0 级事件模型
 
 xxx.onclick，发生在冒泡阶段
 
-### DOM 2 级模型
+### DOM 2 级事件模型
 
 - 捕获，目标，冒泡三个阶段
 - e.currentTarget 指向注册事件的监 DOM 对象，e.target 指向事件发生的 DOM 对象
@@ -177,6 +177,15 @@ const delegate = (delegateEl, type, wannaBindElSelectorString, fn) => {
 
   return delegateEl;
 };
+```
+### 自定义事件
+使用new Event('event-name')构建一个自定义事件。当然也可以使用CustomEvent创建事件，可以传入数据。事件通过element进行监听以及触发。
+``` js
+const customEvent = new CustomEvent('event-name', {
+  detail: {
+    // 传输的数据，会被挂载在e.detail上
+  }
+})
 ```
 
 ## AJAX
