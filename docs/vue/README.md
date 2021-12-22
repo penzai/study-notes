@@ -221,9 +221,35 @@ DOM 频繁操作还会引起性能问题，于是把一系列操作改成立即�
 - 函数式组件
 - 克隆节点???
 
-### Diff
+## Diff
 
 数据的变化，最终会触发 watcher 中的回调，回调中更新 dom 时，会调用`patch(oldVnode, vnode)`来更新 dom，整个过程称之为 Diff。
+
+### 新建子节点
+情况：
+- 首次渲染
+- 识别到不是同一个节点
+
+三类节点
+- 元素节点，使用`document.createElement`
+- 注释节点，使用`document.createComment`
+- 文本节点，使用`document.createTextNode`
+### 删除子节点
+新vnode节点中不存在的节点需要进行删除。
+
+使用`parentNode.removeChild(el)`。
+### 更新节点
+#### 静态节点
+通过`vnode.isStatic`判断是否为静态节点，静态节点不需要更新。
+#### 有文本属性
+通过`vnode.text`判断是否为有文本属性，如果有，且和旧的不同，则调用`node.textContent`方法更新文本。
+#### 无文本属性
+即元素节点。
+##### 有children
+- 如果新旧都有children属性，进行子节点更新。
+- 旧的没有children属性，旧节点要么是空标签，要么是文本节点。文本节点需要清空文本（变成空标签）
+
+
 
 #### 子节点更新
 
