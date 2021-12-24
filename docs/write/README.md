@@ -454,23 +454,148 @@ const throttle = (fn, wait, options) => {
 ```
 
 ## 深拷贝
-
+- 循环引用的解决方式
+- map/set类型的api不同
 ```javascript
-const MyCopy = obj => {
-  const type = Object.prototype.toString
-    .call(obj)
-    .slice(8, -1)
-    .toLowerCase();
+const mapTag = "[object Map]";
+const setTag = "[object Set]";
+const objectTag = "[object Object]";
+const arrayTag = "[object Array]";
+const argsTag = "[object Arguments]";
 
-  if (["object", "array"].includes(type)) {
-    const ret = type === "object" ? {} : [];
-    for (let k in obj) {
-      ret[k] = MyCopy(obj[k]);
-    }
+const boolTag = "[object Boolean]";
+const numberTag = "[object Nubmer]";
+const stringTag = "[object String]";
+const errorTag = "[object Error]";
+const dateTag = "[object Date]";
+const regexpTag = "[object RegExp]";
+const symbolTag = "[object Symbol]";
+const funcTag = "[object Function]";
+
+const deepTag = [mapTag, setTag, objectTag, arrayTag];
+
+function clone(target, map = new WeakMap()) {
+  // 基础类型值直接返回
+  if (!isObject(target)) return target;
+
+  // 生成初始值
+  const type = getType(target);
+  let cloneTarget;
+  if (deepTag.includes(type)) {
+    cloneTarget = getInit(target);
+  } else {
+    return cloneOtherType(target, type);
   }
 
-  return obj;
-};
+  // 解决循环引用
+  if (map.get(target)) {
+    return map.get(target);
+  }
+  map.set(target, cloneTarget);
+
+  // 处理set类型
+  if (type === setTag) {
+    target.forEach(value => {
+      cloneTarget.add(clone(value, map));
+    });
+    return cloneTarget;
+  }
+
+  // 处理map类型
+  if (type === mapTag) {
+    target.forEach((value, key) => {
+      cloneTarget.set(key, clone(value, map));
+    });
+  }
+
+  // 处理对象和数组
+  const keys = type === arrayTag ? undefined : Object.keys(target);
+  forEach(keys || target, (value, key) => {
+    if (keys) {
+      key = value;
+    }
+    cloneTarget[key] = clone(target[key], map);
+  });
+
+  return cloneTarget;
+}
+
+function forEach(array, iteratee) {
+  let index = -1;
+  const length = array.length;
+  while (++index < length) {
+    iteratee(array[index], index);
+  }
+  return array;
+}
+
+function isObject(target) {
+  const type = typeof target;
+  return target !== null && (type === "object" || type === "function");
+}
+
+function getType(target) {
+  return Object.prototype.toString.call(target);
+}
+
+function getInit(target) {
+  const Ctor = target.constructor;
+  return new Ctor();
+}
+
+function cloneOtherType(target, type) {
+  const Ctor = target.constructor;
+  switch (type) {
+    case boolTag:
+    case numberTag:
+    case stringTag:
+    case errorTag:
+    case dateTag:
+      return new Ctor(target);
+    case regexpTag:
+      return cloneReg(target);
+    case symbolTag:
+      return cloneSymbol(target);
+    case funcTag:
+      return cloneFunction(target);
+    default:
+      return null;
+  }
+}
+
+function cloneReg(target) {
+  const reFlags = /\w*$/;
+  const result = new target.constructor(target.source, reFlags.exec(target));
+  result.lastIndex = target.lastIndex;
+  return result;
+}
+
+function cloneSymbol(target) {
+  return Object(Symbol.prototype.valueOf.call(target));
+}
+
+function cloneFunction(func) {
+  const bodyReg = /(?<={)(.|\n)+(?=})/m;
+  const paramReg = /(?<=\().+(?=\)\s+{)/;
+  const funcString = func.toString();
+  if (func.prototype) {
+    const param = paramReg.exec(funcString);
+    const body = bodyReg.exec(funcString);
+    if (body) {
+      if (param) {
+        const paramArr = param[0].split(",");
+        return new Function(...paramArr, body[0]);
+      } else {
+        return new Function(body[0]);
+      }
+    } else {
+      return null;
+    }
+  } else {
+    return eval(funcString);
+  }
+}
+
 ```
 
 ## instanceOf
