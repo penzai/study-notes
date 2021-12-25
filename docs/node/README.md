@@ -34,6 +34,39 @@
 ## 事件循环机制
 node的I/O模型是非阻塞式，得益于它的事件循环机制，适合高并发应用（构建web应用中间层），但是Javascript执行效率低，不适合业务逻辑太复杂。
 
+### 宏任务
+- setTimeout
+- setInterval
+- setImmediate
+- script
+- I/O操作
+
+### 微任务
+- process.nextTick（在微任务队列之前执行）
+- promise
+
+### 各阶段概述
+- 定时器检测阶段(timers)：本阶段执行 timer 的回调，即 setTimeout、setInterval 里面的回调函数。
+- I/O事件回调阶段(I/O callbacks)：执行延迟到下一个循环迭代的 I/O 回调，即上一轮循环中未被执行的一些I/O回调。
+- 闲置阶段(idle, prepare)：仅系统内部使用。
+- 轮询阶段(poll)：检索新的 I/O 事件;执行与 I/O 相关的回调（几乎所有情况下，除了关闭的回调函数，那些由计时器和 setImmediate() 调度的之外），其余情况 node 将在适当的时候在此阻塞。
+- 检查阶段(check)：setImmediate() 回调函数在这里执行
+- 关闭事件回调阶段(close callback)：一些关闭的回调函数，如：socket.on('close', ...)。
+
+### poll阶段
+如果当前已经存在定时器，而且有定时器到时间了，拿出来执行，eventLoop 将回到 timers 阶段。
+如果没有定时器, 会去看回调函数队列。
+- 如果 poll 队列不为空，会遍历回调队列并同步执行，直到队列为空或者达到系统限制
+- 如果 poll 队列为空时，会有两件事发生
+  - 如果有 setImmediate 回调需要执行，poll 阶段会停止并且进入到 check 阶段执行回调
+  - 如果没有 setImmediate 回调需要执行，会等待回调被加入到队列中并立即执行回调，这里同样会有个超时时间设置防止一直等待下去,一段时间后自动进入 check 阶段。
+
+### process.nextTick
+在每一个 eventLoop 阶段完成后会去检查 nextTick 队列，如果里面有任务，会让这部分任务优先于微任务执行。
+
+node11之前，在定时器阶段会先完成所有已到期的定时器回调，再执行微任务。
+node11之后，向浏览器看起，会在定时器阶段每一个定时器任务执行完后，清空微任务。
+
 ## express
 
 - 由路由和中间件组成，本质上可以理解为应用在调用各种中间件

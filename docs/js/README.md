@@ -200,6 +200,8 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 
 - Reflect.ownKeys()。自身的可枚举、不可枚举、symbol 属性。
 
+其他遍历方法：
+- for of，用于遍历可迭代对象（即实现了`[symbol.iterator]`接口的对象，Array/Map/Set/String/TypedArray/arguments都自行实现了此接口）。
 #### 遍历顺序
 
 js 引擎本身是散乱无序的，浏览器实现时加入了自己的顺序规则。
