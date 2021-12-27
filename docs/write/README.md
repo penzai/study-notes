@@ -456,6 +456,7 @@ const throttle = (fn, wait, options) => {
 ## 深拷贝
 - 循环引用的解决方式
 - map/set类型的api不同
+- 对于String、Number、Boolean、Error、Date的包装对象，直接把值塞进相应的构造函数里
 ```javascript
 const mapTag = "[object Map]";
 const setTag = "[object Set]";

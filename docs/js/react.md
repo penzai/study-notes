@@ -88,6 +88,10 @@ props中默认带有children属性值。
 ## 样式
 可以通过className和style进行样式设置。style为对象格式，className使用不方便可以考虑使用classnames库。
 
+## 组件通信
+- 父与子，props与事件，深层次的可使用context
+- 跨级，全局emitter来进行监听与触发
+
 ## 生命周期
 ### 旧版
 ![](./react-lifecycle-old.jpg)
@@ -344,3 +348,18 @@ class FiberNode {
 ```
 
 ???副作用到底是什么
+
+## diff
+传统diff算法需要O(n^3)复杂度，react将其优化到了O(n)。
+
+三个策略：
+- DOM节点跨层级的移动操作特别少，可以忽略不计（tree diff只比较同一层级节点）
+- 拥有相同类的两个组件将会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构（component diff，通过组件来识别一堆节点是否相同，以及shouldComponentUpdate钩子来获取信息）
+- 同一层级的子节点可以用唯一id进行区分
+
+## Flux
+严格执行单向数据流。
+### MVC
+传统的mvc设计模式，随着项目的增大，在controller这层会越来越乱。MVVM框架使用VM代替了C，视图与数据之间会互相相应。
+
+
