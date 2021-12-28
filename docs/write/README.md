@@ -323,6 +323,45 @@ MyPromise.deferred = function() {
 ```
 ### Promise.race()/Promise.all()
 在一个新的Promise pNew 里，执行两个Promise，谁有结果就优先调用pNew的resolve/reject。而all的实现就是等待所有都有结果了再调用。
+
+- 接口参数为iterable，使用for...of遍历
+- 使用Promise.resolve包装参数
+- 有一个错误即马上reject
+``` js
+function all(iterable) {
+  return new Promise((resolve, reject) => {
+    let count = 0
+    const ret = []
+    for( let item of iterable) {
+      const currentIndex = count++
+      Promise.resolve(item).then((res) => {
+        ret[currentIndex] = res
+        count--
+        if(count === 0) {
+          resolve(ret)
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    }
+  })
+ }
+```
+
+### Promise.allSettled
+无论是fulfilled还是rejected都会完整返回到pNew的then方法里。格式为:
+``` js
+[
+  {
+    status: 'rejected',
+    value: 'value'
+  },
+  {
+    status: 'fulfilled',
+    value: 'value'
+  }
+]
+```
 ### 取消请求
 利用Promise.race()特性，执行两个Promise，一个为真实请求，一个为待定请求，待定请求把reject暴露出来，想要取消时就调用。
 ### 限制最大并行请求数
@@ -608,4 +647,35 @@ const MyInstanceOf = (child, Parent) => {
   if (proto === Parent.prototype) return true;
   return MyInstanceOf(proto, Parent);
 };
+```
+
+## async
+使用promise重写generator函数
+``` js
+function generator2promise(generatorFn) {
+  return function () {
+    var gen = generatorFn.apply(this, arguments);
+    return new Promise(function (resolve, reject) {
+      function step(key, arg) {
+        try {
+          var info = gen[key](arg);
+          var value = info.value;
+        } catch (error) {
+          reject(error);
+          return;
+        }
+        if (info.done) {
+          resolve(value);
+        } else {
+          return Promise.resolve(value).then(function (value) {
+            step("next", value);
+          }, function (err) {
+            step("throw", err);
+          });
+        }
+      }
+      return step("next");
+    });
+  };
+}
 ```

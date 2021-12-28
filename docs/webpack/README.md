@@ -37,6 +37,14 @@ class RemoveCommentsPlugin {
 module.exports = RemoveCommentsPlugin
 ```
 
+常用compiler钩子函数：
+- environment
+- afterEnviroment
+- shouldEmit，在输出asset之前调用，返回一个布尔值，告知是否输出。
+- emit，输出asset到output目录之前执行。
+- assetEmitted
+- failed
+
 ## devtool
 当一个文件被打包处理后，调试困难，而devtool决定开发者工具的调试情况。
 

@@ -93,7 +93,7 @@ Javascript 中使用基于 IEEE754 标准的双精度浮点数来表示数字，
 
 ![](~images/js/General_double_precision_float.png)
 
-> 0.1 + 0.2 运算不标准的原因就在于有的数（比如 0.1）用该方法表达时是无穷的，必须进行截断，所以不精确。而此运算，有 2 次的摄入，造成了精度丢失很大。比较大小正确的方式是检查等式左右两边差的绝对值是否小于最小精度：
+> 0.1 + 0.2 运算不标准的原因就在于有的数（比如 0.1）用该方法表达时是无穷的，必须进行截断，所以不精确。而此运算，有 2 次的舍入，造成了精度丢失很大。比较大小正确的方式是检查等式左右两边差的绝对值是否小于最小精度：
 > `Math.abs(0.1 + 0.2 - 0.3) <= Number.EPSILON`
 
 > 浮点数意为小数点位置不固定的小数表示方法，双精度（双倍精度 64 位）是基于单精度（32 位）而言。
@@ -201,7 +201,7 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 - Reflect.ownKeys()。自身的可枚举、不可枚举、symbol 属性。
 
 其他遍历方法：
-- for of，用于遍历可迭代对象（即实现了`[symbol.iterator]`接口的对象，Array/Map/Set/String/TypedArray/arguments都自行实现了此接口）。
+- for of，用于遍历可迭代对象。
 #### 遍历顺序
 
 js 引擎本身是散乱无序的，浏览器实现时加入了自己的顺序规则。
@@ -240,7 +240,39 @@ console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 
 - obj.hasOwnProperty(key) 判断 obj 实例有没有 key 属性
 
-### Map
+## 可迭代对象
+实现了**可迭代协议**的对象就是可迭代对象。即实现了`[Symbol.iterator]`接口的对象。
+
+### 迭代器协议
+可迭代协议是一个函数，该函数在准备迭代时会进行调用，用返回的迭代器，进行每一次迭代调用next方法获取每一次得到的值。
+
+也就是说`[Symbol.iterator]`属性要么是一个自行返回如下迭代器的函数，要么是一个generator函数。
+``` ts
+type IteratorReturn = {
+  next(): {
+    done: boolean,
+    value?: any
+  }
+}
+function iterator(): IteratorReturn
+```
+
+### 内置可迭代对象
+String、Array、TypedArray、Map、Set、arguments
+
+### 接受可迭代对象的内置api
+- new Map([iterable])
+- new WeakMap([iterable])
+- new Set([iterable])
+- new WeakSet([iterable])
+- Promise.all(iterable)
+- Promise.race(iterable)
+- Array.from(iterable)
+
+### 需要可迭代对象的语法
+for...of循环、展开语法、yield *、解构赋值
+
+## Map
 
 保存键值对。
 
@@ -249,7 +281,7 @@ console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 - 是 iterable 的，可以直接被迭代
 - 在频繁增删键值对的场景下表现更好
 
-### WeakMap
+## WeakMap
 
 与 map 的区别：
 
