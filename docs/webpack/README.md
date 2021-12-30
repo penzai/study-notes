@@ -8,6 +8,7 @@ webpack到底还是一个module bundler，它把项目所有使用的所有东�
 ## loader
 - 调用顺序从后向前。因此例如css-loader必须在style-loader后面才能正常加载。
 - loader最终返回的是一段js代码，这些代码就是这个模块（这个文件）的最终返回。
+- 一个模块可以应用多处规则，以及多个loader，顺序均为从后往前，类似于栈的弹出
 
 ## plugins
 webpack的插件基于自己的Tapable库实现，一个插件拥有apply方法，来让webpack注入逻辑，注入方式为设定具体的钩子函数回调。
