@@ -321,6 +321,22 @@ MyPromise.deferred = function() {
   return dfd;
 };
 ```
+### Promise.resolve()
+``` js
+const PromiseResolve = function (val) {
+  if(val instanceof Promise) return val
+  
+  return new Promise(resolve => resolve(val))
+};
+```
+
+### Promise.reject()
+``` js
+const PromiseReject = function (val) {
+  return new Promise((resolve, reject) => reject(val))
+}
+```
+
 ### Promise.race()/Promise.all()
 在一个新的Promise pNew 里，执行两个Promise，谁有结果就优先调用pNew的resolve/reject。而all的实现就是等待所有都有结果了再调用。
 
@@ -330,6 +346,15 @@ MyPromise.deferred = function() {
 ``` js
 function all(iterable) {
   return new Promise((resolve, reject) => {
+    // 非迭代对象，报错
+    if(!iterable[Symbol.iterator]) {
+      throw new Error('params is not iterable')
+    }
+
+    // 迭代为空
+    if(iterable.length === 0 || iterable.size === 0) resolve([])
+    
+
     let count = 0
     const ret = []
     for( let item of iterable) {

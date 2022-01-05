@@ -5,6 +5,42 @@ webpack到底还是一个module bundler，它把项目所有使用的所有东�
 
 > 无需html-webpack-plugin也能使用html文件，那就是自己建立html，手动添加main.js的引入（因为devServer的启动会自动把打包后的东西注入内存），最后设置静态文件目录（html文件并不是webpack打包后生成的文件），即可访问自建的index.html文件。
 
+## 分包
+- module，import的对象，万物皆为模块
+- bundle，按一定规则打包集合后的输出
+- chunk，因为应用不可能真的全打包成1个文件，那么需要分包，分出来的包就叫chunk
+
+optimization.splitChunks配置默认只打包异步加载点模块。因为optimization.splitChunks.chunks的默认值是async。
+``` js
+module.exports = {
+  optimization: {
+    splitChunks: {
+      chunks: 'async',
+      minSize: 20000,
+      minRemainingSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 30,
+      maxInitialRequests: 30,
+      enforceSizeThreshold: 50000,
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true,
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
+        },
+      },
+    },
+  },
+};
+```
+- initial
+- all
+
 ## loader
 - 调用顺序从后向前。因此例如css-loader必须在style-loader后面才能正常加载。
 - loader最终返回的是一段js代码，这些代码就是这个模块（这个文件）的最终返回。

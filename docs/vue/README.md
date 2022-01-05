@@ -483,6 +483,8 @@ vue运行期间发生的所有错误都会统一交给handlerError函数处理�
 - v-slot 替换
 - slot + slot-scope 替换
 
+具名插槽内容通过设置到组件的scopedSlots里去，而default内容，被直接当作children塞入。
+
 ## 函数式组件
 
 - 无状态、无实例、没有 this 上下文、无生命周期
