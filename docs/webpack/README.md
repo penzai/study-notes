@@ -10,7 +10,7 @@ webpack到底还是一个module bundler，它把项目所有使用的所有东�
 - bundle，按一定规则打包集合后的输出
 - chunk，因为应用不可能真的全打包成1个文件，那么需要分包，分出来的包就叫chunk
 
-optimization.splitChunks配置默认只打包异步加载点模块。因为optimization.splitChunks.chunks的默认值是async。
+optimization.splitChunks配置默认只打包**异步加载**的模块。因为optimization.splitChunks.chunks的默认值是async。
 ``` js
 module.exports = {
   optimization: {
@@ -18,8 +18,11 @@ module.exports = {
       chunks: 'async',
       minSize: 20000,
       minRemainingSize: 0,
+      // 一个模块至少被几次引用才会分包
       minChunks: 1,
+      // 异步请求的最大数目
       maxAsyncRequests: 30,
+      // 初始化页面时请求的最大数目
       maxInitialRequests: 30,
       enforceSizeThreshold: 50000,
       cacheGroups: {
@@ -38,8 +41,8 @@ module.exports = {
   },
 };
 ```
-- initial
-- all
+- initial，分包的作用范围是入口文件（每个异步模块会被打包成一个独立文件）。
+- all，分包的作用范围是入口文件和异步模块。
 
 ## loader
 - 调用顺序从后向前。因此例如css-loader必须在style-loader后面才能正常加载。
