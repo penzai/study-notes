@@ -196,6 +196,8 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 - Object.getOwnPropertyNames()。自身的可枚举与不可枚举属性。
 - Object.getOwnPropertySymbols()。自身的 symbol 属性。
 
+> symbol属性的属性描述符为：不可枚举，不可配置，不可重写。
+
 最后在内置对象 Reflect 上挂载了一个综合的方法，当然，依然不可遍历原型链的属性。
 
 - Reflect.ownKeys()。自身的可枚举、不可枚举、symbol 属性。
@@ -209,6 +211,23 @@ js 引擎本身是散乱无序的，浏览器实现时加入了自己的顺序�
 - 首先遍历所有数值键，按照数值升序排列。
 - 其次遍历所有字符串键，按照加入时间升序排列。
 - 最后遍历所有 Symbol 键，按照加入时间升序排列。
+
+### Array
+数组是特殊的对象。
+
+### `Array.isArray()`
+该api判断对象是否是Array类的实例或者是以class方式继承的子类实例，自行使用组合寄生方法继承的实例，不在范围之内。
+``` js
+// Array.isArray(arr) === true
+class MyArray extends Array {}
+
+
+// Array.isArray(arr) === false
+function MyArray() {
+  Array.apply(this, arguments)
+}
+MyArray.prototype = Object.create(Array.prototype)
+```
 
 ### 类型转换
 
