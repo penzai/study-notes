@@ -213,7 +213,15 @@ js 引擎本身是散乱无序的，浏览器实现时加入了自己的顺序�
 - 最后遍历所有 Symbol 键，按照加入时间升序排列。
 
 ### Array
-数组是特殊的对象。
+- 数组是特殊的对象。
+- shift/unshift比pop/push性能差很多，尤其是数组很大的时候尤为明显。
+- 具有破坏的方法：sort、reverse、splice/fill/pop/push/shift/unshift
+- ???sort方法的理解。第一个参数排前面返回负数，第二个参数排前面返回正数。排序方法是不稳定的（怎么构建一个稳定的排序方法）。
+
+### reduce
+`arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])`
+
+注意第2个参数为可选参数，不传时默认为数组第0个元素。
 
 ### `Array.isArray()`
 该api判断对象是否是Array类的实例或者是以class方式继承的子类实例，自行使用组合寄生方法继承的实例，不在范围之内。
