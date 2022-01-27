@@ -1,5 +1,8 @@
 # CSS 基础
 
+## 标准
+现存标准为CSS2.1与CSS3，不会再有CSS4，因为现在css的标准是按模块进行划分，分别对模块进行Level1，Level2以此类推的标准升级。
+
 ## 大纲
 
 - css 选择器
@@ -499,3 +502,42 @@ float、clear、vertical-align 不能影响 item
 
 ## 滚动条设置
 设置是一个完整的设置，可以想象成浏览器内置的滚动条样式你不能不分修改，要改，就自己造一套滚动条样式。
+
+## css数据类型定义语法
+### 字面符号
+- `/`，用来分隔一个值的多个部分（rgba），在缩写中用于分离数据类型相同但属于不同属性的值，例如：font属性中的`font-size / line-height`，background属性中的`background-position / background-size`。
+### 组合符号
+- ` `，空格，表示各部分**必须按顺序出现**。
+- `&&`，必须出现，可以不按顺序。
+- `||`，各部分至少出现一个，可以不按顺序。
+- `|`，互斥。
+### 数量符号
+- `#`，可以出现一次或多次，但多次出现时必须以逗号分隔（box-shadow）。
+- `!`，用于组合符号方括号后面，表当前分组必须产生一个值。
+## css全局关键字
+### 属性值
+- `inherit`，继承。
+- `initial`，把当前css属性的计算值还原成css语法中规定的初始值，注意，并非还原成浏览器对特定标签所设定的初始值（ul/ol标签）。
+- `unset`，根据当前css属性是否具有继承特性，来决定使用inherit或者initial（增加心智负担，对于一个设置unset的属性不如直接设置inherit或者initial）。常常配合all使用`all: unset;`。
+- `revert`，让当前属性恢复成浏览器内置的样式（ul/ol标签）。
+### 属性
+`all`，语法为只能使用上述几个全局关键字属性值。
+
+- `all:inherit`，`all:initial`比较鸡肋。
+- `all:unset`，可以让任意一个元素样式表现和`<span>`标签一样（display规范中初始属性为inline）。
+- `all:revert`，可以让元素恢复成浏览器默认的样式。
+
+`direction`（兼容阿拉伯文字从右向左）与`unicode-bidi`属性不包括在all属性指代范围之内。
+
+## @supports
+新的渐进增强处理方案。老旧的有：使用属性值差异、使用伪元素选择器差异。
+- 检测是否支持某个属性值，例如：`@supports (display: flex) {}`、`@supports (not (display: flex)) {}`。
+- 检测是否支持某个自定义属性。例如：`@supports (--my-custom-prop: blue) {}`。
+- 检测是否支持某个选择器。例如：`@supports selector(:default) {}`。
+
+在js中则可以使用如下判断：
+``` js
+if(!window.CSS || !CSS.supports || !CSS.supports('position', 'sticky')) {
+  //不支持此属性的逻辑
+}
+```
