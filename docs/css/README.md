@@ -503,7 +503,7 @@ float、clear、vertical-align 不能影响 item
 ## 滚动条设置
 设置是一个完整的设置，可以想象成浏览器内置的滚动条样式你不能不分修改，要改，就自己造一套滚动条样式。
 
-## css数据类型定义语法
+## CSS数据类型定义语法
 ### 字面符号
 - `/`，用来分隔一个值的多个部分（rgba），在缩写中用于分离数据类型相同但属于不同属性的值，例如：font属性中的`font-size / line-height`，background属性中的`background-position / background-size`。
 ### 组合符号
@@ -514,7 +514,7 @@ float、clear、vertical-align 不能影响 item
 ### 数量符号
 - `#`，可以出现一次或多次，但多次出现时必须以逗号分隔（box-shadow）。
 - `!`，用于组合符号方括号后面，表当前分组必须产生一个值。
-## css全局关键字
+## CSS全局关键字
 ### 属性值
 - `inherit`，继承。
 - `initial`，把当前css属性的计算值还原成css语法中规定的初始值，注意，并非还原成浏览器对特定标签所设定的初始值（ul/ol标签）。
@@ -541,3 +541,42 @@ if(!window.CSS || !CSS.supports || !CSS.supports('position', 'sticky')) {
   //不支持此属性的逻辑
 }
 ```
+
+## CSS尺寸体系
+### intrinsic sizing
+- `fit-content`
+- `min-content`
+- `max-content`
+### extrinsic sizing
+- `stretch`
+
+## CSS逻辑属性
+- `writing-mode`，值：horizontal-tb、vertical-rl、vertical-lr。
+- `direction`，值：ltr、rtl。
+- `text-orientation`
+- `inline-start`，表内联元素文档流的开始方向。默认左。
+- `inline-end`，表内联元素文档流的结束方向。默认右。
+- `block-start`，表块级元素排版的开始方向。默认上。
+- `block-end`，表块级元素排版的结束方向。默认下。
+
+### margin/padding/border方位与逻辑的对应关系
+- margin-left    ↔  margin-inline-start
+- margin-top     ↔  margin-block-start
+- margin-right   ↔  margin-inline-end
+- margin-bottom  ↔  margin-block-end
+
+在`writing-mode:vertical-rl`环境下
+- margin-left    ↔  margin-block-end
+- margin-top     ↔  margin-inline-start
+- margin-right   ↔  margin-block-start
+- margin-bottom  ↔  margin-inline-end
+
+block也是start、end的缩写。也就是`margin-block`属性代表`margin-block-start`与`margin-block-end`。同理inline。
+
+应用：对称布局（可能会用到`unicode-bidi: plaintext;`）。
+
+### width
+width属性对应的CSS逻辑属性是inline-size，height属性对应的CSS逻辑属性是block-size。
+
+### inset
+对于绝对定位的top/left/bottom/right，需要使用inset配合。例如：inset-inline-start(left)。也支持整体缩写，例如：`inset: 0;`。
