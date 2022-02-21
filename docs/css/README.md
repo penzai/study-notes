@@ -1,7 +1,8 @@
 # CSS 基础
 
 ## 标准
-现存标准为CSS2.1与CSS3，不会再有CSS4，因为现在css的标准是按模块进行划分，分别对模块进行Level1，Level2以此类推的标准升级。
+
+现存标准为 CSS2.1 与 CSS3，不会再有 CSS4，因为现在 css 的标准是按模块进行划分，分别对模块进行 Level1，Level2 以此类推的标准升级。
 
 ## 大纲
 
@@ -17,8 +18,9 @@
 
 浏览器渲染布局时，把每个元素都当做一个盒子来处理，所以盒是 css 渲染布局的对象和基本单位，一个页面就是由若干个盒组成。
 
-盒模型的解析方式分为标准盒模型和IE盒模型，通过`box-sizing`属性控制。
-> 虽然默认是标准盒模型content-box，但是IE盒模型border-box更符合常理。
+盒模型的解析方式分为标准盒模型和 IE 盒模型，通过`box-sizing`属性控制。
+
+> 虽然默认是标准盒模型 content-box，但是 IE 盒模型 border-box 更符合常理。
 
 盒分为块级盒和行内级盒
 
@@ -140,10 +142,11 @@ CSSOM 是在 DOM 上进行了扩展
 
 - `clientWidth/clientHeight`：`padding` + `content`，可以理解为扒了一层皮（border）后剩下的宽高。
 - `clientTop/clientLeft`：`border`。
-- `offsetWidth/offsetHeight`：`border` + `padding` + `content`，顾名思义上的width，一个盒子的宽高
+- `offsetWidth/offsetHeight`：`border` + `padding` + `content`，顾名思义上的 width，一个盒子的宽高
 - `offsetTop/offsetLeft`: 元素左上角距离最近定位元素的距离，注意与 getBoundingClientRect 方法返回结果中 y 属性的区别
 
 ### 全局信息
+
 - `window.innerWidth/innerHeight`
 - `window.screen.width/height`
 - `window.devicePixelRatio`
@@ -226,7 +229,7 @@ justify 值只影响文字。
 
 ## 层级
 
-控制定位元素的层叠顺序。也就是说position:static无效。
+控制定位元素的层叠顺序。也就是说 position:static 无效。
 
 默认后定义的元素比先定义的层级高，相对定位比默认定位的元素层级高。
 
@@ -312,7 +315,7 @@ justify 值只影响文字。
 - id 选择器：100
 - 行内样式：1000
 
-> 同权重的时候，按书写样式的先后顺序，而不是 class 的使用顺序。想想CSSOM tree的解析。
+> 同权重的时候，按书写样式的先后顺序，而不是 class 的使用顺序。想想 CSSOM tree 的解析。
 
 ## `box-shadow`
 
@@ -390,21 +393,23 @@ float、clear、vertical-align 不能影响 item
 - `order`（默认 0）
 - `flex` [flex-grow, flex-shrink, flex-basis]（默认 `0 1 auto`, 缺省值分别是 **1，1，0%**）。flex 常用值有`none`(0 0 auto)，auto（1 1 auto），1（1 1 0%，最常用，也就是缺省值）
   > 为什么用`flex：1`，而不是`flex-grow:1`,因为 flex-basis 默认值 auto，所以你想平均分配空间（而不是剩余空间）的时候必须把其置为 0，也就是`flex：1`的完整设置项。
-  > flex-shrink的默认值1，也就表示item在允许的情况是会自动缩小的，就算你的初始宽度（width/flex-basis）设得很大，一样该缩小的时候就缩小。
+  > flex-shrink 的默认值 1，也就表示 item 在允许的情况是会自动缩小的，就算你的初始宽度（width/flex-basis）设得很大，一样该缩小的时候就缩小。
 - `align-self` (单独的 align-items 设置)
 
 ### 应用
-实现space-between类排版：
+
+实现 space-between 类排版：
+
 - 对于固定宽和个数的
   - 模拟间隙
-  - 使用伪类选择不够情况的最后一个元素，然后设置不同的margin-right
+  - 使用伪类选择不够情况的最后一个元素，然后设置不同的 margin-right
 - 对于宽度不固定（那么间隙也就不严格相等），只需要使最后一行左对齐
   - 最后一项设置`margin-right: auto`
   - 最后一项设置`flex: 1`
 - 对于宽度固定，个数不固定（也就是能排多少就多少）
   - 添加最大排版个数的模拟标签，设置相似的盒子，唯一不同的是取消高度显示
 - 其他
-  - grid布局
+  - grid 布局
 
 ## float
 
@@ -436,9 +441,11 @@ float、clear、vertical-align 不能影响 item
 ## 响应式设计
 
 ### 像素
+
 - 物理像素(physical pixel)。又称设备像素、分辨率。电子产品实际发亮部件的个数。
-- 设备独立像素(device independent pixels)。又称逻辑像素，CSS像素。给程序使用的最小单位。
-- DPR。物理像素/CSS像素，以前的普通的设备都是1，但是苹果的视网膜屏幕为了让屏幕更清晰，使用了2或者3。
+- 设备独立像素(device independent pixels)。又称逻辑像素，CSS 像素。给程序使用的最小单位。
+- DPR。物理像素/CSS 像素，以前的普通的设备都是 1，但是苹果的视网膜屏幕为了让屏幕更清晰，使用了 2 或者 3。
+
 ## 文本
 
 ### white-space
@@ -446,12 +453,12 @@ float、clear、vertical-align 不能影响 item
 决定 html 中空格的处理方式。
 
 - normal，CJK 和 Non-CJK 单词之间自动换行，空格合并为 1 个，换行符会被当作空白符来处理。
-- nowrap，在normal的基础上不换行。
-- pre-line，在normal的基础上保留换行符的效果。
+- nowrap，在 normal 的基础上不换行。
+- pre-line，在 normal 的基础上保留换行符的效果。
 - pre，保留代码书写时的所有特征。
-- pre-wrap，在pre的基础上自动换行。
+- pre-wrap，在 pre 的基础上自动换行。
 
-> pre是指按照pre标签的形式来处理。另外注意换行的具体表现，当A字符的下一个字符B如果能在当前行有限的区域内排下，才会AB同行，否则B就另起一行，不管装不装得下。
+> pre 是指按照 pre 标签的形式来处理。另外注意换行的具体表现，当 A 字符的下一个字符 B 如果能在当前行有限的区域内排下，才会 AB 同行，否则 B 就另起一行，不管装不装得下。
 
 ### word-break
 
@@ -490,10 +497,12 @@ float、clear、vertical-align 不能影响 item
 - 使用硬件加速
 
 ### LESS
+
 #### 配色
+
 - 补色`spin(@theme-color, 180)`
 - 三元色`spin(@theme-color, 120)`、`spin(@theme-color, -120)`
-> 想象一个圆形色盘，补色即找寻对面的色，即180°。
+  > 想象一个圆形色盘，补色即找寻对面的色，即 180°。
 - 当另一个种颜色，你想运用到时，可以与主题色进行混合，使之更和谐。`mix(@theme-color, mediumvioletred)`
 - 明暗度。比如按钮的不同状态。`lighten(@theme-color, 10%)`、`darken(@theme-color, 10%)`
 - 饱和度。越饱和越亮丽。`saturate(@theme-color, 10%)`、`desaturate(@theme-color, 10%)`
@@ -501,56 +510,76 @@ float、clear、vertical-align 不能影响 item
 - 透明度。`fade(@theme-color, 10%)`，相当于设置`rgba(221,123,122,0.1)`
 
 ## 滚动条设置
+
 设置是一个完整的设置，可以想象成浏览器内置的滚动条样式你不能不分修改，要改，就自己造一套滚动条样式。
 
-## CSS数据类型定义语法
+## CSS 数据类型定义语法
+
 ### 字面符号
-- `/`，用来分隔一个值的多个部分（rgba），在缩写中用于分离数据类型相同但属于不同属性的值，例如：font属性中的`font-size / line-height`，background属性中的`background-position / background-size`。
+
+- `/`，用来分隔一个值的多个部分（rgba），在缩写中用于分离数据类型相同但属于不同属性的值，例如：font 属性中的`font-size / line-height`，background 属性中的`background-position / background-size`。
+
 ### 组合符号
+
 - ` `，空格，表示各部分**必须按顺序出现**。
 - `&&`，必须出现，可以不按顺序。
 - `||`，各部分至少出现一个，可以不按顺序。
 - `|`，互斥。
+
 ### 数量符号
+
 - `#`，可以出现一次或多次，但多次出现时必须以逗号分隔（box-shadow）。
 - `!`，用于组合符号方括号后面，表当前分组必须产生一个值。
-## CSS全局关键字
+
+## CSS 全局关键字
+
 ### 属性值
+
 - `inherit`，继承。
-- `initial`，把当前css属性的计算值还原成css语法中规定的初始值，注意，并非还原成浏览器对特定标签所设定的初始值（ul/ol标签）。
-- `unset`，根据当前css属性是否具有继承特性，来决定使用inherit或者initial（增加心智负担，对于一个设置unset的属性不如直接设置inherit或者initial）。常常配合all使用`all: unset;`。
-- `revert`，让当前属性恢复成浏览器内置的样式（ul/ol标签）。
+- `initial`，把当前 css 属性的计算值还原成 css 语法中规定的初始值，注意，并非还原成浏览器对特定标签所设定的初始值（ul/ol 标签）。
+- `unset`，根据当前 css 属性是否具有继承特性，来决定使用 inherit 或者 initial（增加心智负担，对于一个设置 unset 的属性不如直接设置 inherit 或者 initial）。常常配合 all 使用`all: unset;`。
+- `revert`，让当前属性恢复成浏览器内置的样式（ul/ol 标签）。
+
 ### 属性
+
 `all`，语法为只能使用上述几个全局关键字属性值。
 
 - `all:inherit`，`all:initial`比较鸡肋。
-- `all:unset`，可以让任意一个元素样式表现和`<span>`标签一样（display规范中初始属性为inline）。
+- `all:unset`，可以让任意一个元素样式表现和`<span>`标签一样（display 规范中初始属性为 inline）。
 - `all:revert`，可以让元素恢复成浏览器默认的样式。
 
-`direction`（兼容阿拉伯文字从右向左）与`unicode-bidi`属性不包括在all属性指代范围之内。
+`direction`（兼容阿拉伯文字从右向左）与`unicode-bidi`属性不包括在 all 属性指代范围之内。
 
 ## @supports
+
 新的渐进增强处理方案。老旧的有：使用属性值差异、使用伪元素选择器差异。
+
 - 检测是否支持某个属性值，例如：`@supports (display: flex) {}`、`@supports (not (display: flex)) {}`。
 - 检测是否支持某个自定义属性。例如：`@supports (--my-custom-prop: blue) {}`。
 - 检测是否支持某个选择器。例如：`@supports selector(:default) {}`。
 
-在js中则可以使用如下判断：
-``` js
-if(!window.CSS || !CSS.supports || !CSS.supports('position', 'sticky')) {
+在 js 中则可以使用如下判断：
+
+```js
+if (!window.CSS || !CSS.supports || !CSS.supports("position", "sticky")) {
   //不支持此属性的逻辑
 }
 ```
 
-## CSS尺寸体系
+## CSS 尺寸体系
+
 ### intrinsic sizing
+
 - `fit-content`
 - `min-content`
 - `max-content`
+
 ### extrinsic sizing
+
 - `stretch`
 
-## CSS逻辑属性
+## CSS 逻辑属性
+
 - `writing-mode`，值：horizontal-tb、vertical-rl、vertical-lr。
 - `direction`，值：ltr、rtl。
 - `text-orientation`
@@ -559,24 +588,94 @@ if(!window.CSS || !CSS.supports || !CSS.supports('position', 'sticky')) {
 - `block-start`，表块级元素排版的开始方向。默认上。
 - `block-end`，表块级元素排版的结束方向。默认下。
 
-### margin/padding/border方位与逻辑的对应关系
-- margin-left    ↔  margin-inline-start
-- margin-top     ↔  margin-block-start
-- margin-right   ↔  margin-inline-end
-- margin-bottom  ↔  margin-block-end
+### margin/padding/border 方位与逻辑的对应关系
+
+- margin-left ↔ margin-inline-start
+- margin-top ↔ margin-block-start
+- margin-right ↔ margin-inline-end
+- margin-bottom ↔ margin-block-end
 
 在`writing-mode:vertical-rl`环境下
-- margin-left    ↔  margin-block-end
-- margin-top     ↔  margin-inline-start
-- margin-right   ↔  margin-block-start
-- margin-bottom  ↔  margin-inline-end
 
-block也是start、end的缩写。也就是`margin-block`属性代表`margin-block-start`与`margin-block-end`。同理inline。
+- margin-left ↔ margin-block-end
+- margin-top ↔ margin-inline-start
+- margin-right ↔ margin-block-start
+- margin-bottom ↔ margin-inline-end
+
+block 也是 start、end 的缩写。也就是`margin-block`属性代表`margin-block-start`与`margin-block-end`。同理 inline。
 
 应用：对称布局（可能会用到`unicode-bidi: plaintext;`）。
 
 ### width
-width属性对应的CSS逻辑属性是inline-size，height属性对应的CSS逻辑属性是block-size。
+
+width 属性对应的 CSS 逻辑属性是 inline-size，height 属性对应的 CSS 逻辑属性是 block-size。
 
 ### inset
-对于绝对定位的top/left/bottom/right，需要使用inset配合。例如：inset-inline-start(left)。也支持整体缩写，例如：`inset: 0;`。
+
+对于绝对定位的 top/left/bottom/right，需要使用 inset 配合。例如：inset-inline-start(left)。也支持整体缩写，例如：`inset: 0;`。
+
+## `border-image`
+语法：
+```
+border-image: <'border-image-source'> || <'border-image-slice'> [ / <'border-image-width'> | / <'border-image-width'>? / <'border-image-outset'> ]? || <'border-image-repeat'>
+```
+
+该属性目前最大的作用还是实现一些线性边框（虚线，渐变等），而不是使用具体图片来进行划分填充。
+
+> 下面描述中**源图像**指外来图像，用来设置边框背景的图片。**元素p**代值被设置源图像边框的元素。
+### 源图像的划分
+无论是源图像，还是元素p，对于区域划分，均采用如下划分（遵循上、右、下、左的顺序）：
+```
+152
+896
+473
+```
+#### `border-image-source`
+
+语法：
+
+```
+border-image-source: none | <image>
+```
+
+因此边框除了使用图片，还可以使用渐变条纹（linear-gradient）等图形。
+
+#### `border-image-slice`
+源图像的具体划分策略，语法：
+
+```
+border-image-slice: <number-percentage>{1,4} && fill?
+```
+
+默认值`100%`。支持1到4个属性，值为数值或者百分比，百分比相当于源图像.fill表示是否使用源图像9号位来填充元素p的9号位。
+
+### 九宫格尺寸的控制
+
+#### `border-image-width`
+用来设置，在目标对象元素p上的边框应用范围。
+
+默认值`1`。可设置四个方向。超过元素p宽高的设置，会按照“等比例原则”和“百分百原则”进行校正。
+
+- 支持系数，与`border-width`相乘，来决定填充的范围（默认是1）。无论是缩小还是放大，元素p本身的内容范围是没有变化的。
+- 百分比。相对的对象是元素p的宽度和高度。
+- auto。使用slice中对源图像划分的值来作为填充范围。
+
+#### `border-image-outset`
+`border-image-width`是从离边框的距离来划分元素p的边框应用范围，而outset属性是从元素p的9号位开始向外扩展，来划分元素p的边框应用范围。换句话说话，`border-image-width`控制第1到第8区的尺寸，而`border-image-outset`控制第9区的尺寸。
+
+语法如下，系数的对象为`border-width`:
+```
+border-image-outset: [<length> | <number>]{1, 4}
+```
+
+默认值`0`。
+
+### 5，6，7，8区域的控制
+默认是拉伸。可通过`border-image-repeat`来设置，语法如下：
+```
+border-image-outset: [ stretch | repeat | round | space ]{1,2}
+```
+- stretch。默认值，让源图像拉升以充满显示区域。
+- repeat。
+- round。类似于平铺，适当伸缩来填满。
+- space。宽度保持，来进行平铺，不够的用空格填充。
