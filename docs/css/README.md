@@ -466,19 +466,30 @@ float、clear、vertical-align 不能影响 item
 - 设备独立像素(device independent pixels)。又称逻辑像素，CSS 像素。给程序使用的最小单位。
 - DPR。物理像素/CSS 像素，以前的普通的设备都是 1，但是苹果的视网膜屏幕为了让屏幕更清晰，使用了 2 或者 3。
 
-## 文本
+## 文字排版
+
+### 自动换行
+
+排版遇见 CJK 单字，以及 Non-CJK 的空格和连字符`-`号时，会自动换行。换行的具体表现，当 A 字符的下一个字符 B 如果能在当前行有限的区域内排下，才会 AB 同行，否则 B 就另起一行，不管装不装得下。
+
+对于固定字符，英文可使用软连接字符，中文可使用`<wbr>`标签，来让其更好的适应自动换行。
+
+> 连接字符`-`分为两种，硬连接字符即键盘上的`-`，另一种是软连接字符`&shy;`（unicode 为 00AD），只在换行的时候才出现`-`符号。
+
+### 空格合并
+
+空格合并的行为会删除行的首尾空格。
 
 ### white-space
 
 决定 html 中空格的处理方式。
 
-- normal，CJK 和 Non-CJK 单词之间自动换行，空格合并为 1 个，换行符会被当作空白符来处理。
-- nowrap，在 normal 的基础上不换行。
-- pre-line，在 normal 的基础上保留换行符的效果。
+- normal，空格合并，无视换行符，自动换行。
+- nowrap，空格合并，无视换行符，不换行。
 - pre，保留代码书写时的所有特征。
 - pre-wrap，在 pre 的基础上自动换行。
-
-> pre 是指按照 pre 标签的形式来处理。另外注意换行的具体表现，当 A 字符的下一个字符 B 如果能在当前行有限的区域内排下，才会 AB 同行，否则 B 就另起一行，不管装不装得下。
+- pre-line（推荐），空格合并，换行符有效，自动换行。
+- break-spaces（推荐），虽然 pre-wrap 不会合并空格，但是处理空格的方式比较笨拙僵硬，而 break-spaces 会把空格当作字符来处理，因此一行尾部没用完的空格会在下一行开头显示。
 
 ### word-break
 
@@ -489,9 +500,38 @@ float、clear、vertical-align 不能影响 item
 由上可知，两类字符的断行方式默认不一样，那么下面两种就是为了设置成统一的。
 
 - break-all，都断行
-- keep-all，都不断行（标点符号处，依然会进行断行）
+- keep-all，都不断行（标点符号处，依然会进行断行）。可以利用其默认不断行，但是标点空格会断行的特性。来排版特定的文字组在一起，以免因为自动换行而带来的阅读性差。
 
-> 细想上面的属性，其实处理都不太好，假如我们只想让比宽度还宽的那个单词换行，我们可以使用 break-word 属性，但是兼容性不太好。不过可以通过设置`word-wrap: break-word;`来实现，css3 里提议为 overflow-wrap 名称。
+### overflow-wrap
+
+决定一个不能分开的字符串太长的换行方式。
+
+- normal
+- break-word，强制分隔换行
+- anywhere，在计算最小内容尺寸的时候会考虑软换行
+
+### line-break
+
+决定 CJK 文字标点符号的断行规则。自动换行中，会遵循一定的避首标点，避尾标点原则。例如引号不能排在一行的开头，会自动拉一个字下来“陪同”。
+
+- auto
+- loose
+- normal
+- strict
+- anywhere（常用），不考虑原则，每一个标点符号能换行就换行。
+
+### 总结
+
+对于动态内容：
+
+```css
+.dynamic-text {
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+```
+
+静态内容则使用软连接字符加`<wbr>`标签来处理。
 
 ## 动画
 
@@ -674,7 +714,7 @@ border-image-source: none | <image>
 border-image-slice: <number-percentage>{1,4} && fill?
 ```
 
-默认值`100%`。支持 1 到 4 个属性，值为数值或者百分比，百分比相当于源图像.fill 表示是否使用源图像 9 号位来填充元素 p 的 9 号位。
+默认值`100%`。支持 1 到 4 个属性，值为数值（不带单位，以 px 在源图像上进行划分）或者百分比。fill 表示是否使用源图像 9 号位来填充元素 p 的 9 号位。
 
 ### 九宫格尺寸的控制
 
@@ -718,5 +758,70 @@ border-image-outset: [ stretch | repeat | round | space ]{1,2}
 以下模拟对布局都没有任何影响
 
 - outline
-- box-shadow
-- border-image，设置背景色
+- box-shadow，直接设置 spread 属性为轮廓宽度。
+- border-image，`border-image-width`设置轮廓的宽度，然后通过`border-image-outset`来调整轮廓恰好出现在内边框处，根据 border 的不同，这个值不同。
+
+```css
+border: 0.02px solid; /* 必须要有边框，border-image才有效果 */
+border-image: linear-gradient(lightskyblue, lightskyblue) 2 / 20px / 20px;
+```
+
+## font
+
+### 默认字体设置
+
+无衬线版：
+
+```css
+@font-face {
+  font-family: Emoji;
+  src: local("Apple Color Emoji"), local("Segoe UI Emoji"), local(
+      "Segoe UI Symbol"
+    ), local("Noto Color Emoji");
+  unicode-range: U+1F000-1F644, U+203C-3299;
+}
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Emoji, Helvetica,
+    Arial, sans-serif;
+}
+```
+
+- Segoe UI，windows 系统最佳西文字体。
+- Roboto，安卓最佳西文字体。
+- Helvetica，macOS 和 iOS 常用无衬线字体。
+- Arial，全平台通用无衬线字体。
+- Segoe UI Symbol，windows7 添加的新字体，单色图案。
+- Noto Color Emoji，谷歌用在 Android 和 Linux 系统中。
+- Emoji 放在备用字体之前，是因为这些字体涵盖了部分 emoji 的 unicode 码，会造成 emoji 显示黑白图案而非彩色。
+
+衬线版：
+
+```css
+.font-serif {
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+}
+```
+
+等宽版：
+
+```css
+.font-mono {
+  font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+}
+```
+
+数学字体：
+
+```css
+math {
+  font-family: Cambria Math, Latin Modern Math;
+}
+```
+
+- Cambria Math，windows 系统
+- Latin Modern Math，macOS 系统
+
+### 自定义字体
+
+使用 woff/woff2 格式加载，在一定程度上可以使用`font-display`进行加载顺序的调优。

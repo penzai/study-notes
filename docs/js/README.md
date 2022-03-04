@@ -65,23 +65,24 @@ String 类型是零个或多个 16 位无符号整数值（`UTF-16`编码方式�
 
 Unicode 码点范围为 U+0000~U+FFFF，共 65536 个，也叫基本字符区域（BMP）。
 
-JavaScript 支持转义，因此可以使用`\u` + 码位来表示一个字符，例如：
-
-```javascript
-console.log("\u4e2d"); // 中
-```
-
 #### unicode 与实际值互转
 
 - String.prototype.charCodeAt()/String.prototype.codePointAt()
 - String.fromCharCode()/String.fromCodePoint()
-  > 现在的很多新字符都超出了 65536，因此需要用后者 api 来操作。
+  > 现在的很多新字符都超出了 65536 码点范围，因此需要用后者 api 来操作。
 
 #### 超出 BMP 的字符
 
 字符增多后，标准决定以 16 为字符为一组，一组 65536 个，一组为一个平面，一共 17 个平面，即 0x00 到 0x10。
 
 例如一个 emoji 表情 💊，码位为`128138`，转换为 16 进制为`1f48a`，在 js 中的转义则为`\u{1f48a}`。
+
+#### 显示方式
+
+- html，使用`&#x` + unicode 码。
+- js，使用`\u` + unicode 码，超出 BMP 区域的需要使用`{}`包裹。
+- css，使用`\` + unicode 码。
+- css 属性`unicode-range`，使用`U+` + unicode 码。
 
 ### Number
 
@@ -110,9 +111,11 @@ Number.MAX_SAFE_INTEGER = 2 ** 53 - 1;
 Number 是新来的，判断更贴合字面意思，就是判断此值是不是 NaN。而 window.isNaN 在判断前会进行数字转换一次，看此值到底能不能当成数字使用。
 
 #### 进制转换
-`0b`开头二进制，`0x`开头16进制。
-- 10进制转n进制，`Number.prototype.toString([radix])`
-- n进制转10进制，`window.parseInt(string, radix)`
+
+`0b`开头二进制，`0x`开头 16 进制。
+
+- 10 进制转 n 进制，`Number.prototype.toString([radix])`
+- n 进制转 10 进制，`window.parseInt(string, radix)`
 - Array 转为数字时，空数组 -> 0，`[1]` -> 1，多个的为 NaN
 - false -> 0，`''` -> 0
 
@@ -182,6 +185,7 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 - `NaN`与`NaN`，`===`返回 false，Object.is 返回 true
 
 #### `Object.freeze()`
+
 - 冻结对象，只是首层属性的冻结。
 - 冻结过后，修改数据并不会报错，只是会无效。
 - 当继承一个冻结对象时，对冻结对象里的属性操作是无效的（正常情况下的赋值会添加一个自身属性）。
@@ -201,14 +205,16 @@ Number 是新来的，判断更贴合字面意思，就是判断此值是不是 
 - Object.getOwnPropertyNames()。自身的可枚举与不可枚举属性。
 - Object.getOwnPropertySymbols()。自身的 symbol 属性。
 
-> symbol属性的属性描述符为：不可枚举，不可配置，不可重写。
+> symbol 属性的属性描述符为：不可枚举，不可配置，不可重写。
 
 最后在内置对象 Reflect 上挂载了一个综合的方法，当然，依然不可遍历原型链的属性。
 
 - Reflect.ownKeys()。自身的可枚举、不可枚举、symbol 属性。
 
 其他遍历方法：
+
 - for of，用于遍历可迭代对象。
+
 #### 遍历顺序
 
 js 引擎本身是散乱无序的，浏览器实现时加入了自己的顺序规则。
@@ -218,35 +224,38 @@ js 引擎本身是散乱无序的，浏览器实现时加入了自己的顺序�
 - 最后遍历所有 Symbol 键，按照加入时间升序排列。
 
 ### Array
+
 - 数组是特殊的对象。
-- shift/unshift比pop/push性能差很多，尤其是数组很大的时候尤为明显。
+- shift/unshift 比 pop/push 性能差很多，尤其是数组很大的时候尤为明显。
 - 具有破坏的方法：sort、reverse、splice/fill/pop/push/shift/unshift。
 
 ### reduce
+
 `arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])`
 
-注意第2个参数为可选参数，不传时默认为数组第0个元素。
+注意第 2 个参数为可选参数，不传时默认为数组第 0 个元素。
 
 ### sort
-默认按照升序ascending顺序就地（in place）排列，会将元素转换为字符串，再按照utf-16编码单元值排列。
 
-不稳定的，但是ES10规定之后稳定。
+默认按照升序 ascending 顺序就地（in place）排列，会将元素转换为字符串，再按照 utf-16 编码单元值排列。
 
-callback方法中第一个参数排前面就返回负数，第二个参数排前面就返回正数。也可以理解为需要传入的两个值交换位置时就需要返回一个正数，相等就需要返回0。
+不稳定的，但是 ES10 规定之后稳定。
 
+callback 方法中第一个参数排前面就返回负数，第二个参数排前面就返回正数。也可以理解为需要传入的两个值交换位置时就需要返回一个正数，相等就需要返回 0。
 
 ### `Array.isArray()`
-该api判断对象是否是Array类的实例或者是以class方式继承的子类实例，自行使用组合寄生方法继承的实例，不在范围之内。
-``` js
+
+该 api 判断对象是否是 Array 类的实例或者是以 class 方式继承的子类实例，自行使用组合寄生方法继承的实例，不在范围之内。
+
+```js
 // Array.isArray(arr) === true
 class MyArray extends Array {}
 
-
 // Array.isArray(arr) === false
 function MyArray() {
-  Array.apply(this, arguments)
+  Array.apply(this, arguments);
 }
-MyArray.prototype = Object.create(Array.prototype)
+MyArray.prototype = Object.create(Array.prototype);
 ```
 
 ### 类型转换
@@ -280,26 +289,31 @@ console.log(Object.prototype.toString.call(o)); // "[object HelloKitty]"
 - obj.hasOwnProperty(key) 判断 obj 实例有没有 key 属性
 
 ## 可迭代对象
+
 实现了**可迭代协议**的对象就是可迭代对象。即实现了`[Symbol.iterator]`接口的对象。
 
 ### 迭代器协议
-可迭代协议是一个函数，该函数在准备迭代时会进行调用，用返回的迭代器，进行每一次迭代调用next方法获取每一次得到的值。
 
-也就是说`[Symbol.iterator]`属性要么是一个自行返回如下迭代器的函数，要么是一个generator函数。
-``` ts
+可迭代协议是一个函数，该函数在准备迭代时会进行调用，用返回的迭代器，进行每一次迭代调用 next 方法获取每一次得到的值。
+
+也就是说`[Symbol.iterator]`属性要么是一个自行返回如下迭代器的函数，要么是一个 generator 函数。
+
+```ts
 type IteratorReturn = {
   next(): {
-    done: boolean,
-    value?: any
-  }
-}
-function iterator(): IteratorReturn
+    done: boolean;
+    value?: any;
+  };
+};
+function iterator(): IteratorReturn;
 ```
 
 ### 内置可迭代对象
+
 String、Array、TypedArray、Map、Set、arguments
 
-### 接受可迭代对象的内置api
+### 接受可迭代对象的内置 api
+
 - new Map([iterable])
 - new WeakMap([iterable])
 - new Set([iterable])
@@ -309,7 +323,8 @@ String、Array、TypedArray、Map、Set、arguments
 - Array.from(iterable)
 
 ### 需要可迭代对象的语法
-for...of循环、展开语法、yield *、解构赋值
+
+for...of 循环、展开语法、yield \*、解构赋值
 
 ## Map
 
@@ -426,9 +441,9 @@ _p = new WeakMap();
 
 ## 执行上下文
 
-当我们执行一个方法时，JavaScript会生成一个与这个方法对应的执行环境，又叫执行上下文。这个执行环境中有这个方法的私有作用域、上层作用域的指向、方法的参数、私有作用域中定义的变量以及this对象。这个执行环境会被添加到一个内存对象栈中，这个栈就是执行栈。
+当我们执行一个方法时，JavaScript 会生成一个与这个方法对应的执行环境，又叫执行上下文。这个执行环境中有这个方法的私有作用域、上层作用域的指向、方法的参数、私有作用域中定义的变量以及 this 对象。这个执行环境会被添加到一个内存对象栈中，这个栈就是执行栈。
 
-如果在这个方法的代码执行中，遇到了函数调用语句，那么JavaScript会生成这个函数的执行环境并将其添加到执行栈中，然后进入这个执行环境来执行其中的函数代码。执行完毕后，JavaScript会退出执行环境并把这个执行环境从栈中销毁，回到上一个方法的执行环境。
+如果在这个方法的代码执行中，遇到了函数调用语句，那么 JavaScript 会生成这个函数的执行环境并将其添加到执行栈中，然后进入这个执行环境来执行其中的函数代码。执行完毕后，JavaScript 会退出执行环境并把这个执行环境从栈中销毁，回到上一个方法的执行环境。
 
 执行上下文在 ES3 中，包含三个部分。
 
@@ -492,7 +507,7 @@ function a() {}
 
 ```js
 var b;
-void (function() {
+void (function () {
   var env = { b: 1 };
   b = 2; // 这里实际上是对var b = 3提升上来的b进行赋值
   console.log("In function b:", b); // 2
@@ -545,8 +560,8 @@ for (let i = 0; i < 3; i++) {
 
 稍显复杂，大概规则：
 
-- 规则1：函数声明的定义，就是指具名函数变量的定义会提升到最近的旧世界作用域。
-- 规则2：函数声明的实体，即赋值操作，会在最近的新世界作用域中赋值。
+- 规则 1：函数声明的定义，就是指具名函数变量的定义会提升到最近的旧世界作用域。
+- 规则 2：函数声明的实体，即赋值操作，会在最近的新世界作用域中赋值。
 
 示例 1：
 
@@ -557,11 +572,13 @@ if (true) {
 
 console.log(f); //？
 ```
+
 即:
+
 ```js
-var f
+var f;
 if (true) {
-  f = function () {}
+  f = function () {};
 }
 
 console.log(f); //ƒ f() {}
@@ -574,7 +591,7 @@ function f() {
   console.log("f1");
 }
 
-(function() {
+(function () {
   if (true) {
     function f() {
       console.log("f2");
@@ -585,18 +602,18 @@ function f() {
 
 f(); // ？
 ```
-即：
-```js
-var f = function () {
-  console.log("f1");
-}
 
-(function() {
-  var f
+即：
+
+```js
+var f = (function () {
+  console.log("f1");
+})(function () {
+  var f;
   if (true) {
     f = function () {
       console.log("f2");
-    }
+    };
   }
   f(); // "f2"
 })();
@@ -618,15 +635,17 @@ fn(); // ?
 }
 fn(); // ?
 ```
+
 即：
+
 ```js
-var fn // 规则1
+var fn; // 规则1
 console.log(fn); //undefined
 fn(); // 报错 fn is not fucntion
 {
   fn = function () {
     console.log("hello");
-  } // 规则2
+  }; // 规则2
   fn(); //hello
   fn(); //hello
 }
@@ -790,7 +809,7 @@ class Cat {
     console.log('from "=" setting', this);
   };
 
-  fn2 = function() {
+  fn2 = function () {
     console.log(this);
   };
   name = 3;
@@ -826,17 +845,17 @@ function _defineProperty(obj, key, value) {
   return obj;
 }
 
-var Cat = /*#__PURE__*/ (function() {
+var Cat = /*#__PURE__*/ (function () {
   "use strict";
 
   function Cat(name) {
     var _this = this;
 
-    _defineProperty(this, "fn", function() {
+    _defineProperty(this, "fn", function () {
       console.log('from "=" setting', _this);
     });
 
-    _defineProperty(this, "fn2", function() {
+    _defineProperty(this, "fn2", function () {
       console.log(this);
     });
 
@@ -860,7 +879,7 @@ var Cat = /*#__PURE__*/ (function() {
 
 _defineProperty(Cat, "s", 1);
 
-_defineProperty(Cat, "sfn", function() {
+_defineProperty(Cat, "sfn", function () {
   console.log('from "=" setting', Cat);
 });
 ```
@@ -917,7 +936,7 @@ function object(o) {
 ```javascript
 function createAnother(original) {
   var clone = Object.create(original);
-  clone.sayHi = function() {
+  clone.sayHi = function () {
     alert("hi");
   };
   return clone;
@@ -1006,7 +1025,7 @@ null 不借构造函数就创造了 Object.prototype，即：
 4. 根据步骤 3 的结果类型返回不同的值
 
 ```javascript
-var _new = function() {
+var _new = function () {
   var Constructor = [].shift.call(arguments);
   if (typeof Constructor !== "function") {
     throw new Error("请传入正确的构造函数");
@@ -1096,7 +1115,7 @@ function runner(_gen) {
   });
 }
 
-runner(function*() {
+runner(function* () {
   let userData = yield $.ajax({ url: "getUserData", dataType: "json" });
 
   if (userData.type == "VIP") {
@@ -1135,7 +1154,7 @@ function* initializer(count, mapFunc = (i) => i) {
 
 // 用于生成52张扑克牌
 const cards = [
-  ...initializer(13, function*(i) {
+  ...initializer(13, function* (i) {
     let p = i + 1;
     if (p === 1) {
       p = "A";
@@ -1242,7 +1261,7 @@ p 本身并不是匹配结果，它只是匹配的条件。例如你要匹配的
 ### 计算匹配结果
 
 - `match`字符串的方法，在没 g 的情况下跟 exec 类似，但是正则表达式带 g，那么就只返回匹配结果的数组，**不含括号捕获值**。
-- `exec`正则表达式的方法，返回数组，只返回第一次的匹配，数组位置0为匹配字符，后续为括号捕获值，如果正则表达式是含g的全局匹配，那么可以通过再次执行exec方法来获取新的匹配结果，直到结果为null。
+- `exec`正则表达式的方法，返回数组，只返回第一次的匹配，数组位置 0 为匹配字符，后续为括号捕获值，如果正则表达式是含 g 的全局匹配，那么可以通过再次执行 exec 方法来获取新的匹配结果，直到结果为 null。
 - `test`正则表达式的方法，返回 Boolean 值。
 
 ## `ajax`
@@ -1522,23 +1541,26 @@ const factorial = (v) => {
 ```
 
 ## 内存
+
 内存的生命周期：
+
 1. 分配内存
 2. 使用内存（读写）
 3. 释放内存
 
-在低级语言中（c），1/3步骤是需要手动操作的。而在js中，这变成了自动。
+在低级语言中（c），1/3 步骤是需要手动操作的。而在 js 中，这变成了自动。
 
 ### 栈（stack）、堆（heap）
-堆栈是操作系统给应用程序分配的两种不同的内存空间方案。stack是os分配的**固定**的一片连续内存，线程在这个范围内顺序读写。heap也是os分配的一片内存，但是数据却分布的存储在各处。
 
-进行这样的方案，是因为程序通常会有一些存在时间极短，极小的数据，那么此类数据可以保存在stack中，在js里代表执行上下文变量、一些基础数据类型值。而一些大小不固定，复杂的数据会保存在heap中，在js里代表的是引用类型数据。
+堆栈是操作系统给应用程序分配的两种不同的内存空间方案。stack 是 os 分配的**固定**的一片连续内存，线程在这个范围内顺序读写。heap 也是 os 分配的一片内存，但是数据却分布的存储在各处。
 
-stack会因为嵌套调用太多或者数据量过大造成stackoverflow（堆栈溢出），heap会产生更多的内存碎片。
+进行这样的方案，是因为程序通常会有一些存在时间极短，极小的数据，那么此类数据可以保存在 stack 中，在 js 里代表执行上下文变量、一些基础数据类型值。而一些大小不固定，复杂的数据会保存在 heap 中，在 js 里代表的是引用类型数据。
 
-通常一个线程会有自己独立的stack，而heap可能会进行共享。
+stack 会因为嵌套调用太多或者数据量过大造成 stackoverflow（堆栈溢出），heap 会产生更多的内存碎片。
 
-由于stack通常是即用即销毁，因此os顺便进行了内存管理，而heap较复杂，需要手动管理。那么垃圾回收主要就是回收堆内存的数据。
+通常一个线程会有自己独立的 stack，而 heap 可能会进行共享。
+
+由于 stack 通常是即用即销毁，因此 os 顺便进行了内存管理，而 heap 较复杂，需要手动管理。那么垃圾回收主要就是回收堆内存的数据。
 
 > Chrome Devtool 里的 Memory 选项卡就用于对堆内存的监控。
 
@@ -1551,7 +1573,8 @@ stack会因为嵌套调用太多或者数据量过大造成stackoverflow（堆�
 
 #### 新生代
 
-存放临时对象，由副垃圾回收器Scavenge管理。标记加复制的方式整理内存。
+存放临时对象，由副垃圾回收器 Scavenge 管理。标记加复制的方式整理内存。
+
 #### 老生代
 
 存放持久对象，由主垃圾回收器管理。在新生代多次回收过后依然保留的对象会转移到老生代区域。
@@ -1580,7 +1603,7 @@ function f() {
 var list = [];
 document.querySelector("#btn").addEventListener(
   "click",
-  function() {
+  function () {
     list.push(f());
   },
   false
@@ -1596,14 +1619,14 @@ document.querySelector("#btn").addEventListener(
 
 ```javascript
 var theThing = null;
-var replaceThing = function() {
+var replaceThing = function () {
   var originalThing = theThing;
-  var unused = function() {
+  var unused = function () {
     if (originalThing) console.log("hi");
   };
   theThing = {
     longStr: new Array(1000000).join("*"),
-    someMethod: function() {
+    someMethod: function () {
       console.log(someMessage);
     },
   };
@@ -1722,8 +1745,10 @@ commonjs 是运行时再加载，而 esModule 在初期就已经分析出依赖�
 ### 互相转换
 
 #### Base64 -> Blob
+
 先利用 atob 函数还原 base64 数据区域的内容，得到一个字符串。然后依次遍历字符串，利用 charCodeAt 提取每一个字符的 Unicode 码并放在 Uint8Array 中，最后直接使用 `new Blob([u8arr])`构造文件对象。
-``` js
+
+```js
 function dataUrl2blob(dataUrl) {
   const base64String = /base64,(.*)/.exec(dataUrl)[1];
   const u8arr = new Uint8Array(base64String.length);
@@ -1736,28 +1761,39 @@ function dataUrl2blob(dataUrl) {
   return new Blob([u8arr], { type: "image/png" });
 }
 ```
+
 ### Blob/File -> Base64
+
 使用 FileReader 的 readAsDataURL 接口
-``` js
+
+```js
 function file2base64(file) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const fs = new FileReader();
-    fs.onload = function() {
+    fs.onload = function () {
       resolve(this.result);
     };
     fs.readAsDataURL(file);
   });
 }
 ```
+
 ### Blob -> ArrayBuffer
+
 利用 FileReader 的`readAsArrayBuffer()`读取，在 onload 事件中的 result 即为结果。
+
 ### ArrayBuffer -> Blob / File
+
 直接`new Blob([u8arr], { type: 'text/html' })`
+
 > ！注意 uint8Array 外层的方括号。
+
 ### ArrayBuffer -> 字符串
+
 可以使用 TextDecoder 的 decode 实例方法把类型化数组转成字符串。
 
 ### blob -> url
+
 URL.createObjectURL()该方法创建一个 DOMString，表示指定的 File 或 Blob 对象，这个 URL 的生命周期和 document 绑定。
 
 ## Reflect
@@ -1773,16 +1809,20 @@ Reflect 是一个内置对象，它提供了拦截和操作对象的 api，类�
 - ES2020。可选链接、空值操作??、按需导入、BigInt、globalThis、Promise.allSettled
 
 ## Proxy
+
 ### handler.has()
+
 针对以下情况的代理方法：
-- in查询`foo in obj`
-- with查询
-``` js
-with(obj) {
+
+- in 查询`foo in obj`
+- with 查询
+
+```js
+with (obj) {
   // 这里的取值会触发obj的handler.has()代理
   // true: 代表在obj上进行取值
   // false： 代表会去上级作用域取值
 }
 ```
-- Reflect.has()（与in操作符功能一致）
 
+- Reflect.has()（与 in 操作符功能一致）
