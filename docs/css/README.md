@@ -162,7 +162,7 @@ CSSOM 是在 DOM 上进行了扩展
 
 - `clientWidth/clientHeight`：`padding` + `content`，可以理解为扒了一层皮（border）后剩下的宽高。
 - `clientTop/clientLeft`：`border`。
-- `offsetWidth/offsetHeight`：`border` + `padding` + `content`，顾名思义上的 width，一个盒子的宽高
+- `offsetWidth/offsetHeight`：`border` + `padding` + `content`，顾名思义上的 width，一个盒子的宽高
 - `offsetTop/offsetLeft`: 元素左上角距离最近定位元素的距离，注意与 getBoundingClientRect 方法返回结果中 y 属性的区别
 
 ### 全局信息
@@ -356,21 +356,60 @@ div {
 background: 背景色 url(图片地址) position属性/size属性 重复属性;
 ```
 
-### background-position
-
-- 百分比（相对于容器的宽高）
-- 具体 px
-- 关键字：left、right、top、bottom、center
-
 ### background-size
 
 - 百分比（相对于容器的宽高）
-- 具体 px
-- 关键字：auto、contain(最大限度看见全貌)、cover(同比例充满容器)
+- px
+- 关键字：auto、contain(最大限度看见全貌)、cover(以容器最小边比例充满容器)
+
+宽高如果只设置了其中一个，那么另一个的缺省值是 auto。
+
+size 的简写属性必须跟在 position 之后，且用斜杠`/`分隔。
+
+### background-origin
+
+指定背景 position 的相对位置区域。如果背景是无尺寸属性，例如设置的颜色铺满全屏，那么 position 和 origin 属性相对来说无效.
+
+- `border-box`
+- `padding-box`，默认值
+- `content-box`
+
+### background-position
+
+指定背景图片的初始位置（相对于 `background-origin` 设置的范围来说）。
+
+- 百分比（相对于容器的宽高），默认值 0% 0%，缺省值 center。
+- 具体 px。
+- 关键字：left、right、top、bottom、center
+
+### background-clip
+
+背景的区域铺满情况。其实就是上述 origin 无效的情况的设置方法，此属性就可以设置铺满全盒的颜色的范围。
+
+- `border-box`，默认值
+- `padding-box`
+- `content-box`
 
 ### background-repeat
 
 可以分别指定是在 x 轴重复还是 y 轴重复
+
+### 合理利用多背景特性
+
+`linear-gradient`中的角度，0deg 指向北方。例，透明背景网格图：
+
+```css
+background-color: #fff;
+background-image: linear-gradient(
+    45deg,
+    #eee 25%,
+    transparent 25%,
+    transparent 75%,
+    #eee 75%
+  ), linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%);
+background-size: 40px 40px;
+background-position: 0 0, 20px 20px;
+```
 
 ## `className`的相关操作
 
@@ -507,7 +546,7 @@ float、clear、vertical-align 不能影响 item
 决定一个不能分开的字符串太长的换行方式。
 
 - normal
-- break-word，强制分隔换行
+- break-word，当这个单词在这一行显示不下时，会新启一行，这时就算这个新启的一行显示不下，也会在这一行进行断行显示。
 - anywhere，在计算最小内容尺寸的时候会考虑软换行
 
 ### line-break
@@ -527,7 +566,6 @@ float、clear、vertical-align 不能影响 item
 ```css
 .dynamic-text {
   word-break: break-all;
-  overflow-wrap: break-word;
 }
 ```
 
@@ -824,4 +862,4 @@ math {
 
 ### 自定义字体
 
-使用 woff/woff2 格式加载，在一定程度上可以使用`font-display`进行加载顺序的调优。
+使用 woff/woff2 格式加载，在一定程度上还可以使用`font-display`进行加载顺序的调优。
