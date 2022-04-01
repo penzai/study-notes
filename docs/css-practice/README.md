@@ -431,10 +431,10 @@ clampWord(el, maxLineNum) {
 
 ## 垂直居中
 
-- flex 布局
-- top50%结合 translateX/Y
-- 绝对定位通过 top50%与 margin 调整具体长度数值
-- 绝对定位通过设置 top/left/right/bottom 为 0 加上 margin 为 auto
+- flex 布局 + align-items/justify-content
+- flex 布局 + margin: auto
+- absolute + top、left为50% + `transform: translate(-50%,-50%)`
+- absolute + top、left、right、bottom为0 + `margin: auto`
 
 ## 固定footer
 ``` html
