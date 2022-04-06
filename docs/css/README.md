@@ -390,6 +390,12 @@ size 的简写属性必须跟在 position 之后，且用斜杠`/`分隔。
 - `padding-box`
 - `content-box`
 
+显示渐变颜色的文字：
+``` css
+background-clip: text;
+text-fill-color: transparent;
+```
+
 ### background-repeat
 
 可以分别指定是在 x 轴重复还是 y 轴重复

@@ -101,7 +101,7 @@ location ^~ /webs {
 - alias 用于重写
 
 ```
-# 同时请求list.html
+# 同时请求list.html
 
 # 导向 /www/web1/a/list.html
 location /a {
@@ -127,7 +127,7 @@ add_header Access-Control-Allow-Methods GET,POST,OPTIONS;
 ```
 
 ### 路由规则
-
+- 空，普通前缀匹配，与`^~`的区别就是，`^~`匹配到就停止，而普通前缀匹配不会
 - `=` 精确匹配
 - `^~` 匹配字符串路径开头（非 RegExp)
 - `~`、`!~`、`~*` 正则表达式匹配
