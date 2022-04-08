@@ -121,9 +121,12 @@ workder 进程（实际执行的进程）
 ### 设置跨域
 
 ```
-add_header Access-Control-Allow-Origin *;
-add_header Access-Control-Allow-Headers X-Requested-With;
-add_header Access-Control-Allow-Methods GET,POST,OPTIONS;
+server {
+    add_header Access-Control-Allow-Origin *;
+    add_header Access-Control-Allow-Headers *;
+    add_header Access-Control-Allow-Methods *;
+    add_header Access-Control-Allow-Credentials true;
+}
 ```
 
 ### 路由规则
