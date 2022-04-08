@@ -129,6 +129,16 @@ server {
 }
 ```
 
+有时候需要重设host、referer:
+```
+location {
+    proxy_pass http://xxx;
+    proxy_set_header Cookie 'xx';
+    proxy_set_header Host 'xxx';
+    proxy_set_header Referer 'http://xxx';
+}
+```
+
 ### 路由规则
 - 空，普通前缀匹配，与`^~`的区别就是，`^~`匹配到就停止，而普通前缀匹配不会
 - `=` 精确匹配
