@@ -83,3 +83,27 @@ node11之后，向浏览器看起，会在定时器阶段每一个定时器任�
 - 修改请求和响应对象
 - 终结请求-响应循环
 - 调用堆栈中的下一个中间件
+
+## 打包目录文件
+``` js
+const fs = require('fs')
+const archiver = require('archiver')
+const moment = require('moment')
+
+const nowF = moment().format('YYYY_MM_DD_HH-mm')
+const output = fs.createWriteStream(`${nowF}.zip`)
+const archive = archiver('zip')
+
+output.on('close', () => {
+  console.log(archive.pointer() + ' total bytes')
+})
+
+archive.on('error', err => {
+  throw err
+})
+
+archive.pipe(output)
+archive.directory('dist/', false)
+
+archive.finalize()
+```
