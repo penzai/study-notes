@@ -127,11 +127,11 @@ Child.prototype.constructor = Child;
 ## 柯里化
 
 ```javascript
-const MyCurry = (fn, arr = []) => (...args) =>
-  (arg => (arg.length === fn.length ? fn(...arg) : curry(fn, arg)))([
-    ...arr,
-    ...args
-  ]);
+const curry = fn => 
+  _ = (...args) => 
+    args.length >= fn.length 
+      ? fn(...args)
+      : (...args2) => _(...args, ...args2)
 ```
 
 ## promise
