@@ -35,6 +35,8 @@ objectRef.value = { count: 1 };
 
 使用 toRefs 创建对 props 中的属性的响应式引用。
 
+shallowRef只包装传入对象的第一层，深层次的更改并不会触发更新。
+
 ## 生命周期
 
 onMounted(cb)
@@ -128,10 +130,15 @@ ref 应用在子组件上时，取得引用有所不同
 - 子组件使用`<script setup>`，父组件使用 ref 取得的引用里未包含任何东西，子组件需要使用`defineExpose`显示暴露
 - 其它使用方式，可获得与 this 一样的使用效果
 
+## props
+
+defineProps() 宏中的参数不可以访问`<script setup>`中定义的其他变量，因为在编译时整个表达式都会被移到外部的函数中。
+
+透传的attrs不具有响应特性，因此无法监听它的变化。
+
 ## 父与子组件
 
-- 透传的 class 使用$attrs.class 进行分配。
-
+defineAsyncComponent，异步加载组件。
 ## 表单绑定
 
 v-model 应用于表单标签时，不同标签有不同行为。
@@ -154,7 +161,18 @@ v-model 应用于表单标签时，不同标签有不同行为。
 - select
   - 原生：属性取的是 options 的 value > options 的 innerHTML。option 标签使用`selected`来决定默认选中哪个选项。
   - v-model: 无论是单选还是多选，都不会对初始值格式有要求。单选就是普通字符串，多选就是数组。接管 change 事件。且值能设置为对象。
+## 组合式API
+> `<script setup>` 是唯一在调用 await 之后仍可调用组合式函数的地方。编译器会在异步操作之后自动为你恢复当前活跃的组件实例。
 
+> 组合式函数相对于无渲染组件的主要优势是：组合式函数不会产生额外的组件实例开销。当在整个应用中使用时，由无渲染组件产生的额外组件实例会带来无法忽视的性能开销。
+
+> 我们推荐在纯逻辑复用时使用组合式函数，在需要同时复用逻辑和视图布局时使用无渲染组件。
+
+优点：
+
+- 能够使用纯 Typescript 声明 props 和抛出事件
+- 更好的运行时性能（其模版会被编译成与其同一作用域的渲染函数，没有任何的中间代理）
+- 更好的 IDE 类型推断
 ## Teleport
 
 ```js
@@ -172,14 +190,17 @@ v-model 应用于表单标签时，不同标签有不同行为。
 
 更强大的`v-model:arg.modifiers`。
 
-## `<script setup>`语法糖
-
-优点：
-
-- 能够使用纯 Typescript 声明 props 和抛出事件
-- 更好的运行时性能（其模版会被编译成与其同一作用域的渲染函数，没有任何的中间代理）
-- 更好的 IDE 类型推断
-
+## 动画
+- v-enter-from
+- v-enter-active
+- v-enter-to
+- v-leave-from
+- v-leave-active
+- v-leave-to
+## 渲染优化
+### 静态提升
+### 修补标记 Flags
+### 树结构打平
 ## 不兼容的变更
 
 - vue2.x 的全局 api 移动到了 app 实例上
@@ -203,3 +224,4 @@ v-model 应用于表单标签时，不同标签有不同行为。
 - 模板中的全局变量为实际全局变量的部分。其他之外需要使用 app.config.globalProperties 进行显式添加。
   `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,' + 'decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,' + 'Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt`
 - v-if 优先级比 v-for 高，v-if 不能访问 for 循环里的变量。
+- 一知半解：动画、suspense、测试、SSR、性能、无障碍访问、安全。
