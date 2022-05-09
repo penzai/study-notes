@@ -354,74 +354,7 @@ console.log(b1 instanceof Object, b2 instanceof Object); //false true
 
 这里引入两个概念，旧世界作用域：**函数作用域**和**全局作用域**（仔细一想其实就一个）。新世界作用域：旧世界上加一个**块级作用域**。
 
-#### var 变量
 
-定义会提升到旧世界作用域顶部，但优先级没有函数高。
-
-待到实际定义处才进行赋值。
-
-示例 1：
-
-```js
-console.log(a); // f a() {}
-
-var a = 3;
-
-function a() {}
-```
-
-示例 2：
-
-```js
-var b;
-void (function () {
-  var env = { b: 1 };
-  b = 2; // 这里实际上是对var b = 3提升上来的b进行赋值
-  console.log("In function b:", b); // 2
-  with (env) {
-    var b = 3;
-    console.log("In with b:", b); // 3
-  }
-})();
-console.log("Global b:", b); // undefined
-```
-
-#### let/const
-
-没有变量提升。不能重复也不能提前使用（连`typeof`也不能使用）。在当前作用域内会进行“一家独大”，就算你在全局上拥有这个变量，也不能提前使用。也叫暂时性死区。
-
-```js
-var a = 4;
-{
-  typeof a; // Uncaught ReferenceError: Cannot access 'a' before initialization
-  console.log(a); // Uncaught ReferenceError: Cannot access 'a' before initialization
-  let a = 3;
-}
-```
-
-注意常在函数默认参数设置中的死区：
-
-```js
-// p2还未定义就使用了
-// Uncaught ReferenceError: Cannot access 'p2' before initialization
-const fn1 = (p1 = p2, p2 = 3) => {};
-fn1();
-
-const fn2 = (p1 = 3, p2 = p1) => {};
-fn2();
-```
-
-for 循环中，声明块与执行块是不同的作用域，通过以下示例可得出结论。
-
-```js
-for (let i = 0; i < 3; i++) {
-  let i = "abc";
-  console.log(i);
-}
-// abc 未报不能再次声明错误
-// abc
-// abc
-```
 
 #### 函数声明
 
@@ -1510,7 +1443,7 @@ setInterval(replaceThing, 1000);
 
 包括但不限于以下特点：
 
-- 全局对象为 undefined。这样就不会因为未声明变量而挂载到全局对象上，从而造成内存泄漏，因为一旦挂载了，那么只有刷新页面或者关闭 tab 才会被释放。
+- 全局对象为 undefined。这样就不会因为未声明变量而挂载到全局对象上，从而造成内存泄漏，因为一旦挂载了，那么只有刷新页面或者关闭 tab 才会被释放。(很重要的一个原因)
 - arguments 不可用。据阮一峰文章解释，这样就可以优化尾递归，因为非严格模式拥有 arguments.callee，需指向本身，造成了作用域栈不能被优化。（测试未通过）
 
 ## JSON.stringify
