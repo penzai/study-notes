@@ -1,3 +1,6 @@
 div, code {
-  font-family: Jetbrains Mono, Source Han Sans SC VF;
+  font-family: Jetbrains Mono, Source Han Sans SC VF !important;
+}
+div {
+  font-size: 14px;
 }
