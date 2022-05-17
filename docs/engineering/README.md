@@ -1,3 +1,5 @@
+## npm
+- package.json中`bin`参数可以设置`node_modules/.bin`目录的shell名称以及对应要使用哪个脚本。
 ## 自动注入样式变量、mixins
 
 使用`style-resources-loader`包，配置 webpack 如下：
