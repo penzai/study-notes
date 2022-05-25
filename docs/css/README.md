@@ -171,6 +171,14 @@ CSSOM 是在 DOM 上进行了扩展
 - `window.screen.width/height`
 - `window.devicePixelRatio`
 
+## margin
+百分比是相对于父元素content的长度，另外如果父元素content没有长度，就为0。
+## padding
+百分比是相对于父元素content的长度，另外如果父元素content没有长度，就为0。
+
+## width/height
+- 100%，相对于父级。在flex布局中表现为自动填充效果。但依然会受到元素影响，并不是说就一直保持着固定高度。
+
 ## text-align 和 vertical-align
 
 ### text-align
@@ -458,8 +466,9 @@ background-position: 0 0, 20px 20px;
 float、clear、vertical-align 不能影响 item
 
 - `order`（默认 0）
-- `flex` [flex-grow, flex-shrink, flex-basis]（默认 `0 1 auto`, 缺省值分别是 **1，1，0%**）。flex 常用值有`none`(0 0 auto)，auto（1 1 auto），1（1 1 0%，最常用，也就是缺省值）
+- `flex` [flex-grow, flex-shrink, flex-basis]（默认 `0 1 auto`, 缺省值分别是 **1，1，0%**）。flex 常用值有`none`(0 0 auto)，auto（1 1 auto），1（1 1 0%，最常用，也就是缺省值）
   > 为什么用`flex：1`，而不是`flex-grow:1`,因为 flex-basis 默认值 auto，所以你想平均分配空间（而不是剩余空间）的时候必须把其置为 0，也就是`flex：1`的完整设置项。
+
   > flex-shrink 的默认值 1，也就表示 item 在允许的情况是会自动缩小的，就算你的初始宽度（width/flex-basis）设得很大，一样该缩小的时候就缩小。
 - `align-self` (单独的 align-items 设置)
 
