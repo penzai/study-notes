@@ -225,3 +225,4 @@ v-model 应用于表单标签时，不同标签有不同行为。
   `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,' + 'decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,' + 'Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt`
 - v-if 优先级比 v-for 高，v-if 不能访问 for 循环里的变量。
 - 一知半解：动画、suspense、测试、SSR、性能、无障碍访问、安全。
+- setup执行在before与created之间。
