@@ -129,6 +129,19 @@ server {
 }
 ```
 
+复杂请求时需要处理options请求：
+```
+location /xxx {
+    if ($request_method = 'OPTIONS') {
+        add_header Access-Control-Allow-Origin '*';
+        add_header Access-Control-Allow-Headers '*';
+        add_header Access-Control-Allow-Methods '*';
+
+        return 200;
+    }
+}
+```
+
 有时候需要重设host、referer:
 ```
 location {
