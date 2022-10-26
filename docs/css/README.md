@@ -821,6 +821,8 @@ border: 0.02px solid; /* 必须要有边框，border-image才有效果 */
 border-image: linear-gradient(lightskyblue, lightskyblue) 2 / 20px / 20px;
 ```
 
+> 热区扩大方法：border（使用background-clip与box-shadown:inset辅助）、`::after`伪元素
+
 ## font
 
 ### 默认字体设置
