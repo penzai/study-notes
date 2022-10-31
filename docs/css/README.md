@@ -161,8 +161,10 @@ CSSOM 是在 DOM 上进行了扩展
 属性：
 
 - `clientWidth/clientHeight`：`padding` + `content`，可以理解为扒了一层皮（border）后剩下的宽高。
+> clientWidth/clientHeight在处理滚动计算时比较有用，因为一个滚动内容是在父级的padding+content范围内滚动。
+- `scrollWidth/scrollHeight`: 如果一个元素a拥有滚动内容b，那么这个值代表滚动内容b完全撑开了a后的**元素a**宽高，当没有滚动元素时，这个值与clientWidth一致。
 - `clientTop/clientLeft`：`border`。
-- `offsetWidth/offsetHeight`：`border` + `padding` + `content`，顾名思义上的 width，一个盒子的宽高
+- `offsetWidth/offsetHeight`：`border` + `padding` + `content`，顾名思义上的 width，一个盒子的宽高。当没有border时，该值与clientWidth相等。
 - `offsetTop/offsetLeft`: 元素左上角距离最近定位元素的距离，注意与 getBoundingClientRect 方法返回结果中 y 属性的区别
 
 ### 全局信息
