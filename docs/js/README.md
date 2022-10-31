@@ -836,6 +836,12 @@ var _new = function () {
 };
 ```
 
+## eval
+### 调用方式
+eval的运行时很低效。且不安全。可使用Function代替相关逻辑。
+- `eval()`，当前作用域
+- `eval?.()`，全局作用域
+
 ## 异步编程
 
 ### Promise
