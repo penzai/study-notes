@@ -1599,6 +1599,9 @@ function file2base64(file) {
 
 可以使用 TextDecoder 的 decode 实例方法把类型化数组转成字符串。
 
+### 字符串 -> ArrayBuffer
+如果字符串全英文，可以直接使用`charCodeAt`转，含有中文的话，需要中间加一层`encodeURIComponent`。
+
 ### blob -> url
 
 URL.createObjectURL()该方法创建一个 DOMString，表示指定的 File 或 Blob 对象，这个 URL 的生命周期和 document 绑定。
