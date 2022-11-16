@@ -608,3 +608,31 @@ imgEle.onload = () => {
   console.log(leftNearestColor, rightNearestColor);
 };
 ```
+
+### BEM命名法
+使用此命名法书写样式时，独立的容器尽量写在根路径下，方便使用&进行选中。
+``` html
+<div class="container">
+  <div class="user-list">
+    <div class="user-list__name" />
+  </div>
+</div>
+```
+
+``` css
+
+/* bad */
+.container {
+  .user-list {
+    &__name {
+
+    }
+  }
+}
+
+/* good */
+.container {}
+.user-list {
+  &__name {}
+}
+```
