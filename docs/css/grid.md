@@ -9,7 +9,10 @@
 - `place-items`。先align后justify的顺序。
 - `place-content`。先align后justify的顺序。
 - `grid-auto-columns`、`grid-auto-rows`。
+
 ### 项目属性
 - `grid-area`。
 - `grid-column-start`、`grid-column-end`、`grid-row-start`、`grid-row-end`。可使用`span`进行跨行设置。
 - `place-self`。先align后justify的顺序
+
+> 不想项目自动撑开时，可使用`min-height: 0`、`overflow: hidden`。
