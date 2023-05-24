@@ -15,4 +15,4 @@
 - `grid-column-start`、`grid-column-end`、`grid-row-start`、`grid-row-end`。可使用`span`进行跨行设置。
 - `place-self`。先align后justify的顺序
 
-> 不想项目自动撑开时，可使用`min-height: 0`、`overflow: hidden`。
+> 长度使用`fr`或`auto`时，单元格会被自动撑开，要使其固定，可使用`min-height: 0`、`overflow: hidden`、`minmax(0, 1fr)`。
