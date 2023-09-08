@@ -70,6 +70,11 @@ console.log(a === b); // true
 
 ![](../images/js/string-translate.png)
 
+#### 实例方法replace
+`replace(pattern, replacement)`
+- replacement为string时，支持一些特殊字符效果：`$$` `$&` `` $` `` `$'` `$n` `$<name>`
+- 当replacement为function时，参数为(match, ...pN, offset, string, groups?)，其中groups只有在pattern拥有具名捕获组时才会存在，否则无此参数。
+
 ### Number
 
 Javascript 中使用基于 IEEE754 标准的双精度浮点数来表示数字，标准规定一个数的二进制表示法为`(-1)^S * 1.M * 2^E`，结构如下：
